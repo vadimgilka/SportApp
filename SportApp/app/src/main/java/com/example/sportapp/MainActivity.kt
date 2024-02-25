@@ -29,5 +29,4 @@ class MainActivity : ComponentActivity() {
 fun renderSreen()
 {
     Text("Hello, Compose!")
-
 }
