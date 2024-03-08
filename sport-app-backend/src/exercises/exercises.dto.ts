@@ -21,7 +21,7 @@ export class CreateExerciseDto {
   video?: string;
 }
 
-export class updateExerciseDto {
+export class UpdateExerciseDto {
   id: number;
 
   @IsNotEmpty()
@@ -33,7 +33,9 @@ export class updateExerciseDto {
   @MinLength(descriptionMinLength)
   @MaxLength(descriptionMaxLength)
   description: string;
+  
   image?: string;
   gif?: string;
   video?: string;
+  author_id : number;
 }

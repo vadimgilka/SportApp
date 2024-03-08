@@ -17,7 +17,7 @@ model User {
   id        Int        @id @default(autoincrement())
   email     String     @unique
   username  String     @unique @db.VarChar(30)
-  password  String     
+  password  String
   role      Role       @default(USER)
   exercises Exercise[]
   createdAt DateTime   @default(now())
@@ -32,10 +32,10 @@ model Exercise {
   description String   @db.VarChar(1024)
   image       String?
   video       String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
   author_id   Int
   author      User     @relation(fields: [author_id], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
   @@map("exercises")
 }
