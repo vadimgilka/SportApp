@@ -22,7 +22,7 @@ export class ExercisesController {
     return await this.exercisesService.createExercise(data);
   }
 
-  @Get()
+  @Get(':id')
   async getById(@Param('id', ParseIntPipe) id : number){
     return await this.exercisesService.findById(id);
   }
@@ -33,7 +33,7 @@ export class ExercisesController {
     return await this.exercisesService.updateExercise({where: {id : exercise.id}, data : exercise});
   }
 
-  @Delete()
+  @Delete(':id')
   async del(@Param('id', ParseIntPipe) id){
     return await this.exercisesService.deleteExercise({id : id});
   }

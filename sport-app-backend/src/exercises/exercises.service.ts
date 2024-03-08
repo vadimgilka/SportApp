@@ -16,7 +16,8 @@ export class ExercisesService {
     data: UpdateExerciseDto;
   }): Promise<Exercise> {
     const { where, data } = params;
-    return  this.prisma.exercise.update({
+    where.author = { id: data.author_id };
+    return this.prisma.exercise.update({
       data,
       where,
     });
@@ -25,7 +26,7 @@ export class ExercisesService {
   async deleteExercise(
     where: Prisma.ExerciseWhereUniqueInput,
   ): Promise<Exercise> {
-    return  this.prisma.exercise.delete({ where });
+    return this.prisma.exercise.delete({ where });
   }
 
   async exercises(params: {
@@ -36,7 +37,7 @@ export class ExercisesService {
     orderBy?: Prisma.ExerciseOrderByWithRelationInput;
   }): Promise<Exercise[]> {
     const { skip, take, cursor, where, orderBy } = params;
-    return  this.prisma.exercise.findMany({
+    return this.prisma.exercise.findMany({
       skip,
       take,
       cursor,
@@ -48,10 +49,10 @@ export class ExercisesService {
   async exercise(
     where: Prisma.ExerciseWhereUniqueInput,
   ): Promise<Exercise | null> {
-    return  this.prisma.exercise.findUnique({ where });
+    return this.prisma.exercise.findUnique({ where });
   }
 
-  async findById(id : number){
-    return this.exercise({id : id});
+  async findById(id: number) {
+    return this.exercise({ id: id });
   }
 }

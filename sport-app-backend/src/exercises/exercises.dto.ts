@@ -33,9 +33,9 @@ export class UpdateExerciseDto {
   @MinLength(descriptionMinLength)
   @MaxLength(descriptionMaxLength)
   description: string;
-  
+
   image?: string;
   gif?: string;
   video?: string;
-  author_id : number;
+  author_id: number;
 }
