@@ -22,7 +22,6 @@ export class CreateExerciseDto {
 }
 
 export class updateExerciseDto {
-  
   id: number;
 
   @IsNotEmpty()
@@ -34,7 +33,6 @@ export class updateExerciseDto {
   @MinLength(descriptionMinLength)
   @MaxLength(descriptionMaxLength)
   description: string;
-
   image?: string;
   gif?: string;
   video?: string;
