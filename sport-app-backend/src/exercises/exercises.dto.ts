@@ -1,4 +1,4 @@
-import { IsNotEmpty, MaxLength, MinLength } from 'class-validator';
+import { IsInt, IsNotEmpty, MaxLength, MinLength } from 'class-validator';
 
 const nameMinLength = 3;
 const nameMaxLength = 256;
@@ -17,11 +17,11 @@ export class CreateExerciseDto {
   description: string;
 
   image?: string;
-  gif?: string;
   video?: string;
 }
 
 export class UpdateExerciseDto {
+  
   id: number;
 
   @IsNotEmpty()
@@ -35,7 +35,6 @@ export class UpdateExerciseDto {
   description: string;
 
   image?: string;
-  gif?: string;
   video?: string;
   author_id: number;
 }
