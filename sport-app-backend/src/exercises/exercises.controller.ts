@@ -84,7 +84,7 @@ export class ExercisesController {
   }
 
   @Delete(':id')
-  async del(@Param('id', ParseIntPipe) id) {
-    return await this.exercisesService.deleteExercise({ id: id });
+  async del(@Param('id', ParseIntPipe) id, @User() user) {
+    return await this.exercisesService.deleteExercise({ id: id }, user.userId);
   }
 }

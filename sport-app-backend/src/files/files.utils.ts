@@ -8,10 +8,10 @@ export class FileUtils {
   }
 
   static destinationImages(req, file, cb) {
-    cb(null, './upload/images/');
+    cb(null, './uploads/images/');
   }
 
   static destinationGif(req, file, cb){
-    cb(null, './upload/gif/');
+    cb(null, './uploads/gif/');
   }
 }

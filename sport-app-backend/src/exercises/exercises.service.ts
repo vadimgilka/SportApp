@@ -25,7 +25,9 @@ export class ExercisesService {
 
   async deleteExercise(
     where: Prisma.ExerciseWhereUniqueInput,
+    userId : number
   ): Promise<Exercise> {
+    where.author = { id: userId };
     return this.prisma.exercise.delete({ where });
   }
 
