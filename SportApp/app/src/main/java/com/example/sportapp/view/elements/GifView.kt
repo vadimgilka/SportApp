@@ -28,10 +28,10 @@ import com.example.sportapp.R
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
-fun GifImage(modifier: Modifier) {
+fun GifImage(modifier: Modifier, image: Int) {
     AsyncImage(
         modifier = modifier,
         model = ImageRequest.Builder(LocalContext.current)
-            .data(R.drawable.welcome).decoderFactory(ImageDecoderDecoder.Factory()).build(),
+            .data(image).decoderFactory(ImageDecoderDecoder.Factory()).build(),
         contentDescription = null)
 }

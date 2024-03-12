@@ -46,7 +46,7 @@ fun welcomeScreen(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center) {
-        GifImage(modifier = Modifier.size(320.dp))
+        GifImage(modifier = Modifier.size(320.dp), R.drawable.welcome)
         Image(modifier = Modifier.width(160.dp), imageVector = ImageVector.vectorResource(id = R.drawable.sportapplogo), contentDescription = null)
         Spacer(modifier = Modifier.height(20.dp))
         Button(modifier = Modifier
