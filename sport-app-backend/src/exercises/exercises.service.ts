@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Exercise, Prisma } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { UpdateExerciseDto } from './exercises.dto';
@@ -16,7 +20,18 @@ export class ExercisesService {
     data: UpdateExerciseDto;
   }): Promise<Exercise> {
     const { where, data } = params;
-    where.author = { id: data.author_id };
+    const exercise = await this.exercise(where);
+
+    if (!exercise) {
+      throw new NotFoundException('exercise not found');
+    }
+
+    if (!this.isHasRights(exercise, data.author_id)) {
+      throw new ForbiddenException(
+        'not have rights for updating this exercise',
+      );
+    }
+
     return this.prisma.exercise.update({
       data,
       where,
@@ -25,9 +40,18 @@ export class ExercisesService {
 
   async deleteExercise(
     where: Prisma.ExerciseWhereUniqueInput,
-    userId : number
+    userId: number,
   ): Promise<Exercise> {
-    where.author = { id: userId };
+    const exercise = await this.exercise(where);
+
+    if (!exercise) {
+      throw new NotFoundException('exercise not found');
+    }
+
+    if (!this.isHasRights(exercise, userId)) {
+      throw new ForbiddenException('not have rights for deleted this exercise');
+    }
+
     return this.prisma.exercise.delete({ where });
   }
 
@@ -39,22 +63,34 @@ export class ExercisesService {
     orderBy?: Prisma.ExerciseOrderByWithRelationInput;
   }): Promise<Exercise[]> {
     const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.exercise.findMany({
+    const exercises = this.prisma.exercise.findMany({
       skip,
       take,
       cursor,
       where,
       orderBy,
     });
+
+    return exercises;
   }
 
   async exercise(
     where: Prisma.ExerciseWhereUniqueInput,
   ): Promise<Exercise | null> {
-    return this.prisma.exercise.findUnique({ where });
+    const exercise = await this.prisma.exercise.findUnique({ where });
+    console.log(exercise)
+    if (!exercise) {
+      throw new NotFoundException('exercise not found');
+    }
+
+    return exercise;
   }
 
   async findById(id: number) {
     return this.exercise({ id: id });
+  }
+
+  private isHasRights(exercise: Exercise, userId: number) {
+    return exercise.author_id == userId;
   }
 }
