@@ -105,7 +105,7 @@ fun loginScreen(onClick: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(white)
-                    .padding(15.dp),
+                    .padding(horizontal = 15.dp, vertical = 10.dp),
                 value = loginInput,
                 maxLines = 1,
                 singleLine = true,
@@ -131,7 +131,7 @@ fun loginScreen(onClick: () -> Unit) {
         }
         Spacer(
             modifier = Modifier
-                .height(10.dp)
+                .height(15.dp)
                 .background(white)
         )
         Box(
@@ -151,7 +151,7 @@ fun loginScreen(onClick: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(white)
-                    .padding(15.dp),
+                    .padding(horizontal = 15.dp, vertical = 10.dp),
                 value = passwordInput,
                 maxLines = 1,
                 singleLine = true,
@@ -175,7 +175,7 @@ fun loginScreen(onClick: () -> Unit) {
                     }
                 })
         }
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(15.dp))
         Button(modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)
