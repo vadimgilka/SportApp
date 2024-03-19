@@ -1,19 +1,25 @@
+import { Exercise } from '@prisma/client';
 import { IsInt, IsNotEmpty, MaxLength, MinLength } from 'class-validator';
 
-const nameMinLength = 3;
-const nameMaxLength = 256;
-const descriptionMinLength = 10;
-const descriptionMaxLength = 1024;
+const nameLength = {
+  min : 3,
+  max : 256
+};
+
+const descriptionLength = {
+  min : 10,
+  max : 1024
+};
 
 export class CreateExerciseDto {
   @IsNotEmpty()
-  @MinLength(nameMinLength)
-  @MaxLength(nameMaxLength)
+  @MinLength(nameLength.min)
+  @MaxLength(nameLength.max)
   name: string;
 
   @IsNotEmpty()
-  @MinLength(descriptionMinLength)
-  @MaxLength(descriptionMaxLength)
+  @MinLength(descriptionLength.min)
+  @MaxLength(descriptionLength.max)
   description: string;
 
   image?: string;
@@ -25,16 +31,26 @@ export class UpdateExerciseDto {
   id: number;
 
   @IsNotEmpty()
-  @MinLength(nameMinLength)
-  @MaxLength(nameMaxLength)
-  name: string;
+  @MinLength(nameLength.min)
+  @MaxLength(nameLength.max)
+  name?: string;
 
   @IsNotEmpty()
-  @MinLength(descriptionMinLength)
-  @MaxLength(descriptionMaxLength)
-  description: string;
+  @MinLength(descriptionLength.min)
+  @MaxLength(descriptionLength.max)
+  description?: string;
 
   image?: string;
   video?: string;
   author_id: number;
+}
+
+export class ExerciseTrainDto {
+
+    @IsNotEmpty()
+    id : number
+
+    repetition : number;
+    approach : number;
+    time : number;
 }
