@@ -20,6 +20,7 @@ model User {
   password  String
   role      Role       @default(USER)
   exercises Exercise[]
+  trains    Train[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
@@ -27,17 +28,46 @@ model User {
 }
 
 model Exercise {
-  id          Int      @id @default(autoincrement())
-  name        String   @db.VarChar(256)
-  description String   @db.VarChar(1024)
+  id          Int               @id @default(autoincrement())
+  name        String            @db.VarChar(256)
+  description String            @db.VarChar(1024)
   image       String?
   video       String?
   author_id   Int
-  author      User     @relation(fields: [author_id], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  author      User              @relation(fields: [author_id], references: [id])
+  trains      ExerciseOnTrain[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
 
   @@map("exercises")
+}
+
+model Train {
+  id          Int               @id @default(autoincrement())
+  name        String            @db.VarChar(256)
+  description String            @db.VarChar(1024)
+  author      User              @relation(fields: [author_id], references: [id])
+  author_id   Int
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  exercises   ExerciseOnTrain[]
+
+  @@map("trains")
+}
+
+model ExerciseOnTrain {
+  Exercise   Exercise @relation(fields: [exerciseId], references: [id])
+  exerciseId Int
+  Train      Train    @relation(fields: [trainId], references: [id])
+  trainId    Int
+  repetition Int?     // поворение
+  approach   Int      @default(1) // подходы 
+  time       Int?     // время в секундах
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@id([exerciseId, trainId])
+  @@map("exercises_trains")
 }
 
 enum Role {
