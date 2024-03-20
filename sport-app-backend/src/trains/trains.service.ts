@@ -19,36 +19,57 @@ export class TrainsService {
     private exerciseService: ExercisesService,
   ) {}
 
-  async create(dto: CreateTrainDto): Promise<Train> {
-    if (dto.exercises.length > MAX_EXERCISE_IN_TRAIN) {
-      throw new BadRequestException(
-        MAX_EXERCISE_IN_TRAIN + ' is max count of exercises in one train',
-      );
-    }
+  async create(data: CreateTrainDto): Promise<Train> {
+    this.checkExercises(data.exercises);
 
-    this.checkExercises(dto.exercises);
-
-    const data = {
-      name: dto.name,
-      description: dto.description,
+    const createData = {
+      name: data.name,
+      description: data.description,
       author: {
         connect: {
-          id: dto.author_id,
+          id: data.author_id,
         },
       },
     };
 
-    const train = await this.prisma.train.create({ data });
-    const exerciseTrain = this.formatDataForConnection(train.id, dto.exercises);
-    await this.prisma.exerciseOnTrain.createMany({data : exerciseTrain});
+    const train = await this.prisma.train.create({ data: createData });
+    const exerciseTrain = this.formatDataForConnection(
+      train.id,
+      data.exercises,
+    );
+    await this.prisma.exerciseOnTrain.createMany({ data: exerciseTrain });
 
     return train;
   }
 
   async update(params: {
-    where: Prisma.ExerciseWhereUniqueInput;
+    where: Prisma.TrainWhereUniqueInput;
     data: UpdateTrainDto;
   }): Promise<Train> {
+    const { where, data } = params;
+    this.checkExercises(data.exercises);
+
+    const updateData = {
+      name: data.name,
+      description: data.description,
+      author: {
+        connect: {
+          id: data.author_id,
+        },
+      },
+    };
+
+    const train = await this.train(where);
+
+    if (!train) {
+      throw new NotFoundException('train not found');
+    }
+
+    if (!this.isHasRights(train, data.author_id)) {
+      throw new ForbiddenException('not have rights for deleted this train');
+    }
+
+    const updateTrain = await this.prisma.train.update({data : updateData, where});
     return null;
   }
 
@@ -58,7 +79,6 @@ export class TrainsService {
     if (!train) {
       throw new NotFoundException('train not found');
     }
-
     return train;
   }
 
@@ -83,6 +103,12 @@ export class TrainsService {
 
   private async checkExercises(exercises: ExerciseTrainDto[]) {
     if (exercises) {
+      if (exercises.length > MAX_EXERCISE_IN_TRAIN) {
+        throw new BadRequestException(
+          MAX_EXERCISE_IN_TRAIN + ' is max count of exercises in one train',
+        );
+      }
+
       const uniqExercisesId = uniq(exercises.map((x) => x.id));
       const data = await this.exerciseService.exercises({
         where: { id: { in: uniqExercisesId } },
@@ -114,7 +140,7 @@ export class TrainsService {
   private formatDataForConnection(
     train_id: number,
     exercises: ExerciseTrainDto[],
-  ) : Prisma.ExerciseOnTrainCreateManyInput[] {
+  ): Prisma.ExerciseOnTrainCreateManyInput[] {
     const result = [];
     for (const exercise of exercises) {
       if (!exercise.time && !exercise.repetition) {
@@ -129,7 +155,7 @@ export class TrainsService {
         );
       }
 
-      const data : Prisma.ExerciseOnTrainCreateInput = {
+      const data: Prisma.ExerciseOnTrainCreateInput = {
         ...exercise,
         Exercise: { connect: { id: exercise.id } },
         Train: { connect: { id: train_id } },
