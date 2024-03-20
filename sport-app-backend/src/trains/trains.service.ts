@@ -5,7 +5,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Exercise, Prisma, Train } from '@prisma/client';
+import { Exercise, ExerciseOnTrain, Prisma, Train } from '@prisma/client';
 import { CreateTrainDto, UpdateTrainDto } from './trains.dto';
 import { MAX_EXERCISE_IN_TRAIN } from './constant';
 import { uniq } from 'lodash';
@@ -39,6 +39,8 @@ export class TrainsService {
     };
 
     const train = await this.prisma.train.create({ data });
+    const exerciseTrain = this.formatDataForConnection(train.id, dto.exercises);
+    await this.prisma.exerciseOnTrain.createMany({data : exerciseTrain});
 
     return train;
   }
@@ -86,17 +88,16 @@ export class TrainsService {
         where: { id: { in: uniqExercisesId } },
       });
 
-      if (data.length != exercises.length){
-         throw new NotFoundException('some exercises in train are not exists');
+      if (data.length != exercises.length) {
+        throw new NotFoundException('some exercises in train are not exists');
       }
     }
   }
 
-
   async delete(
     where: Prisma.TrainWhereUniqueInput,
     userId: number,
-  ): Promise<Exercise> {
+  ): Promise<Train> {
     const train = await this.train(where);
 
     if (!train) {
@@ -107,24 +108,40 @@ export class TrainsService {
       throw new ForbiddenException('not have rights for deleted this train');
     }
 
-    return this.prisma.exercise.delete({ where });
+    return this.prisma.train.delete({ where });
+  }
+
+  private formatDataForConnection(
+    train_id: number,
+    exercises: ExerciseTrainDto[],
+  ) : Prisma.ExerciseOnTrainCreateManyInput[] {
+    const result = [];
+    for (const exercise of exercises) {
+      if (!exercise.time && !exercise.repetition) {
+        throw new BadRequestException(
+          'Incorrect exercise format: exercise should has time or repetition',
+        );
+      }
+
+      if (exercise.time && exercise.repetition) {
+        throw new BadRequestException(
+          'Incorrect exercise format: exercise should has time or repetition',
+        );
+      }
+
+      const data : Prisma.ExerciseOnTrainCreateInput = {
+        ...exercise,
+        Exercise: { connect: { id: exercise.id } },
+        Train: { connect: { id: train_id } },
+      };
+
+      result.push(data);
+    }
+
+    return result;
   }
 
   private isHasRights(train: Train, userId: number) {
     return train.author_id == userId;
-  }
-
-  private formatDataForConnection(train_id : number, exercises : ExerciseTrainDto[]){
-
-     const result = [];
-     for(const exercise of exercises){
-        if(!exercise.time && !exercise.repetition){
-          throw new BadRequestException('Incorrect exercise format: exercise should has time or repetition');
-        }
-
-        if(exercise.time && exercise.repetition){
-          throw new BadRequestException('Incorrect exercise format: exercise should has time or repetition');
-        }
-     }
   }
 }
