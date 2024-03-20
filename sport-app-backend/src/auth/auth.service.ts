@@ -36,7 +36,7 @@ export class AuthService {
 
   async register(user: CreateUserDto) {
     user.password = await bcrypt.hash(user.password, saltOrRounds.round);
-    const data = await this.usersService.createUser(user);
+    const data = await this.usersService.create(user);
     const payload = { username: data.username, sub: data.id };
 
     return {

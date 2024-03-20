@@ -54,7 +54,7 @@ export class ExercisesController {
         },
       },
     };
-    return await this.exercisesService.createExercise(data);
+    return await this.exercisesService.create(data);
   }
 
   @Get(':id')
@@ -77,7 +77,7 @@ export class ExercisesController {
       exercise.image = image.path;
     }
 
-    return await this.exercisesService.updateExercise({
+    return await this.exercisesService.update({
       where: { id: exercise.id },
       data: exercise,
     });
@@ -85,6 +85,6 @@ export class ExercisesController {
 
   @Delete(':id')
   async del(@Param('id', ParseIntPipe) id, @User() user) {
-    return await this.exercisesService.deleteExercise({ id: id }, user.userId);
+    return await this.exercisesService.delete({ id: id }, user.userId);
   }
 }

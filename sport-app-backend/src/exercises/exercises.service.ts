@@ -11,11 +11,11 @@ import { UpdateExerciseDto } from './exercises.dto';
 export class ExercisesService {
   constructor(private prisma: PrismaService) {}
 
-  async createExercise(data: Prisma.ExerciseCreateInput): Promise<Exercise> {
+  async create(data: Prisma.ExerciseCreateInput): Promise<Exercise> {
     return this.prisma.exercise.create({ data });
   }
 
-  async updateExercise(params: {
+  async update(params: {
     where: Prisma.ExerciseWhereUniqueInput;
     data: UpdateExerciseDto;
   }): Promise<Exercise> {
@@ -38,7 +38,7 @@ export class ExercisesService {
     });
   }
 
-  async deleteExercise(
+  async delete(
     where: Prisma.ExerciseWhereUniqueInput,
     userId: number,
   ): Promise<Exercise> {
