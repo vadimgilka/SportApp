@@ -1,6 +1,7 @@
 import { PrismaService } from './../prisma/prisma.service';
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -81,6 +82,49 @@ export class TrainsService {
   private async checkExercises(exercises: ExerciseTrainDto[]) {
     if (exercises) {
       const uniqExercisesId = uniq(exercises.map((x) => x.id));
+      const data = await this.exerciseService.exercises({
+        where: { id: { in: uniqExercisesId } },
+      });
+
+      if (data.length != exercises.length){
+         throw new NotFoundException('some exercises in train are not exists');
+      }
     }
+  }
+
+
+  async delete(
+    where: Prisma.TrainWhereUniqueInput,
+    userId: number,
+  ): Promise<Exercise> {
+    const train = await this.train(where);
+
+    if (!train) {
+      throw new NotFoundException('train not found');
+    }
+
+    if (!this.isHasRights(train, userId)) {
+      throw new ForbiddenException('not have rights for deleted this train');
+    }
+
+    return this.prisma.exercise.delete({ where });
+  }
+
+  private isHasRights(train: Train, userId: number) {
+    return train.author_id == userId;
+  }
+
+  private formatDataForConnection(train_id : number, exercises : ExerciseTrainDto[]){
+
+     const result = [];
+     for(const exercise of exercises){
+        if(!exercise.time && !exercise.repetition){
+          throw new BadRequestException('Incorrect exercise format: exercise should has time or repetition');
+        }
+
+        if(exercise.time && exercise.repetition){
+          throw new BadRequestException('Incorrect exercise format: exercise should has time or repetition');
+        }
+     }
   }
 }

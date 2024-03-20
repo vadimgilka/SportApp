@@ -24,6 +24,8 @@ export class CreateTrainDto {
     description : string;
 
     exercises? : ExerciseTrainDto[];
+    
+    author? : number;
 }
 
 
@@ -40,5 +42,6 @@ export class UpdateTrainDto {
     description? : string;
 
     exercises? : ExerciseTrainDto[];
+    author : number;
 
 }
