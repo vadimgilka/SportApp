@@ -105,6 +105,8 @@ export class ExercisesService {
     if(!exercises.length){
        throw new NotFoundException("exercises not found in train with id " + trainId );
     }
+
+    return exercises;
   }
 
   private isHasRights(exercise: Exercise, userId: number) {
