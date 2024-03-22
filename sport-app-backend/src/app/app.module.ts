@@ -6,10 +6,11 @@ import { AuthModule } from 'src/auth/auth.module';
 import { ExercisesModule } from 'src/exercises/exercises.module';
 import { MulterModule } from '@nestjs/platform-express';
 import * as path from 'path';
+import { TrainsModule } from 'src/trains/trains.module';
 
 
 @Module({
-  imports: [AuthModule, ExercisesModule, MulterModule.register({
+  imports: [AuthModule, ExercisesModule, TrainsModule, MulterModule.register({
     dest: './uploads', 
   }),
   ServeStaticModule.forRoot({

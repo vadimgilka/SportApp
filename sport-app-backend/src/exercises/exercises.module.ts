@@ -4,9 +4,11 @@ import { ExercisesService } from './exercises.service';
 import { PrismaService } from 'nestjs-prisma';
 import { FileUtils } from 'src/files/files.utils';
 import { MulterModule } from '@nestjs/platform-express';
+import { CustPrismaModule } from 'src/prisma/prisma.module';
 
 @Module({
-  providers: [ExercisesService, PrismaService],
+  imports : [CustPrismaModule],
+  providers: [ExercisesService],
   controllers: [ExercisesController],
   exports: [ExercisesService]
 })
