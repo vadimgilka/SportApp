@@ -15,8 +15,8 @@ import { ExerciseTrainDto } from 'src/exercises/exercises.dto';
 @Injectable()
 export class TrainsService {
   constructor(
-    private prisma: PrismaService,
     private exerciseService: ExercisesService,
+    private prisma: PrismaService,
   ) {}
 
   async create(data: CreateTrainDto): Promise<Train> {
@@ -69,17 +69,21 @@ export class TrainsService {
       throw new ForbiddenException('not have rights for deleted this train');
     }
 
-    const updateTrain = await this.prisma.train.update({data : updateData, where});
-    return null;
+    return  this.prisma.train.update({data : updateData, where});
+    
   }
 
   async train(where: Prisma.TrainWhereUniqueInput): Promise<Train | null> {
-    const train = this.prisma.train.findUnique({ where });
+    const train = await this.prisma.train.findUnique({ where });
 
     if (!train) {
       throw new NotFoundException('train not found');
     }
     return train;
+  }
+
+  async findById(id : number){
+    return this.train({id : id});
   }
 
   async trains(params: {
@@ -142,6 +146,7 @@ export class TrainsService {
     exercises: ExerciseTrainDto[],
   ): Prisma.ExerciseOnTrainCreateManyInput[] {
     const result = [];
+    let cnt = 0;
     for (const exercise of exercises) {
       if (!exercise.time && !exercise.repetition) {
         throw new BadRequestException(
@@ -159,6 +164,7 @@ export class TrainsService {
         ...exercise,
         Exercise: { connect: { id: exercise.id } },
         Train: { connect: { id: train_id } },
+        exerciseNumber: cnt++,
       };
 
       result.push(data);

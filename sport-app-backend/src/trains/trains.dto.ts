@@ -25,11 +25,13 @@ export class CreateTrainDto {
 
     exercises? : ExerciseTrainDto[];
     
-    author? : number;
+    author_id? : number;
 }
 
 
 export class UpdateTrainDto {
+
+    id : number;
 
     @IsNotEmpty()
     @MinLength(nameLength.min)
@@ -42,6 +44,6 @@ export class UpdateTrainDto {
     description? : string;
 
     exercises? : ExerciseTrainDto[];
-    author : number;
+    author_id : number;
 
 }
