@@ -5,4 +5,4 @@ import { PrismaService } from 'nestjs-prisma';
     providers : [PrismaService],
     exports : [PrismaService]
 })
-export class CustPrismaModule {}
+export class PrismaModule {}

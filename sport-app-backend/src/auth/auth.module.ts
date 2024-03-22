@@ -1,4 +1,4 @@
-import { CustPrismaModule } from './../prisma/prisma.module';
+import { PrismaModule } from './../prisma/prisma.module';
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersModule } from 'src/users/users.module';
@@ -10,7 +10,7 @@ import { jwtConstants } from './constants';
 import { JwtStrategy } from './strategy/jwt.strategy';
 
 @Module({
-  imports: [CustPrismaModule, UsersModule, PassportModule,
+  imports: [PrismaModule, UsersModule, PassportModule,
     JwtModule.register({
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '24h' },
