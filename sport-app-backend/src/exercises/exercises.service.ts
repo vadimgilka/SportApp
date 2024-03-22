@@ -91,7 +91,7 @@ export class ExercisesService {
 
   async findByTrainId(trainId: number) {
 
-    const data = await this.prisma.exerciseOnTrain.findMany({
+    const exercises = await this.prisma.exerciseOnTrain.findMany({
       where: {
         trainId: trainId,
       },
@@ -100,7 +100,7 @@ export class ExercisesService {
       },
     });
 
-    const exercises =  data.map(exercise => exercise.Exercise);
+    //const exercises =  data.map(exercise => exercise.Exercise);
 
     if(!exercises.length){
        throw new NotFoundException("exercises not found in train with id " + trainId );

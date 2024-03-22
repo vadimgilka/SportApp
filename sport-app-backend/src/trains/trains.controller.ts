@@ -7,7 +7,7 @@ import { TrainsService } from './trains.service';
 import { use } from 'passport';
 
 @UseGuards(JwtAuthGuard)
-@Controller('trains')
+@Controller('api/trains')
 export class TrainsController {
 
     constructor(private trainService :TrainsService) {}

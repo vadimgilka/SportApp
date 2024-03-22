@@ -4,6 +4,7 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
+  UseFilters,
 } from '@nestjs/common';
 import { Exercise, ExerciseOnTrain, Prisma, Train } from '@prisma/client';
 import { CreateTrainDto, UpdateTrainDto } from './trains.dto';
@@ -11,6 +12,8 @@ import { MAX_EXERCISE_IN_TRAIN } from './constant';
 import { uniq } from 'lodash';
 import { ExercisesService } from 'src/exercises/exercises.service';
 import { ExerciseTrainDto } from 'src/exercises/exercises.dto';
+import e from 'express';
+import { HttpExceptionFilter } from 'src/utils/filters/httpexcepion.filter';
 
 @Injectable()
 export class TrainsService {
@@ -20,7 +23,11 @@ export class TrainsService {
   ) {}
 
   async create(data: CreateTrainDto): Promise<Train> {
-    this.checkExercises(data.exercises);
+    try {
+      await this.checkExercises(data.exercises);
+    } catch (exception) {
+      throw exception;
+    }
 
     const createData = {
       name: data.name,
@@ -33,12 +40,15 @@ export class TrainsService {
     };
 
     const train = await this.prisma.train.create({ data: createData });
-    const exerciseTrain = this.formatDataForConnection(
-      train.id,
-      data.exercises,
-    );
-    await this.prisma.exerciseOnTrain.createMany({ data: exerciseTrain });
-
+    try {
+      const exerciseTrain = this.formatDataForConnection(
+        train.id,
+        data.exercises,
+      );
+      this.prisma.exerciseOnTrain.createMany({ data: exerciseTrain });
+    } catch (exception) {
+      throw exception;
+    }
     return train;
   }
 
@@ -47,7 +57,11 @@ export class TrainsService {
     data: UpdateTrainDto;
   }): Promise<Train> {
     const { where, data } = params;
-    this.checkExercises(data.exercises);
+    try {
+      await this.checkExercises(data.exercises);
+    } catch (exception) {
+      throw exception;
+    }
 
     const updateData = {
       name: data.name,
@@ -69,8 +83,7 @@ export class TrainsService {
       throw new ForbiddenException('not have rights for deleted this train');
     }
 
-    return  this.prisma.train.update({data : updateData, where});
-    
+    return this.prisma.train.update({ data: updateData, where });
   }
 
   async train(where: Prisma.TrainWhereUniqueInput): Promise<Train | null> {
@@ -82,8 +95,8 @@ export class TrainsService {
     return train;
   }
 
-  async findById(id : number){
-    return this.train({id : id});
+  async findById(id: number) {
+    return this.train({ id: id });
   }
 
   async trains(params: {
@@ -112,13 +125,36 @@ export class TrainsService {
           MAX_EXERCISE_IN_TRAIN + ' is max count of exercises in one train',
         );
       }
+      console.log(exercises);
+      let incorrectExercisesCnt = 0;
+      const uniqExercisesId = uniq(
+        exercises.map((x) => {
+          if (!x.id) {
+            incorrectExercisesCnt++;
+          } else {
+            return x.id;
+          }
+        }),
+      );
 
-      const uniqExercisesId = uniq(exercises.map((x) => x.id));
+      if (incorrectExercisesCnt) {
+        throw new BadRequestException(
+          'Incorrect format for exercises in train',
+        );
+      }
+      console.log(uniqExercisesId);
+      console.log(!uniqExercisesId);
+      if (!uniqExercisesId) {
+        throw new BadRequestException(
+          'Incorrect format for exercises in train',
+        );
+      }
+
       const data = await this.exerciseService.exercises({
         where: { id: { in: uniqExercisesId } },
       });
 
-      if (data.length != exercises.length) {
+      if (data.length != uniqExercisesId.length) {
         throw new NotFoundException('some exercises in train are not exists');
       }
     }
