@@ -100,6 +100,7 @@ export class ExercisesService {
       },
     });
 
+    console.log(exercises)
     //const exercises =  data.map(exercise => exercise.Exercise);
 
     if(!exercises.length){

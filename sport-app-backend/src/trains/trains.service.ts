@@ -29,6 +29,8 @@ export class TrainsService {
       throw exception;
     }
 
+    const connection = this.formatDataForConnection(data.exercises);
+
     const createData = {
       name: data.name,
       description: data.description,
@@ -37,18 +39,22 @@ export class TrainsService {
           id: data.author_id,
         },
       },
+      exercises: {
+        create: connection,
+      },
     };
 
+    // try {
+    //   const exerciseTrain = this.formatDataForConnection(
+    //     train.id,
+    //     data.exercises,
+    //   );
+    //   await this.prisma.exerciseOnTrain.createMany({ data: exerciseTrain });
+    // } catch (exception) {
+    //   throw exception;
+    // }
+
     const train = await this.prisma.train.create({ data: createData });
-    try {
-      const exerciseTrain = this.formatDataForConnection(
-        train.id,
-        data.exercises,
-      );
-      this.prisma.exerciseOnTrain.createMany({ data: exerciseTrain });
-    } catch (exception) {
-      throw exception;
-    }
     return train;
   }
 
@@ -73,6 +79,7 @@ export class TrainsService {
       },
     };
 
+    console.log(updateData);
     const train = await this.train(where);
 
     if (!train) {
@@ -177,10 +184,7 @@ export class TrainsService {
     return this.prisma.train.delete({ where });
   }
 
-  private formatDataForConnection(
-    train_id: number,
-    exercises: ExerciseTrainDto[],
-  ): Prisma.ExerciseOnTrainCreateManyInput[] {
+  private formatDataForConnection(exercises: ExerciseTrainDto[]) {
     const result = [];
     let cnt = 0;
     for (const exercise of exercises) {
@@ -196,11 +200,16 @@ export class TrainsService {
         );
       }
 
-      const data: Prisma.ExerciseOnTrainCreateInput = {
-        ...exercise,
-        Exercise: { connect: { id: exercise.id } },
-        Train: { connect: { id: train_id } },
+      const tmp = { ...exercise };
+      delete tmp.id;
+      const data = {
+        ...tmp,
         exerciseNumber: cnt++,
+        Exercise: {
+          connect: {
+            id: exercise.id,
+          },
+        },
       };
 
       result.push(data);
