@@ -1,5 +1,6 @@
 package com.example.sportapp
 
+import Model.SportAppApi
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
@@ -27,6 +28,7 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val api = SportAppApi("st");
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContent {
             val navController = rememberNavController()
@@ -45,28 +47,29 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable("registrationScreen"){
-                        registrationScreen {
+                        registrationScreen ({
                             navController.navigate("welcomeScreen"){
                                 popUpTo("welcomeScreen"){
                                     inclusive = true
                                 }
                             }
-                        }
+                        }, api = api)
                     }
                     composable("loginScreen"){
-                        loginScreen {
+                        loginScreen ({
                             navController.navigate("welcomeScreen"){
                                 popUpTo("welcomeScreen"){
                                     inclusive = true
                                 }
                             }
+                        },api = api)
                         }
                     }
                 }
             }
         }
     }
-}
+
 
 @Preview
 @Composable

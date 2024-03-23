@@ -1,6 +1,8 @@
 package com.example.sportapp.view
 
+import Model.SportAppApi
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,11 +21,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,12 +35,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -44,15 +50,21 @@ import coil.decode.ImageSource
 import com.example.sportapp.R
 import com.example.sportapp.ui.theme.bgGray
 import com.example.sportapp.ui.theme.blue
+import com.example.sportapp.ui.theme.errorRed
 import com.example.sportapp.ui.theme.green
 import com.example.sportapp.ui.theme.iconGray
 import com.example.sportapp.ui.theme.white
+import com.example.sportapp.view.controllers.RegistrationScreenController
 import com.example.sportapp.view.elements.GifImage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun registrationScreen(
     onClick: () -> Unit,
+    api: SportAppApi
 ) {
     var passwordInput by remember {
         mutableStateOf("")
@@ -63,12 +75,18 @@ fun registrationScreen(
     var emailInput by remember {
         mutableStateOf("")
     }
+    var showDialog by remember {
+        mutableStateOf(false)
+    }
+    var showError by remember {
+        mutableStateOf(0f)
+    }
+    val controller = RegistrationScreenController(api)
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(40.dp)
             .background(bgGray),
-
         ) {
         IconButton(
             onClick = {
@@ -161,26 +179,27 @@ fun registrationScreen(
                     .padding(horizontal = 15.dp, vertical = 10.dp),
                 value = passwordInput,
                 maxLines = 1,
+                visualTransformation = PasswordVisualTransformation(),
                 singleLine = true,
                 onValueChange = {
-                    passwordInput = "*".repeat(it.length)
+                    passwordInput = it
                 },
-                decorationBox = {
-                        innerTextField ->
-                    Row (
+                decorationBox = { innerTextField ->
+                    Row(
                         Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Box (Modifier.weight(1f)) {
-                            if(passwordInput.isEmpty()){
+                        Box(Modifier.weight(1f)) {
+                            if (passwordInput.isEmpty()) {
                                 Text(text = "Пароль", color = iconGray)
-                            }else {
+                            } else {
                                 innerTextField()
                             }
                         }
-                        Icon(ImageVector.vectorResource(id = R.drawable.bx_lock_alt),tint = iconGray, contentDescription = null)
+                        Icon(ImageVector.vectorResource(id = R.drawable.bx_lock_alt), tint = iconGray, contentDescription = null)
                     }
-                })
+                }
+            )
         }
         Spacer(modifier = Modifier.height(15.dp))
         Box(modifier = Modifier
@@ -232,7 +251,11 @@ fun registrationScreen(
                     }
                 })
         }
-        Spacer(modifier = Modifier.height(40.dp))
+        Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 70.dp).alpha(showError)) {
+            Spacer(modifier = Modifier.height(5.dp))
+            Text(text = "Введены неверные данные", color = errorRed, fontSize = 12.sp)
+        }
+        Spacer(modifier = Modifier.height(35.dp))
         Button(modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)
@@ -245,9 +268,25 @@ fun registrationScreen(
             ),
             colors = ButtonColors(green, white, green, Color.Transparent),
             shape = RoundedCornerShape(15.dp), onClick = {
-                onClick()
+                CoroutineScope(Dispatchers.IO).launch{
+                    val res = controller.onRegister(loginInput, passwordInput, emailInput)
+                    Log.e("tag1", res) //"testuser0", "password1234567"
+                    if(res.equals("Authorized"))
+                        showDialog = true
+                    else
+                        showError = 1f
+                }
+                //onClick()
             }) {
             Text(text = "Завершить регистрацию", fontSize = 15.sp)
+        }
+        if(showDialog == true) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                title = { Text(text = "you have been registrated!") },
+                confirmButton = { TextButton(onClick = { showDialog = false}) {
+                    Text(text = "Закрыть", color = Color.White)
+                } })
         }
     }
 }
