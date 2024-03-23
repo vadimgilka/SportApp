@@ -78,7 +78,6 @@ export class ExercisesService {
     where: Prisma.ExerciseWhereUniqueInput,
   ): Promise<Exercise | null> {
     const exercise = await this.prisma.exercise.findUnique({ where });
-    console.log(exercise)
     if (!exercise) {
       throw new NotFoundException('exercise not found');
     }
@@ -88,6 +87,27 @@ export class ExercisesService {
 
   async findById(id: number) {
     return this.exercise({ id: id });
+  }
+
+  async findByTrainId(trainId: number) {
+
+    const exercises = await this.prisma.exerciseOnTrain.findMany({
+      where: {
+        trainId: trainId,
+      },
+      include: {
+        Exercise: true,
+      },
+    });
+
+    console.log(exercises)
+    //const exercises =  data.map(exercise => exercise.Exercise);
+
+    if(!exercises.length){
+       throw new NotFoundException("exercises not found in train with id " + trainId );
+    }
+
+    return exercises;
   }
 
   private isHasRights(exercise: Exercise, userId: number) {

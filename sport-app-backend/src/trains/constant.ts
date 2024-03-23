@@ -1,0 +1,1 @@
+export const MAX_EXERCISE_IN_TRAIN = 64;

@@ -62,6 +62,11 @@ export class ExercisesController {
     return await this.exercisesService.findById(id);
   }
 
+  @Get('train/:id')
+  async getByTrain(@Param('id', ParseIntPipe) id: number){
+    return await this.exercisesService.findByTrainId(id);
+  }
+
   @Patch()
   @UseInterceptors(
     FileInterceptor(imageInterceptor.name, { storage: imageInterceptor.storage, fileFilter: imageInterceptor.fileFilter }),
@@ -71,7 +76,6 @@ export class ExercisesController {
     @User() user,
     @UploadedFile(ImagePipe) image?: Express.Multer.File,
   ) {
-    console.log(exercise)
     exercise.author_id = user.userId;
     if (image) {
       exercise.image = image.path;
@@ -84,7 +88,7 @@ export class ExercisesController {
   }
 
   @Delete(':id')
-  async del(@Param('id', ParseIntPipe) id, @User() user) {
+  async delete(@Param('id', ParseIntPipe) id, @User() user) {
     return await this.exercisesService.delete({ id: id }, user.userId);
   }
 }
