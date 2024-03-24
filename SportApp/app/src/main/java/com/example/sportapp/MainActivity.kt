@@ -1,5 +1,6 @@
 package com.example.sportapp
 
+import Model.SportAppApi
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
@@ -20,6 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.sportapp.ui.theme.SportAppTheme
 import com.example.sportapp.view.loginScreen
+import com.example.sportapp.view.mainScreen
 import com.example.sportapp.view.registrationScreen
 import com.example.sportapp.view.welcomeScreen
 
@@ -27,6 +29,7 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val api = SportAppApi("st");
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContent {
             val navController = rememberNavController()
@@ -45,33 +48,28 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable("registrationScreen"){
-                        registrationScreen {
+                        registrationScreen ({
                             navController.navigate("welcomeScreen"){
                                 popUpTo("welcomeScreen"){
                                     inclusive = true
                                 }
                             }
-                        }
+                        }, api = api)
                     }
                     composable("loginScreen"){
-                        loginScreen {
+                        loginScreen (navController,{
                             navController.navigate("welcomeScreen"){
                                 popUpTo("welcomeScreen"){
                                     inclusive = true
                                 }
                             }
+                        },api = api)
                         }
+                    composable("mainScreen"){
+                        mainScreen()
+                    }
                     }
                 }
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun renderSreen()
-{
-    Text("Hello, Compose!")
-
-}
