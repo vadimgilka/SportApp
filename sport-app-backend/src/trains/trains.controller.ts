@@ -28,7 +28,7 @@ export class TrainsController {
         return await this.trainService.delete({id : id}, user.userId);
     }
 
-    @Patch(':id')
+    @Patch()
     async update(@Body() train : UpdateTrainDto, @User() user){
       train.author_id = user.userId;
       return await this.trainService.update({where :{id : train.id}, data : train })

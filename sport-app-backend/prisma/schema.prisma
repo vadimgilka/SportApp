@@ -67,7 +67,7 @@ model ExerciseOnTrain {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  @@id([exerciseId, trainId, exerciseNumber])
+  @@id([trainId, exerciseNumber])
   @@map("exercises_trains")
 }
 

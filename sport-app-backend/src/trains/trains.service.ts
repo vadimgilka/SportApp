@@ -16,6 +16,7 @@ import e from 'express';
 import { HttpExceptionFilter } from 'src/utils/filters/httpexcepion.filter';
 
 @Injectable()
+@UseFilters(HttpExceptionFilter)
 export class TrainsService {
   constructor(
     private exerciseService: ExercisesService,
@@ -25,37 +26,26 @@ export class TrainsService {
   async create(data: CreateTrainDto): Promise<Train> {
     try {
       await this.checkExercises(data.exercises);
+      const connection = this.formatDataForCreation(data.exercises);
+
+      const createData = {
+        name: data.name,
+        description: data.description,
+        author: {
+          connect: {
+            id: data.author_id,
+          },
+        },
+        exercises: {
+          create: connection,
+        },
+      };
+
+      const train = await this.prisma.train.create({ data: createData });
+      return train;
     } catch (exception) {
       throw exception;
     }
-
-    const connection = this.formatDataForConnection(data.exercises);
-
-    const createData = {
-      name: data.name,
-      description: data.description,
-      author: {
-        connect: {
-          id: data.author_id,
-        },
-      },
-      exercises: {
-        create: connection,
-      },
-    };
-
-    // try {
-    //   const exerciseTrain = this.formatDataForConnection(
-    //     train.id,
-    //     data.exercises,
-    //   );
-    //   await this.prisma.exerciseOnTrain.createMany({ data: exerciseTrain });
-    // } catch (exception) {
-    //   throw exception;
-    // }
-
-    const train = await this.prisma.train.create({ data: createData });
-    return train;
   }
 
   async update(params: {
@@ -69,6 +59,8 @@ export class TrainsService {
       throw exception;
     }
 
+    const updates = this.formatDataForUpdating(data.id, data.exercises);
+
     const updateData = {
       name: data.name,
       description: data.description,
@@ -77,9 +69,11 @@ export class TrainsService {
           id: data.author_id,
         },
       },
+      exercises: {
+        upsert: updates,
+      },
     };
 
-    console.log(updateData);
     const train = await this.train(where);
 
     if (!train) {
@@ -132,7 +126,7 @@ export class TrainsService {
           MAX_EXERCISE_IN_TRAIN + ' is max count of exercises in one train',
         );
       }
-      console.log(exercises);
+
       let incorrectExercisesCnt = 0;
       const uniqExercisesId = uniq(
         exercises.map((x) => {
@@ -149,8 +143,7 @@ export class TrainsService {
           'Incorrect format for exercises in train',
         );
       }
-      console.log(uniqExercisesId);
-      console.log(!uniqExercisesId);
+
       if (!uniqExercisesId) {
         throw new BadRequestException(
           'Incorrect format for exercises in train',
@@ -163,6 +156,26 @@ export class TrainsService {
 
       if (data.length != uniqExercisesId.length) {
         throw new NotFoundException('some exercises in train are not exists');
+      }
+    }
+
+    for (const exercise of exercises) {
+      if (!exercise.time && !exercise.repetition) {
+        throw new BadRequestException(
+          'Incorrect exercise format: exercise should has time or repetition',
+        );
+      }
+
+      if (exercise.time && exercise.repetition) {
+        throw new BadRequestException(
+          'Incorrect exercise format: exercise should has time or repetition',
+        );
+      }
+
+      if (!exercise.exerciseNumber || exercise.exerciseNumber <= 0) {
+        throw new BadRequestException(
+          'Incorrect exercise format: exerciseNumber is missing or has incorrect format',
+        );
       }
     }
   }
@@ -184,27 +197,14 @@ export class TrainsService {
     return this.prisma.train.delete({ where });
   }
 
-  private formatDataForConnection(exercises: ExerciseTrainDto[]) {
+  private formatDataForCreation(exercises: ExerciseTrainDto[]) {
     const result = [];
-    let cnt = 0;
     for (const exercise of exercises) {
-      if (!exercise.time && !exercise.repetition) {
-        throw new BadRequestException(
-          'Incorrect exercise format: exercise should has time or repetition',
-        );
-      }
-
-      if (exercise.time && exercise.repetition) {
-        throw new BadRequestException(
-          'Incorrect exercise format: exercise should has time or repetition',
-        );
-      }
-
       const tmp = { ...exercise };
       delete tmp.id;
       const data = {
         ...tmp,
-        exerciseNumber: cnt++,
+        exerciseNumber: exercise.exerciseNumber,
         Exercise: {
           connect: {
             id: exercise.id,
@@ -216,6 +216,47 @@ export class TrainsService {
     }
 
     return result;
+  }
+
+  private formatDataForUpdating(
+    trainId: number,
+    exercises: ExerciseTrainDto[],
+  ) {
+    const result = [];
+    for (const exercise of exercises) {
+      const tmp = { ...exercise };
+      delete tmp.id;
+      const data = {
+        where: {
+          trainId_exerciseNumber: {
+            trainId: trainId,
+            exerciseNumber: exercise.exerciseNumber,
+          },
+        },
+
+        update: {
+          ...tmp,
+          Exercise : {
+            connect : {
+              id : exercise.id
+            }
+          },
+        },
+
+        create: {
+          ...tmp,
+          Exercise : {
+            connect : {
+              id : exercise.id
+            }
+          }
+        },
+      };
+
+      result.push(data);
+    }
+
+    return result
   }
 
   private isHasRights(train: Train, userId: number) {
