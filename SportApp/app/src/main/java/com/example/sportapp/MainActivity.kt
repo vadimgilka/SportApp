@@ -21,6 +21,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.sportapp.ui.theme.SportAppTheme
 import com.example.sportapp.view.loginScreen
+import com.example.sportapp.view.mainScreen
 import com.example.sportapp.view.registrationScreen
 import com.example.sportapp.view.welcomeScreen
 
@@ -56,7 +57,7 @@ class MainActivity : ComponentActivity() {
                         }, api = api)
                     }
                     composable("loginScreen"){
-                        loginScreen ({
+                        loginScreen (navController,{
                             navController.navigate("welcomeScreen"){
                                 popUpTo("welcomeScreen"){
                                     inclusive = true
@@ -64,17 +65,11 @@ class MainActivity : ComponentActivity() {
                             }
                         },api = api)
                         }
+                    composable("mainScreen"){
+                        mainScreen()
+                    }
                     }
                 }
             }
         }
     }
-
-
-@Preview
-@Composable
-fun renderSreen()
-{
-    Text("Hello, Compose!")
-
-}

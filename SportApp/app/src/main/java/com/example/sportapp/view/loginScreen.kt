@@ -48,6 +48,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.sportapp.R
 import com.example.sportapp.ui.theme.bgGray
 import com.example.sportapp.ui.theme.blue
@@ -63,7 +64,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
-fun loginScreen(onClick: () -> Unit, api: SportAppApi) {
+fun loginScreen(nav: NavHostController,onClick: () -> Unit, api: SportAppApi) {
     var passwordInput by remember {
         mutableStateOf("")
     }
@@ -223,7 +224,7 @@ fun loginScreen(onClick: () -> Unit, api: SportAppApi) {
         Spacer(modifier = Modifier.height(35.dp))
         Button(
             colors = ButtonColors(Color.Transparent, blue, Color.Transparent, Color.Transparent),
-            onClick = { onClick() }) {
+            onClick = { nav.navigate("mainScreen") }) {
             Text(text = "Забыли пароль?", fontSize = 20.sp)
         }
         if(showDialog == true) {
