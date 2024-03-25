@@ -41,7 +41,16 @@ export class TrainsService {
         },
       };
 
-      const train = await this.prisma.train.create({ data: createData });
+      const train = await this.prisma.train.create({
+        data: createData,
+        include: {
+          exercises: {
+              include : {
+                Exercise: true
+              }
+          }
+        },
+      });
       return train;
     } catch (exception) {
       throw exception;
@@ -84,11 +93,30 @@ export class TrainsService {
       throw new ForbiddenException('not have rights for deleted this train');
     }
 
-    return this.prisma.train.update({ data: updateData, where });
+    return this.prisma.train.update({
+      data: updateData,
+      where,
+      include: {
+        exercises: {
+            include : {
+              Exercise: true
+            }
+        }
+      },
+    });
   }
 
   async train(where: Prisma.TrainWhereUniqueInput): Promise<Train | null> {
-    const train = await this.prisma.train.findUnique({ where });
+    const train = await this.prisma.train.findUnique({
+      where,
+      include: {
+        exercises: {
+            include : {
+              Exercise: true
+            }
+        }
+      },
+    });
 
     if (!train) {
       throw new NotFoundException('train not found');
@@ -114,6 +142,13 @@ export class TrainsService {
       cursor,
       where,
       orderBy,
+      include: {
+        exercises: {
+            include : {
+              Exercise: true
+            }
+        }
+      },
     });
 
     return trains;
@@ -236,27 +271,27 @@ export class TrainsService {
 
         update: {
           ...tmp,
-          Exercise : {
-            connect : {
-              id : exercise.id
-            }
+          Exercise: {
+            connect: {
+              id: exercise.id,
+            },
           },
         },
 
         create: {
           ...tmp,
-          Exercise : {
-            connect : {
-              id : exercise.id
-            }
-          }
+          Exercise: {
+            connect: {
+              id: exercise.id,
+            },
+          },
         },
       };
 
       result.push(data);
     }
 
-    return result
+    return result;
   }
 
   private isHasRights(train: Train, userId: number) {
