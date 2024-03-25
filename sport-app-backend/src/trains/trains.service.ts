@@ -45,10 +45,10 @@ export class TrainsService {
         data: createData,
         include: {
           exercises: {
-              include : {
-                Exercise: true
-              }
-          }
+            include: {
+              Exercise: true,
+            },
+          },
         },
       });
       return train;
@@ -93,15 +93,17 @@ export class TrainsService {
       throw new ForbiddenException('not have rights for deleted this train');
     }
 
+    await this.deleteConnections(train.id, data.exercises);
+
     return this.prisma.train.update({
       data: updateData,
       where,
       include: {
         exercises: {
-            include : {
-              Exercise: true
-            }
-        }
+          include: {
+            Exercise: true,
+          },
+        },
       },
     });
   }
@@ -111,10 +113,10 @@ export class TrainsService {
       where,
       include: {
         exercises: {
-            include : {
-              Exercise: true
-            }
-        }
+          include: {
+            Exercise: true,
+          },
+        },
       },
     });
 
@@ -144,10 +146,10 @@ export class TrainsService {
       orderBy,
       include: {
         exercises: {
-            include : {
-              Exercise: true
-            }
-        }
+          include: {
+            Exercise: true,
+          },
+        },
       },
     });
 
@@ -292,6 +294,21 @@ export class TrainsService {
     }
 
     return result;
+  }
+
+  private async deleteConnections(
+    trainId: number,
+    exercises: ExerciseTrainDto[],
+  ) {
+    const exerciseNumbers = exercises.map(
+      (exercise) => exercise.exerciseNumber,
+    );
+    return this.prisma.exerciseOnTrain.deleteMany({
+      where: {
+        trainId: trainId,
+        exerciseNumber: { not: { in: exerciseNumbers } },
+      },
+    });
   }
 
   private isHasRights(train: Train, userId: number) {
