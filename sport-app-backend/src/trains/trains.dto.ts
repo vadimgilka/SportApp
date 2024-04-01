@@ -23,8 +23,7 @@ export class CreateTrainDto {
     @MaxLength(descriptionLength.max)
     description : string;
 
-    exercises? : ExerciseTrainDto[];
-    
+    exercises : ExerciseTrainDto[];
     author_id? : number;
 }
 

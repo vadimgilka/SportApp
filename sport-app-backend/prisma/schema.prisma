@@ -56,18 +56,18 @@ model Train {
 }
 
 model ExerciseOnTrain {
-  Exercise        Exercise @relation(fields: [exerciseId], references: [id])
-  exerciseId      Int
-  Train           Train    @relation(fields: [trainId], references: [id])
-  trainId         Int
-  repetition      Int? // поворение
-  approach        Int      @default(1) // подходы 
-  time            Int? // время в секундах
+  Exercise       Exercise @relation(fields: [exerciseId], references: [id])
+  exerciseId     Int
+  Train           Train    @relation(fields: [trainId], references: [id], onDelete: Cascade)
+  trainId        Int
+  repetition     Int? // поворение
+  approach       Int      @default(1) // подходы 
+  time           Int? // время в секундах
   exerciseNumber Int
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  @@id([exerciseId, trainId, exerciseNumber])
+  @@id([trainId, exerciseNumber])
   @@map("exercises_trains")
 }
 
