@@ -4,10 +4,13 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UploadedFile,
   UploadedFiles,
   UseGuards,
@@ -22,9 +25,7 @@ import {
   FilesInterceptor,
 } from '@nestjs/platform-express';
 import { ImagePipe } from 'src/files/pipes/image.pipe';
-import {
-  imageInterceptor,
-} from './exercises.files.interceptor';
+import { imageInterceptor } from './exercises.files.interceptor';
 import { UpdateExercisePipe } from './pipes/update.exercises.pipe';
 
 @UseGuards(JwtAuthGuard)
@@ -33,8 +34,12 @@ export class ExercisesController {
   constructor(private exercisesService: ExercisesService) {}
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   @UseInterceptors(
-    FileInterceptor(imageInterceptor.name, { storage: imageInterceptor.storage, fileFilter: imageInterceptor.fileFilter }),
+    FileInterceptor(imageInterceptor.name, {
+      storage: imageInterceptor.storage,
+      fileFilter: imageInterceptor.fileFilter,
+    }),
   )
   async create(
     @Body() exercise: CreateExerciseDto,
@@ -63,13 +68,21 @@ export class ExercisesController {
   }
 
   @Get('train/:id')
-  async getByTrain(@Param('id', ParseIntPipe) id: number){
+  async getByTrain(@Param('id', ParseIntPipe) id: number) {
     return await this.exercisesService.findByTrainId(id);
+  }
+
+  @Get()
+  async getMany(@Query('page', ParseIntPipe) page: number) {
+    return await this.exercisesService.exercisesByPage({ pageNumber: page });
   }
 
   @Patch()
   @UseInterceptors(
-    FileInterceptor(imageInterceptor.name, { storage: imageInterceptor.storage, fileFilter: imageInterceptor.fileFilter }),
+    FileInterceptor(imageInterceptor.name, {
+      storage: imageInterceptor.storage,
+      fileFilter: imageInterceptor.fileFilter,
+    }),
   )
   async update(
     @Body(UpdateExercisePipe) exercise: UpdateExerciseDto,

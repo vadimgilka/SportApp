@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { Exercise, ExerciseOnTrain, Prisma, Train } from '@prisma/client';
 import { CreateTrainDto, UpdateTrainDto } from './trains.dto';
-import { MAX_EXERCISE_IN_TRAIN } from './constant';
+import { MAX_EXERCISE_IN_TRAIN, trainPage } from './constant';
 import { uniq } from 'lodash';
 import { ExercisesService } from 'src/exercises/exercises.service';
 import { ExerciseTrainDto } from 'src/exercises/exercises.dto';
@@ -154,6 +154,19 @@ export class TrainsService {
     });
 
     return trains;
+  }
+
+  async trainsByPage(params: {
+    pageNumber: number;
+    cursor?: Prisma.TrainWhereUniqueInput;
+    where?: Prisma.TrainWhereInput;
+    orderBy?: Prisma.TrainOrderByWithRelationInput;
+  }): Promise<Train[]> {
+    const { pageNumber, cursor, where, orderBy } = params;
+
+    const skip = trainPage.size * (pageNumber - 1);
+    const take = trainPage.size;
+    return this.trains({ skip, take, cursor, where, orderBy });
   }
 
   private async checkExercises(exercises: ExerciseTrainDto[]) {

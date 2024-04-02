@@ -1,5 +1,5 @@
 import { Exercise } from '@prisma/client';
-import {Post, Body, Controller, UseGuards, ParseIntPipe, Param, Get, Delete, Put } from '@nestjs/common';
+import {Post, Body, Controller, UseGuards, ParseIntPipe, Param, Get, Delete, Put, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/authguard/jwt-auth.guard';
 import { CreateTrainDto, UpdateTrainDto } from './trains.dto';
 import { User } from 'src/users/user.annotation';
@@ -13,6 +13,7 @@ export class TrainsController {
     constructor(private trainService :TrainsService) {}
 
     @Post()
+    @HttpCode(HttpStatus.CREATED)
     async create(@Body() train : CreateTrainDto, @User() user){
         train.author_id = user.userId;
         return await this.trainService.create(train);
@@ -32,5 +33,10 @@ export class TrainsController {
     async update(@Body() train : UpdateTrainDto, @User() user){
       train.author_id = user.userId;
       return await this.trainService.update({where :{id : train.id}, data : train })
+    }
+
+    @Get()
+    async getMany(@Query('page', ParseIntPipe) page : number){
+      return await this.trainService.trainsByPage({pageNumber: page});
     }
 }
