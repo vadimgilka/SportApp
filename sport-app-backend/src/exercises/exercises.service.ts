@@ -6,6 +6,7 @@ import {
 import { Exercise, Prisma } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { UpdateExerciseDto } from './exercises.dto';
+import { exercisePage } from './constant';
 
 @Injectable()
 export class ExercisesService {
@@ -72,6 +73,24 @@ export class ExercisesService {
     });
 
     return exercises;
+  }
+
+  async exercisesByPage(
+    params: {
+      pageNumber : number,
+      cursor?: Prisma.ExerciseWhereUniqueInput;
+      where?: Prisma.ExerciseWhereInput;
+      orderBy?: Prisma.ExerciseOrderByWithRelationInput;
+    }
+  )
+  {
+    
+    const { pageNumber, cursor, where, orderBy } = params;
+
+    const skip = exercisePage.size * (pageNumber - 1); 
+    const take = exercisePage.size;
+
+    return this.exercises({skip, take, cursor, where, orderBy});
   }
 
   async exercise(
