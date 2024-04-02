@@ -36,6 +36,14 @@
 #### Пример запроса
 ![read](../../readme_image/exercises/findOne.png)
 
+#### READ MANY ELEMENT
+
+Для получения списка элементов необходимо необходимо использовать _GET_-запрос на адрес `{hostname}/api/exercises?page=_number_, где _number_ - номер страницы
+
+#### Пример запроса
+
+![read](../../readme_image/exercises/findMany.png)
+
 ### UPDATE
 
 Для обновления exercise, необходим _PATCH_-запрос на адрес

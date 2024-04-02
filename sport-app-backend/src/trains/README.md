@@ -75,6 +75,15 @@
 
 ![read](../../readme_image/trains/findOne.png)
 
+
+#### READ MANY ELEMENT
+
+Для получения списка элементов необходимо необходимо использовать _GET_-запрос на адрес `{hostname}/api/trains?page=_number_, где _number_ - номер страницы
+
+#### Пример запроса
+
+![read](../../readme_image/trains/findMany.png)
+
 ### UPDATE
 
 Для обновления exercise, необходим _PUT_-запрос на адрес
