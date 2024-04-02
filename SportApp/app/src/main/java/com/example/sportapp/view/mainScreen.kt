@@ -27,6 +27,7 @@ import com.example.sportapp.view.elements.leaderboard
 import com.example.sportapp.view.elements.list
 import com.example.sportapp.view.elements.options
 import com.example.sportapp.view.elements.pill
+import com.example.sportapp.view.elements.trainStart
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -42,7 +43,6 @@ fun mainScreen(
         mutableStateOf(0)
     }
     Scaffold(
-        topBar = { goOutNavBar() },
         bottomBar = { defaultNavi(controller = contentNav)}
     ) {
         screenGraph(nav = contentNav, api = api)
@@ -63,10 +63,10 @@ fun screenGraph(
 ){
     NavHost(navController = nav, startDestination = "exercise"){
         composable("exercise"){
-            exercise()
+            trainStart()
         }
         composable("list"){
-            list()
+            catalogue()
         }
         composable("pill"){
             pill()

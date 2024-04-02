@@ -53,6 +53,7 @@ fun goBackNavBar(){
             Icon(
                 modifier = Modifier.padding(start = 15.dp),
                 painter = painterResource(id = R.drawable.arrow_back),
+                tint = Color.Black,
                 contentDescription = null
             )
         }

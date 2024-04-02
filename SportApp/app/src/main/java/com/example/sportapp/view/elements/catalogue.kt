@@ -1,8 +1,11 @@
 package com.example.sportapp.view.elements
 
+import android.annotation.SuppressLint
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -11,55 +14,70 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.example.sportapp.R
 import com.example.sportapp.ui.theme.blue
+import com.example.sportapp.ui.theme.green
 import com.example.sportapp.ui.theme.white
-import com.example.sportapp.view.controllers.MainScreenController
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun catalogue(controller: NavHostController) {
-    LazyColumn(modifier = Modifier.fillMaxWidth()) {
-        items(10) {
-            catalogueButton()
-            Spacer(modifier = Modifier.height(10.dp))
+fun catalogue() {
+    Scaffold(
+        topBar = { goBackNavBar() }
+    ) {
+        Row(
+            Modifier
+                .background(Color.White)
+                .fillMaxSize()
+                .padding(horizontal = 35.dp, vertical = 65.dp),
+            verticalAlignment = Alignment.Top,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                for (i in  1..3)
+                items(1) {
+                    catalogueButton(i)
+                    Spacer(modifier = Modifier.height(20.dp))
+                }
+            }
         }
     }
-    defaultNavi(controller = controller)
 }
 
-@Preview
+
 @Composable
-fun catalogueButton(){
+fun catalogueButton(mod: Int) {
     Button(modifier = Modifier
         .fillMaxWidth()
-        .height(50.dp)
-        .padding(horizontal = 60.dp),
-        colors = ButtonColors(blue, white, blue, Color.Transparent),
+        .height(110.dp),
+        colors = if(mod.mod(2) == 0){ ButtonColors(green, white, green, Color.Transparent)}else{ButtonColors(blue, white, blue, Color.Transparent)},
         shape = RoundedCornerShape(15.dp), onClick = {
 
         }) {
-        Row (
+        Row(
             Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 10.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Start) {
+                .padding(horizontal = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ) {
             Icon(
                 modifier = Modifier
                     .height(100.dp)
-                    .padding(end = 20.dp),
-                painter = painterResource(id = R.drawable.arcticons_home_workouts),
+                    .padding(end = if (mod == 2){35.dp}else{20.dp}),
+                painter = if(mod == 1){painterResource(id = R.drawable.arcticons_home_workouts)}else if (mod==2){painterResource(id = R.drawable.arcticons_plank_workout)}else{painterResource(id = R.drawable.arcticons_workouttime)},
                 contentDescription = null
             )
-            Text(text = "Упражнения", fontSize = 15.sp)
+            Text(text = if(mod == 1){"Упражнения"}else if(mod == 2){"Комплексы"}else{"Табата"}, fontSize = 15.sp)
         }
     }
 }
