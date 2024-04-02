@@ -1,31 +1,52 @@
 package com.example.sportapp.view.elements
 
+import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.sportapp.R
 import com.example.sportapp.ui.theme.green
 import com.example.sportapp.ui.theme.white
 
+@RequiresApi(Build.VERSION_CODES.P)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun trainStart(){
-    Spacer(modifier = Modifier.height(520.dp))
-    Button(modifier = Modifier
-        .fillMaxWidth()
-        .height(50.dp)
-        .padding(horizontal = 60.dp), colors = ButtonColors(green, white, green, Color.Transparent), shape = RoundedCornerShape(15.dp), onClick = {
-
-    }
+    Scaffold(
+        topBar = { goOutNavBar() }
     ) {
-        Text(text = "Начать тренировку", fontSize = 15.sp)
+        Column(modifier = Modifier
+            .background(Color.White)
+            .fillMaxSize()) {
+            Spacer(modifier = Modifier.height(160.dp))
+            GifImage(modifier = Modifier.size(320.dp).padding(start = 35.dp), image = R.drawable.trainstart)
+            Spacer(modifier = Modifier.height(70.dp))
+            Button(modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
+                .padding(horizontal = 60.dp), colors = ButtonColors(green, white, green, Color.Transparent), shape = RoundedCornerShape(15.dp), onClick = {
+
+            }
+            ) {
+                Text(text = "Начать тренировку", fontSize = 15.sp)
+            }
+        }
     }
 }
