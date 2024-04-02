@@ -224,7 +224,9 @@ fun loginScreen(nav: NavHostController,onClick: () -> Unit, api: SportAppApi) {
         Spacer(modifier = Modifier.height(35.dp))
         Button(
             colors = ButtonColors(Color.Transparent, blue, Color.Transparent, Color.Transparent),
-            onClick = { nav.navigate("mainScreen") }) {
+            onClick = {
+                nav.navigate("mainScreen")
+                 }) {
             Text(text = "Забыли пароль?", fontSize = 20.sp)
         }
         if(showDialog == true) {
