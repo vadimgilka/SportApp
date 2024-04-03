@@ -74,7 +74,7 @@ export class ExercisesController {
 
   @Get()
   async getMany(@Query('page', ParseIntPipe) page: number) {
-    return await this.exercisesService.exercisesByPage({ pageNumber: page });
+    return await this.exercisesService.exercisesByPage({ page: page });
   }
 
   @Patch()

@@ -81,7 +81,7 @@ model History {
   exerciseOnTrain   ExerciseOnTrain @relation(fields: [exerciseOnTrainId], references: [id])
   exerciseOnTrainId Int
   createdAt         DateTime        @default(now())
-
+  
   @@map("history")
 }
 

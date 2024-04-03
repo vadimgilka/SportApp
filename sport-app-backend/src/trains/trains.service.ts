@@ -157,14 +157,14 @@ export class TrainsService {
   }
 
   async trainsByPage(params: {
-    pageNumber: number;
+    page: number;
     cursor?: Prisma.TrainWhereUniqueInput;
     where?: Prisma.TrainWhereInput;
     orderBy?: Prisma.TrainOrderByWithRelationInput;
   }): Promise<Train[]> {
-    const { pageNumber, cursor, where, orderBy } = params;
+    const { page, cursor, where, orderBy } = params;
 
-    const skip = trainPage.size * (pageNumber - 1);
+    const skip = trainPage.size * (page - 1);
     const take = trainPage.size;
     return this.trains({ skip, take, cursor, where, orderBy });
   }

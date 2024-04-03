@@ -37,6 +37,6 @@ export class TrainsController {
 
     @Get()
     async getMany(@Query('page', ParseIntPipe) page : number){
-      return await this.trainService.trainsByPage({pageNumber: page});
+      return await this.trainService.trainsByPage({page: page});
     }
 }

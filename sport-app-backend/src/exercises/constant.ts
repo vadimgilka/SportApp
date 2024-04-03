@@ -1,4 +1,4 @@
 
 export const exercisePage = {
-    size : 20
+    size : 50
 };

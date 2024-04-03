@@ -77,7 +77,7 @@ export class ExercisesService {
 
   async exercisesByPage(
     params: {
-      pageNumber : number,
+      page : number,
       cursor?: Prisma.ExerciseWhereUniqueInput;
       where?: Prisma.ExerciseWhereInput;
       orderBy?: Prisma.ExerciseOrderByWithRelationInput;
@@ -85,7 +85,7 @@ export class ExercisesService {
   )
   {
     
-    const { pageNumber, cursor, where, orderBy } = params;
+    const { page: pageNumber, cursor, where, orderBy } = params;
 
     const skip = exercisePage.size * (pageNumber - 1); 
     const take = exercisePage.size;
