@@ -278,7 +278,7 @@ export class TrainsService {
       delete tmp.id;
       const data = {
         where: {
-          trainId_exerciseNumber: {
+          unique_trainId_exerciseNumber: {
             trainId: trainId,
             exerciseNumber: exercise.exerciseNumber,
           },
