@@ -1,7 +1,8 @@
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
-import { Prisma, History } from '@prisma/client';
+import { Prisma, History, ExerciseOnTrain } from '@prisma/client';
 import { historyPage } from './constant';
+import { HistoryDto } from './history.dto';
 
 @Injectable()
 export class HistoryService {
@@ -44,7 +45,26 @@ export class HistoryService {
     return this.histories({ skip, take, cursor, where, orderBy });
   }
 
-  async create(data: Prisma.HistoryCreateInput): Promise<History> {
+  async create(history: HistoryDto): Promise<History> {
+
+    const data : Prisma.HistoryCreateInput = {
+        exerciseOnTrain : {
+            connect : {
+                id : history.exerciseOnTrainId
+            }
+        },
+
+        author : {
+            connect : {
+                id : history.authorId
+            }
+        },
+    }
+
+    if(history.createAt){
+        data.createdAt = history.createAt;
+    }
+
     return this.prisma.history.create({
       data,
     });
