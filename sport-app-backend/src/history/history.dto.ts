@@ -1,13 +1,11 @@
-import { IsISO8601, IsInt, IsNotEmpty } from "class-validator";
+import { IsISO8601, IsInt, IsNumber} from "class-validator";
 
 export class HistoryDto {
     
-    @IsNotEmpty()
+    authorId? : number;
+    
     @IsInt()
     exerciseOnTrainId : number;
-
-    @IsInt()
-    authorId : number;
 
     @IsISO8601()
     createAt? : string;

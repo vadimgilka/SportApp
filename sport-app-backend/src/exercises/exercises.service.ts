@@ -75,22 +75,18 @@ export class ExercisesService {
     return exercises;
   }
 
-  async exercisesByPage(
-    params: {
-      page : number,
-      cursor?: Prisma.ExerciseWhereUniqueInput;
-      where?: Prisma.ExerciseWhereInput;
-      orderBy?: Prisma.ExerciseOrderByWithRelationInput;
-    }
-  )
-  {
-    
-    const { page: pageNumber, cursor, where, orderBy } = params;
+  async exercisesByPage(params: {
+    page: number;
+    cursor?: Prisma.ExerciseWhereUniqueInput;
+    where?: Prisma.ExerciseWhereInput;
+    orderBy?: Prisma.ExerciseOrderByWithRelationInput;
+  }) {
+    const { page, cursor, where, orderBy } = params;
 
-    const skip = exercisePage.size * (pageNumber - 1); 
+    const skip = exercisePage.size * (page - 1);
     const take = exercisePage.size;
 
-    return this.exercises({skip, take, cursor, where, orderBy});
+    return this.exercises({ skip, take, cursor, where, orderBy });
   }
 
   async exercise(
@@ -109,7 +105,6 @@ export class ExercisesService {
   }
 
   async findByTrainId(trainId: number) {
-
     const exercises = await this.prisma.exerciseOnTrain.findMany({
       where: {
         trainId: trainId,
@@ -119,11 +114,13 @@ export class ExercisesService {
       },
     });
 
-    console.log(exercises)
+    console.log(exercises);
     //const exercises =  data.map(exercise => exercise.Exercise);
 
-    if(!exercises.length){
-       throw new NotFoundException("exercises not found in train with id " + trainId );
+    if (!exercises.length) {
+      throw new NotFoundException(
+        'exercises not found in train with id ' + trainId,
+      );
     }
 
     return exercises;

@@ -30,6 +30,14 @@ export class HistoryService {
       cursor,
       where,
       orderBy,
+
+      include : {
+        exerciseOnTrain : {
+           include : {
+             Exercise : true
+           }
+        }
+      }
     });
   }
 
@@ -46,7 +54,6 @@ export class HistoryService {
   }
 
   async create(history: HistoryDto): Promise<History> {
-
     const data : Prisma.HistoryCreateInput = {
         exerciseOnTrain : {
             connect : {
@@ -60,7 +67,6 @@ export class HistoryService {
             }
         },
     }
-
     if(history.createAt){
         data.createdAt = history.createAt;
     }
