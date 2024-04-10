@@ -27,6 +27,17 @@ import {
 import { ImagePipe } from 'src/files/pipes/image.pipe';
 import { imageInterceptor } from './exercises.files.interceptor';
 import { UpdateExercisePipe } from './pipes/update.exercises.pipe';
+import { exercisePage } from './constant';
+import { Prisma } from '@prisma/client';
+
+
+class GetParam{
+  skip?: number;
+  take?: number;
+  cursor?: Prisma.ExerciseWhereUniqueInput;
+  where?: Prisma.ExerciseWhereInput;
+  orderBy?: Prisma.ExerciseOrderByWithRelationInput;
+}
 
 @UseGuards(JwtAuthGuard)
 @Controller('api/exercises')
@@ -73,8 +84,17 @@ export class ExercisesController {
   }
 
   @Get()
-  async getMany(@Query('page', ParseIntPipe) page: number) {
-    return await this.exercisesService.exercisesByPage({ page: page });
+  async getMany(@Query('page', new ParseIntPipe({ optional: true })) page?: number) {
+
+    let param : GetParam = {};
+    if(page) {
+      const skip = exercisePage.size * (page - 1);
+      const take = exercisePage.size;
+      param.skip = skip;
+      param.take = take;
+    }
+    
+    return await this.exercisesService.exercises(param);
   }
 
   @Patch()

@@ -156,19 +156,6 @@ export class TrainsService {
     return trains;
   }
 
-  async trainsByPage(params: {
-    page: number;
-    cursor?: Prisma.TrainWhereUniqueInput;
-    where?: Prisma.TrainWhereInput;
-    orderBy?: Prisma.TrainOrderByWithRelationInput;
-  }): Promise<Train[]> {
-    const { page, cursor, where, orderBy } = params;
-
-    const skip = trainPage.size * (page - 1);
-    const take = trainPage.size;
-    return this.trains({ skip, take, cursor, where, orderBy });
-  }
-
   private async checkExercises(exercises: ExerciseTrainDto[]) {
     if (exercises) {
       if (exercises.length > MAX_EXERCISE_IN_TRAIN) {

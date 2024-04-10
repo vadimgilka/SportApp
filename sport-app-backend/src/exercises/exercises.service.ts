@@ -75,20 +75,6 @@ export class ExercisesService {
     return exercises;
   }
 
-  async exercisesByPage(params: {
-    page: number;
-    cursor?: Prisma.ExerciseWhereUniqueInput;
-    where?: Prisma.ExerciseWhereInput;
-    orderBy?: Prisma.ExerciseOrderByWithRelationInput;
-  }) {
-    const { page, cursor, where, orderBy } = params;
-
-    const skip = exercisePage.size * (page - 1);
-    const take = exercisePage.size;
-
-    return this.exercises({ skip, take, cursor, where, orderBy });
-  }
-
   async exercise(
     where: Prisma.ExerciseWhereUniqueInput,
   ): Promise<Exercise | null> {

@@ -1,10 +1,18 @@
-import { Exercise } from '@prisma/client';
+import { Exercise, Prisma } from '@prisma/client';
 import {Post, Body, Controller, UseGuards, ParseIntPipe, Param, Get, Delete, Put, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/authguard/jwt-auth.guard';
 import { CreateTrainDto, UpdateTrainDto } from './trains.dto';
 import { User } from 'src/users/user.annotation';
 import { TrainsService } from './trains.service';
-import { use } from 'passport';
+import { trainPage } from './constant';
+
+class GetParam {
+  skip?: number;
+  take?: number;
+  cursor?: Prisma.TrainWhereUniqueInput;
+  where?: Prisma.TrainWhereInput;
+  orderBy?: Prisma.TrainOrderByWithRelationInput;
+}
 
 @UseGuards(JwtAuthGuard)
 @Controller('api/trains')
@@ -36,7 +44,14 @@ export class TrainsController {
     }
 
     @Get()
-    async getMany(@Query('page', ParseIntPipe) page : number){
-      return await this.trainService.trainsByPage({page: page});
+    async getMany(@Query('page', new ParseIntPipe({ optional: true })) page?: number){
+      
+      const param : GetParam = {}
+      if(page){
+        param.skip = trainPage.size * (page - 1);
+        param.take = trainPage.size;
+      }
+
+      return await this.trainService.trains(param);
     }
 }
