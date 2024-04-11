@@ -28,7 +28,8 @@ import { ImagePipe } from 'src/files/pipes/image.pipe';
 import { imageInterceptor } from './exercises.files.interceptor';
 import { UpdateExercisePipe } from './pipes/update.exercises.pipe';
 import { exercisePage } from './constant';
-import { Prisma } from '@prisma/client';
+import { MuscleGroup, Prisma } from '@prisma/client';
+import { MuscleGroupPipe } from './pipes/muscle.group.pipe';
 
 
 class GetParam{
@@ -84,14 +85,13 @@ export class ExercisesController {
   }
 
   @Get()
-  async getMany(@Query('page', new ParseIntPipe({ optional: true })) page?: number) {
+  async getMany(@Query('page', new ParseIntPipe({ optional: true })) page?: number,
+                @Query('muscleGroup', new MuscleGroupPipe({optional : true})) muscleGroup? : MuscleGroup) {
 
     let param : GetParam = {};
     if(page) {
-      const skip = exercisePage.size * (page - 1);
-      const take = exercisePage.size;
-      param.skip = skip;
-      param.take = take;
+      param.skip  = exercisePage.size * (page - 1);
+      param.take = exercisePage.size;
     }
     
     return await this.exercisesService.exercises(param);

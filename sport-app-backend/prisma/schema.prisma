@@ -39,8 +39,22 @@ model Exercise {
   trains      ExerciseOnTrain[]
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
-
+  muscleGroup MuscleGroup       @default(Neck)
   @@map("exercises")
+}
+
+enum MuscleGroup {
+  Neck
+  Trapezius
+  Shoulders
+  Chest
+  Latissimus
+  Biceps
+  Triceps
+  Forearms
+  MiddleBack
+  LowerBack
+  @@map("musclegroup")
 }
 
 model Train {

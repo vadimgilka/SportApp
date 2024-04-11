@@ -2,16 +2,27 @@ import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from
 import { validate } from 'class-validator'
 import { plainToClass } from 'class-transformer'
 import { UpdateExerciseDto } from '../exercises.dto';
+import { parseMuscleGroup } from '../utils/parse.muscle.group';
+
+interface UpdateExercisePipeOptions {
+  optional?: boolean; 
+}
 
 @Injectable()
 export class UpdateExercisePipe implements PipeTransform<any> {
+  constructor(private readonly options: UpdateExercisePipeOptions = {}) {}
+
   async transform(value: any, { metatype }: ArgumentMetadata) {
-    console.log('value =' + value);
-    console.log(metatype);
+
+    if(!this.options.optional){
+      return null;
+  }
+
+  
     if (!metatype || this.toValidate(metatype)) {
       return value
     }
-
+    
     const obj = plainToClass(metatype, value)
     const errors = await validate(obj)
 
@@ -19,7 +30,17 @@ export class UpdateExercisePipe implements PipeTransform<any> {
       throw new BadRequestException('Валидация провалилась')
     }
 
-    value.id = parseInt(value.id);
+    try {
+      if (value.hasOwnProperty('muscleGroup')) {
+        value.muscleGroup = parseMuscleGroup(value.muscleGroup);
+      }
+
+      if(value.hasOwnProperty('muscleGroup')){
+        throw Error("field id is not found");
+      }
+    } catch (e) {
+      throw new BadRequestException(e.message);
+    }
     return value
   }
 
