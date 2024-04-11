@@ -112,6 +112,14 @@ export class ExercisesService {
     return exercises;
   }
 
+  async countGroupBy(){
+    const groupedExercises  =  await this.prisma.exercise.groupBy({
+      by:['muscleGroup'],
+      _count : true
+    })
+    return groupedExercises;
+  }
+
   private isHasRights(exercise: Exercise, userId: number) {
     return exercise.author_id == userId;
   }

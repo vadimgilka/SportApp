@@ -74,6 +74,12 @@ export class ExercisesController {
     return await this.exercisesService.create(data);
   }
 
+  @Get('count/')
+  async count(){
+    // return "hello";
+   return await this.exercisesService.countGroupBy();
+  }
+
   @Get(':id')
   async getById(@Param('id', ParseIntPipe) id: number) {
     return await this.exercisesService.findById(id);
