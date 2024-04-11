@@ -19,7 +19,7 @@ export class MuscleGroupPipe
 
   transform(value: any, { metatype }: ArgumentMetadata): MuscleGroup {
 
-    if(!this.options.optional){
+    if(this.options.optional && !value){
       return null;
     }
 

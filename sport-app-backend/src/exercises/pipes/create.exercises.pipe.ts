@@ -6,8 +6,7 @@ import {
 } from '@nestjs/common';
 import { validate } from 'class-validator';
 import { plainToClass } from 'class-transformer';
-import { CreateExerciseDto, UpdateExerciseDto } from '../exercises.dto';
-import { MuscleGroupPipe } from './muscle.group.pipe';
+import { CreateExerciseDto} from '../exercises.dto';
 import { parseMuscleGroup } from '../utils/parse.muscle.group';
 
 interface CreateExercisePipeOptions {
@@ -15,12 +14,12 @@ interface CreateExercisePipeOptions {
 }
 
 @Injectable()
-export class UpdateExercisePipe implements PipeTransform<any> {
+export class CreateExercisePipe implements PipeTransform<any> {
   constructor(private readonly options: CreateExercisePipeOptions = {}) {}
 
   async transform(value: any, { metatype }: ArgumentMetadata) {
 
-    if(!this.options.optional){
+    if(this.options.optional  && !value){
         return null;
     }
 
