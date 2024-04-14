@@ -38,7 +38,25 @@
 
 #### READ MANY ELEMENT
 
-Для получения списка элементов необходимо необходимо использовать _GET_-запрос на адрес `{hostname}/api/exercises?page=_number_, где _number_ - номер страницы
+Для получения списка элементов необходимо необходимо использовать _GET_-запрос на адрес `{hostname}/api/exercises.
+
+Помимо этого, существует пару полей для query.
+* page=_number_, где _number_ - номер страницы. Пагинация
+* muscleGroup = _string_, где _string_ принимает значения:
+  ```Neck
+  Trapezius
+  Shoulders
+  Chest
+  Latissimus
+  Biceps
+  Triceps
+  Forearms
+  MiddleBack
+  LowerBack
+  ```
+
+Пример запроса с query: 
+`{hostname}/api/exercises?page=1&muscleGroup=LowerBack`
 
 #### Пример запроса
 
@@ -69,3 +87,23 @@
 
 #### Пример запроса
 ![delete](../../readme_image/exercises/delete.png)
+
+
+### COUNT
+Для получения количества упражнений, сгруппированных по группе Мышц, необходимо отправить
+_GET_-запрос на адрес `{hostname}/api/exercises/count/`. 
+
+#### Ответ сервера
+```json
+[
+    {
+        "muscleGroup": "Trapezius",
+         "_count" : 10
+    },
+    {
+        "muscleGroup": "Neck",
+         "_count" : 22
+    },
+    
+]
+```
