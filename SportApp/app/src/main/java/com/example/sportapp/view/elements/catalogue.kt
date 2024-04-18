@@ -23,16 +23,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.sportapp.R
 import com.example.sportapp.ui.theme.blue
 import com.example.sportapp.ui.theme.green
 import com.example.sportapp.ui.theme.white
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "SuspiciousIndentation")
 @Composable
-fun catalogue() {
+fun catalogue(nav: NavHostController) {
     Scaffold(
-        topBar = { goBackNavBar() }
+        topBar = { goBackNavBar { nav.navigate("exercise") } }
     ) {
         Row(
             Modifier
@@ -45,7 +46,7 @@ fun catalogue() {
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
                 for (i in  1..3)
                 items(1) {
-                    catalogueButton(i)
+                    catalogueButton(i, nav)
                     Spacer(modifier = Modifier.height(20.dp))
                 }
             }
@@ -55,13 +56,13 @@ fun catalogue() {
 
 
 @Composable
-fun catalogueButton(mod: Int) {
+fun catalogueButton(mod: Int, nav:NavHostController) {
     Button(modifier = Modifier
         .fillMaxWidth()
         .height(110.dp),
         colors = if(mod.mod(2) == 0){ ButtonColors(green, white, green, Color.Transparent)}else{ButtonColors(blue, white, blue, Color.Transparent)},
         shape = RoundedCornerShape(15.dp), onClick = {
-
+            nav.navigate("exerciseList")
         }) {
         Row(
             Modifier

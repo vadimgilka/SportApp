@@ -79,7 +79,7 @@ fun defaultNavi(controller: NavHostController) {
                         Icon(
                             modifier = Modifier.padding(start = 15.dp),
                             painter = painterResource(id = item.icon),
-                            tint = if (currentRoute == item.route) blue else Color.Black,
+                            tint = if (currentRoute == item.route || item.children.contains(currentRoute)) blue else Color.Black,
                             contentDescription = null
                         )
                     }

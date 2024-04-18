@@ -2,6 +2,8 @@ package com.example.sportapp.view
 
 import Model.SportAppApi
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,18 +20,27 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.sportapp.view.controllers.ExerciseListsScreenController
 import com.example.sportapp.view.controllers.MainScreenController
 import com.example.sportapp.view.elements.catalogue
+import com.example.sportapp.view.elements.complexList
 import com.example.sportapp.view.elements.defaultNavi
 import com.example.sportapp.view.elements.exercise
+import com.example.sportapp.view.elements.exerciseList
+import com.example.sportapp.view.elements.exerciseView
+import com.example.sportapp.view.elements.exertionList
 import com.example.sportapp.view.elements.goOutNavBar
 import com.example.sportapp.view.elements.leaderboard
 import com.example.sportapp.view.elements.list
 import com.example.sportapp.view.elements.options
 import com.example.sportapp.view.elements.pill
+import com.example.sportapp.view.elements.timerSetUp
+import com.example.sportapp.view.elements.trainMenu
+import com.example.sportapp.view.elements.trainOptions
 import com.example.sportapp.view.elements.trainStart
 
 
+@RequiresApi(Build.VERSION_CODES.P)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun mainScreen(
@@ -47,26 +58,21 @@ fun mainScreen(
     ) {
         screenGraph(nav = contentNav, api = api)
     }
-
-//    Column(
-//        modifier = Modifier.fillMaxSize(),
-//        horizontalAlignment = Alignment.CenterHorizontally,
-//        verticalArrangement = Arrangement.Top
-//    ) {
-//    }
 }
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun screenGraph(
     nav: NavHostController,
     api: SportAppApi
 ){
+    val exerciseListsScreenController = ExerciseListsScreenController(api)
     NavHost(navController = nav, startDestination = "exercise"){
         composable("exercise"){
-            trainStart()
+            trainStart(nav)
         }
         composable("list"){
-            catalogue()
+            catalogue(nav)
         }
         composable("pill"){
             pill()
@@ -76,6 +82,32 @@ fun screenGraph(
         }
         composable("options"){
             options()
+        }
+        composable("exerciseOptions"){
+            trainOptions(nav)
+        }
+        composable("complexList"){
+            complexList(nav)
+        }
+        composable("exerciseList"){
+            exerciseList(api, nav)
+        }
+        composable("exertionList"){
+            exerciseListsScreenController.loadExercises(listOf())
+            exertionList(nav, exerciseListsScreenController)
+        }
+        composable("timerSetUp"){
+            timerSetUp(
+                nav
+            )
+        }
+        composable("trainMenu"){
+            trainMenu(
+                nav
+            )
+        }
+        composable("exerciseView"){
+            exerciseView()
         }
     }
 }

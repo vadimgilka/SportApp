@@ -2,10 +2,16 @@ package Model
 
 import Model.DTO.LoginRequest
 import Model.DTO.Registration
+import android.util.Log
 import com.example.sportapp.models.AbstractApi
+import com.example.sportapp.models.ExerciseListApi
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.json.JSONArray
+import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.FileReader
@@ -112,6 +118,20 @@ class SportAppApi: AbstractApi {
 
     override fun getStatus(): String {
         return this.status
+    }
+
+    public fun getExerciseList(page: Int): JSONArray {
+        if(testConnection()){
+            val request = this.retrofit.baseUrl(url)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(ExerciseListApi::class.java)
+            val res = request.getExercises(1).execute()
+            if(res.isSuccessful){
+                return JSONArray(res.message())
+            }
+        }
+        return JSONArray("[]")
     }
 
     //private fun getProperty(name: String): String = prop.getProperty(name)
