@@ -75,24 +75,6 @@ export class ExercisesService {
     return exercises;
   }
 
-  async exercisesByPage(
-    params: {
-      pageNumber : number,
-      cursor?: Prisma.ExerciseWhereUniqueInput;
-      where?: Prisma.ExerciseWhereInput;
-      orderBy?: Prisma.ExerciseOrderByWithRelationInput;
-    }
-  )
-  {
-    
-    const { pageNumber, cursor, where, orderBy } = params;
-
-    const skip = exercisePage.size * (pageNumber - 1); 
-    const take = exercisePage.size;
-
-    return this.exercises({skip, take, cursor, where, orderBy});
-  }
-
   async exercise(
     where: Prisma.ExerciseWhereUniqueInput,
   ): Promise<Exercise | null> {
@@ -109,7 +91,6 @@ export class ExercisesService {
   }
 
   async findByTrainId(trainId: number) {
-
     const exercises = await this.prisma.exerciseOnTrain.findMany({
       where: {
         trainId: trainId,
@@ -119,14 +100,24 @@ export class ExercisesService {
       },
     });
 
-    console.log(exercises)
+    console.log(exercises);
     //const exercises =  data.map(exercise => exercise.Exercise);
 
-    if(!exercises.length){
-       throw new NotFoundException("exercises not found in train with id " + trainId );
+    if (!exercises.length) {
+      throw new NotFoundException(
+        'exercises not found in train with id ' + trainId,
+      );
     }
 
     return exercises;
+  }
+
+  async countGroupBy(){
+    const groupedExercises  =  await this.prisma.exercise.groupBy({
+      by:['muscleGroup'],
+      _count : true
+    })
+    return groupedExercises;
   }
 
   private isHasRights(exercise: Exercise, userId: number) {

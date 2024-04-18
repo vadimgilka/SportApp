@@ -6,20 +6,21 @@ import {
 } from '@nestjs/common';
 import { validate } from 'class-validator';
 import { plainToClass } from 'class-transformer';
-import { UpdateExerciseDto } from '../exercises.dto';
+import { CreateExerciseDto} from '../exercises.dto';
 import { parseMuscleGroup } from '../utils/parse.muscle.group';
 
-interface UpdateExercisePipeOptions {
+interface CreateExercisePipeOptions {
   optional?: boolean;
 }
 
 @Injectable()
-export class UpdateExercisePipe implements PipeTransform<any> {
-  constructor(private readonly options: UpdateExercisePipeOptions = {}) {}
+export class CreateExercisePipe implements PipeTransform<any> {
+  constructor(private readonly options: CreateExercisePipeOptions = {}) {}
 
   async transform(value: any, { metatype }: ArgumentMetadata) {
-    if (this.options.optional  && !value) {
-      return null;
+
+    if(this.options.optional  && !value){
+        return null;
     }
 
     if (!metatype || this.toValidate(metatype)) {
@@ -37,10 +38,6 @@ export class UpdateExercisePipe implements PipeTransform<any> {
       if (value.hasOwnProperty('muscleGroup')) {
         value.muscleGroup = parseMuscleGroup(value.muscleGroup);
       }
-
-      if (value.hasOwnProperty('muscleGroup')) {
-        throw Error('field id is not found');
-      }
     } catch (e) {
       throw new BadRequestException(e.message);
     }
@@ -54,7 +51,7 @@ export class UpdateExercisePipe implements PipeTransform<any> {
       Number,
       Array,
       Object,
-      UpdateExerciseDto,
+      CreateExerciseDto,
     ];
     console.log(types.includes(metatype));
     return !types.includes(metatype);

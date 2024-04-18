@@ -27,6 +27,18 @@ import {
 import { ImagePipe } from 'src/files/pipes/image.pipe';
 import { imageInterceptor } from './exercises.files.interceptor';
 import { UpdateExercisePipe } from './pipes/update.exercises.pipe';
+import { exercisePage } from './constant';
+import { MuscleGroup, Prisma } from '@prisma/client';
+import { MuscleGroupPipe } from './pipes/muscle.group.pipe';
+import { CreateExercisePipe } from './pipes/create.exercises.pipe';
+
+class GetParam {
+  skip?: number;
+  take?: number;
+  cursor?: Prisma.ExerciseWhereUniqueInput;
+  where?: Prisma.ExerciseWhereInput;
+  orderBy?: Prisma.ExerciseOrderByWithRelationInput;
+}
 
 @UseGuards(JwtAuthGuard)
 @Controller('api/exercises')
@@ -42,11 +54,11 @@ export class ExercisesController {
     }),
   )
   async create(
-    @Body() exercise: CreateExerciseDto,
+    @Body(new CreateExercisePipe({ optional: true }))
+    exercise: CreateExerciseDto,
     @User() user,
     @UploadedFile(ImagePipe) image?: Express.Multer.File,
   ) {
-    console.log(image);
     if (image) {
       exercise.image = image.path;
     }
@@ -62,6 +74,12 @@ export class ExercisesController {
     return await this.exercisesService.create(data);
   }
 
+  @Get('count/')
+  async count(){
+    // return "hello";
+   return await this.exercisesService.countGroupBy();
+  }
+
   @Get(':id')
   async getById(@Param('id', ParseIntPipe) id: number) {
     return await this.exercisesService.findById(id);
@@ -73,8 +91,23 @@ export class ExercisesController {
   }
 
   @Get()
-  async getMany(@Query('page', ParseIntPipe) page: number) {
-    return await this.exercisesService.exercisesByPage({ pageNumber: page });
+  async getMany(
+    @Query('page', new ParseIntPipe({ optional: true })) page?: number,
+    @Query('muscleGroup', new MuscleGroupPipe({ optional: true }))
+    muscleGroup?: MuscleGroup,
+  ) {
+    let param: GetParam = {};
+    if (page) {
+      param.skip = exercisePage.size * (page - 1);
+      param.take = exercisePage.size;
+    }
+    if (muscleGroup) {
+      param.where = {
+        muscleGroup: muscleGroup,
+      };
+    }
+
+    return await this.exercisesService.exercises(param);
   }
 
   @Patch()
@@ -85,7 +118,8 @@ export class ExercisesController {
     }),
   )
   async update(
-    @Body(UpdateExercisePipe) exercise: UpdateExerciseDto,
+    @Body(new UpdateExercisePipe({ optional: true }))
+    exercise: UpdateExerciseDto,
     @User() user,
     @UploadedFile(ImagePipe) image?: Express.Multer.File,
   ) {

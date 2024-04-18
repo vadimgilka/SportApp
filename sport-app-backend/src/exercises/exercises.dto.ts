@@ -1,4 +1,4 @@
-import { Exercise } from '@prisma/client';
+import { Exercise, MuscleGroup } from '@prisma/client';
 import { IsIn, IsInt, IsNotEmpty, IsNumber, MaxLength, MinLength } from 'class-validator';
 
 const nameLength = {
@@ -24,6 +24,7 @@ export class CreateExerciseDto {
 
   image?: string;
   video?: string;
+  muscleGroup : MuscleGroup;
 }
 
 export class UpdateExerciseDto {
