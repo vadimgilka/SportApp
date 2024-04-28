@@ -8,10 +8,11 @@ import { MulterModule } from '@nestjs/platform-express';
 import * as path from 'path';
 import { TrainsModule } from 'src/trains/trains.module';
 import { HistoryModule } from 'src/history/history.module';
+import { BodyReactionsModule } from 'src/bodyreactions/bodyreactions.module';
 
 
 @Module({
-  imports: [AuthModule, ExercisesModule, TrainsModule, HistoryModule, MulterModule.register({
+  imports: [AuthModule, ExercisesModule, TrainsModule, HistoryModule, BodyReactionsModule, MulterModule.register({
     dest: './uploads', 
   }),
   ServeStaticModule.forRoot({
