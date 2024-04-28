@@ -14,16 +14,19 @@ datasource db {
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
-  email     String     @unique
-  username  String     @unique @db.VarChar(30)
-  password  String
-  role      Role       @default(USER)
-  exercises Exercise[]
-  trains    Train[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  History   History[]
+  id               Int                  @id @default(autoincrement())
+  email            String               @unique
+  username         String               @unique @db.VarChar(30)
+  password         String
+  role             Role                 @default(USER)
+  exercises        Exercise[]
+  trains           Train[]
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  History          History[]
+  biologyAdditives BiologicalAdditive[]
+  bodyReactions    BodyReaction[]
+  reminds          Remind[]
 
   @@map("users")
 }
@@ -40,6 +43,7 @@ model Exercise {
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
   muscleGroup MuscleGroup       @default(Neck)
+
   @@map("exercises")
 }
 
@@ -54,6 +58,7 @@ enum MuscleGroup {
   Forearms
   MiddleBack
   LowerBack
+
   @@map("musclegroup")
 }
 
@@ -95,8 +100,42 @@ model History {
   exerciseOnTrain   ExerciseOnTrain @relation(fields: [exerciseOnTrainId], references: [id])
   exerciseOnTrainId Int
   createdAt         DateTime        @default(now())
-  
+
   @@map("history")
+}
+
+model BiologicalAdditive {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(256)
+  description String   @db.VarChar(1024)
+  User        User?    @relation(fields: [author_id], references: [id])
+  author_id   Int?
+  reminds     Remind[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("biological_additives")
+}
+
+model BodyReaction {
+  id        Int    @id @default(autoincrement())
+  name      String @db.VarChar(256)
+  detail    String @db.VarChar(1024)
+  User      User?  @relation(fields: [author_id], references: [id])
+  author_id Int?
+}
+
+model Remind {
+  id                   Int                 @id @default(autoincrement())
+  time                 Int // надо будет переводить часы и минуты в int
+  period               Int // период употребления
+  last_reception       DateTime // последнее употребление 
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  BiologicalAdditive   BiologicalAdditive? @relation(fields: [biologicalAdditiveId], references: [id])
+  biologicalAdditiveId Int?
+  User                 User?               @relation(fields: [userId], references: [id])
+  userId               Int?
 }
 
 enum Role {
