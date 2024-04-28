@@ -75,14 +75,13 @@ export class ExercisesController {
   }
 
   @Get('count/')
-  async count(){
-    // return "hello";
-   return await this.exercisesService.countGroupBy();
+  async count(@User() user){
+   return await this.exercisesService.countGroupBy(user);
   }
 
   @Get(':id')
-  async getById(@Param('id', ParseIntPipe) id: number) {
-    return await this.exercisesService.findById(id);
+  async getById(@Param('id', ParseIntPipe) id: number, @User() user) {
+    return await this.exercisesService.findById(id, user);
   }
 
   @Get('train/:id')
@@ -91,11 +90,10 @@ export class ExercisesController {
   }
 
   @Get()
-  async getMany(
+  async getMany(@User() user,
     @Query('page', new ParseIntPipe({ optional: true })) page?: number,
     @Query('muscleGroup', new MuscleGroupPipe({ optional: true }))
-    muscleGroup?: MuscleGroup,
-  ) {
+    muscleGroup?: MuscleGroup) {
     let param: GetParam = {};
     if (page) {
       param.skip = exercisePage.size * (page - 1);
@@ -106,6 +104,8 @@ export class ExercisesController {
         muscleGroup: muscleGroup,
       };
     }
+
+    param.where.author_id = user.userId;
 
     return await this.exercisesService.exercises(param);
   }
