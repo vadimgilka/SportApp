@@ -8,16 +8,27 @@ import { MulterModule } from '@nestjs/platform-express';
 import * as path from 'path';
 import { TrainsModule } from 'src/trains/trains.module';
 import { HistoryModule } from 'src/history/history.module';
-
+import { BodyReactionsModule } from 'src/bodyreactions/bodyreactions.module';
+import { BiologicalAdditivesModule } from 'src/biological-additives/biological-additives.module';
+import { RemindsModule } from 'src/reminds/reminds.module';
 
 @Module({
-  imports: [AuthModule, ExercisesModule, TrainsModule, HistoryModule, MulterModule.register({
-    dest: './uploads', 
-  }),
-  ServeStaticModule.forRoot({
-    rootPath: path.resolve('./uploads'), 
-    serveRoot: '/uploads', 
-  }),],
+  imports: [
+    AuthModule,
+    ExercisesModule,
+    TrainsModule,
+    HistoryModule,
+    BodyReactionsModule,
+    BiologicalAdditivesModule,
+    RemindsModule,
+    MulterModule.register({
+      dest: './uploads',
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve('./uploads'),
+      serveRoot: '/uploads',
+    }),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -28,8 +28,8 @@ export class TrainsController {
     }
 
     @Get(':id')
-    async getById(@Param('id', ParseIntPipe) id: number) {
-      return await this.trainService.findById(id);
+    async getById(@Param('id', ParseIntPipe) id: number, @User() user) {
+      return await this.trainService.findById(id, user);
     }
 
     @Delete(':id')
@@ -44,9 +44,10 @@ export class TrainsController {
     }
 
     @Get()
-    async getMany(@Query('page', new ParseIntPipe({ optional: true })) page?: number){
+    async getMany(@User() user, @Query('page', new ParseIntPipe({ optional: true })) page?: number){
       
       const param : GetParam = {}
+      param.where = {author_id : user.userId};
       if(page){
         param.skip = trainPage.size * (page - 1);
         param.take = trainPage.size;

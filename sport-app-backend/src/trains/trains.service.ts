@@ -126,8 +126,8 @@ export class TrainsService {
     return train;
   }
 
-  async findById(id: number) {
-    return this.train({ id: id });
+  async findById(id: number, user) {
+    return this.train({ id: id, author_id : user.userId });
   }
 
   async trains(params: {

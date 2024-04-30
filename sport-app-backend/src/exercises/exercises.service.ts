@@ -86,8 +86,8 @@ export class ExercisesService {
     return exercise;
   }
 
-  async findById(id: number) {
-    return this.exercise({ id: id });
+  async findById(id: number, user) {
+    return this.exercise({ id: id, author_id : user.userId });
   }
 
   async findByTrainId(trainId: number) {
@@ -112,10 +112,13 @@ export class ExercisesService {
     return exercises;
   }
 
-  async countGroupBy(){
+  async countGroupBy(user){
     const groupedExercises  =  await this.prisma.exercise.groupBy({
       by:['muscleGroup'],
-      _count : true
+      _count : true,
+      where : {
+        author_id : user.userId
+      }
     })
     return groupedExercises;
   }
