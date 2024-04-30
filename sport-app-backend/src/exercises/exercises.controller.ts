@@ -28,9 +28,10 @@ import { ImagePipe } from 'src/files/pipes/image.pipe';
 import { imageInterceptor } from './exercises.files.interceptor';
 import { UpdateExercisePipe } from './pipes/update.exercises.pipe';
 import { exercisePage } from './constant';
-import { MuscleGroup, Prisma } from '@prisma/client';
+import { MuscleGroup, Prisma} from '@prisma/client';
 import { MuscleGroupPipe } from './pipes/muscle.group.pipe';
 import { CreateExercisePipe } from './pipes/create.exercises.pipe';
+import { UserDTO } from 'src/users/users.dto';
 
 class GetParam {
   skip?: number;
@@ -75,12 +76,12 @@ export class ExercisesController {
   }
 
   @Get('count/')
-  async count(@User() user){
+  async count(@User() user : UserDTO){
    return await this.exercisesService.countGroupBy(user);
   }
 
   @Get(':id')
-  async getById(@Param('id', ParseIntPipe) id: number, @User() user) {
+  async getById(@Param('id', ParseIntPipe) id: number, @User() user : UserDTO) {
     return await this.exercisesService.findById(id, user);
   }
 
@@ -90,7 +91,7 @@ export class ExercisesController {
   }
 
   @Get()
-  async getMany(@User() user,
+  async getMany(@User() user : UserDTO,
     @Query('page', new ParseIntPipe({ optional: true })) page?: number,
     @Query('muscleGroup', new MuscleGroupPipe({ optional: true }))
     muscleGroup?: MuscleGroup) {
@@ -99,13 +100,20 @@ export class ExercisesController {
       param.skip = exercisePage.size * (page - 1);
       param.take = exercisePage.size;
     }
+
+    param.where = {
+      author_id : user.userId
+    };
+    
     if (muscleGroup) {
       param.where = {
         muscleGroup: muscleGroup,
+        author_id : user.userId
       };
     }
-
-    param.where.author_id = user.userId;
+    
+    
+    //param.where.author_id = user.userId;
 
     return await this.exercisesService.exercises(param);
   }
