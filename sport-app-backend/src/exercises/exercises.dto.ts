@@ -57,6 +57,8 @@ export class ExerciseTrainDto {
     approach? : number;
     @IsInt()
     time? : number;
+    @IsInt()
+    weight : number;
   
     @IsNotEmpty()
     @IsInt()
