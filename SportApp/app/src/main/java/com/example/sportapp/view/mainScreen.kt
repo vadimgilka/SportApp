@@ -93,7 +93,6 @@ fun screenGraph(
             exerciseList(api, nav)
         }
         composable("exertionList"){
-            exerciseListsScreenController.loadExercises(listOf())
             exertionList(nav, exerciseListsScreenController)
         }
         composable("timerSetUp"){
