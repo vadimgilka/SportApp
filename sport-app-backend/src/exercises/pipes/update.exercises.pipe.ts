@@ -3,6 +3,7 @@ import {
   Injectable,
   ArgumentMetadata,
   BadRequestException,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { validate } from 'class-validator';
 import { plainToClass } from 'class-transformer';
@@ -41,6 +42,9 @@ export class UpdateExercisePipe implements PipeTransform<any> {
       if (value.hasOwnProperty('muscleGroup')) {
         throw Error('field id is not found');
       }
+
+      value.id = parseInt(value.id)
+
     } catch (e) {
       throw new BadRequestException(e.message);
     }
