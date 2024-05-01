@@ -90,7 +90,7 @@ fun screenGraph(
             complexList(nav)
         }
         composable("exerciseList"){
-            exerciseList(api, nav)
+            exerciseList(nav, exerciseListsScreenController)
         }
         composable("exertionList"){
             exertionList(nav, exerciseListsScreenController)

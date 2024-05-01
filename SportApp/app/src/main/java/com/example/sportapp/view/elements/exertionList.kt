@@ -10,23 +10,33 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.sportapp.ui.theme.blue
+import com.example.sportapp.models.DTO.ExerciseInfo
 import com.example.sportapp.view.controllers.ExerciseListsScreenController
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @Composable
 fun exertionList(nav: NavHostController, exercises: ExerciseListsScreenController) {
-    val items = exercises.getGroup("neck")
+    val elementslist = remember {
+        mutableStateListOf(listOf<ExerciseInfo>())
+    }
+    var items :  List<ExerciseInfo> = listOf()
+    CoroutineScope(Dispatchers.IO).launch {
+        items = exercises.getGroup(exercises.getCurrentGroup())
+        elementslist.addAll(listOf(items))
+    }
     Scaffold(
         topBar = { searchAddNavBar { nav.navigate("exercise") } }
     ) {
@@ -40,15 +50,19 @@ fun exertionList(nav: NavHostController, exercises: ExerciseListsScreenControlle
         ) {
             LazyColumn(modifier = Modifier
                 .fillMaxWidth()) {
-                items(count = items.size, key = null){
-                    exerciseElement(items.get(it).getName(), items.get(it).getRepeats(), nav, false);
-                    Spacer(modifier = Modifier.height(20.dp))
+                if(elementslist.size>1) {
+                    items(elementslist[1]) {
+                        exerciseElement(
+                            it.name,
+                            "",
+                            it.id,
+                            nav,
+                            true,
+                            exercises
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
                 }
-
-//                { item ->
-//                    exerciseElement("Упражнение", item.getRepeats(), nav);
-//                    Spacer(modifier = Modifier.height(20.dp))
-//                }
             }
         }
     }

@@ -10,6 +10,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.example.sportapp.models.DTO.ExerciseInfo
 import com.example.sportapp.models.DTO.GroupPreview
 import com.example.sportapp.models.Excercise
 import com.example.sportapp.view.elements.exerciseView
@@ -20,10 +21,8 @@ import kotlinx.coroutines.launch
 import kotlin.math.log
 
 class ExerciseListsScreenController(api: SportAppApi) {
-    private var allGroups: HashMap<String, List<Excercise>> = HashMap<String, List<Excercise>>()
-    private lateinit var currentGroup: List<Excercise>
-    private lateinit var groupsAndTotals: MutableList<GroupPreview>
     private var api: SportAppApi = api
+    private var currentGroup = ""
 
     public fun getExerciseInfo(group: String): Int {
         /*TODO: do in future*/
@@ -31,13 +30,40 @@ class ExerciseListsScreenController(api: SportAppApi) {
     }
 
     suspend fun loadExercises(): List<GroupPreview> {
-        var result: List<GroupPreview> = api.getExerciseGroupsCount()
-        return result
+        return api.getExerciseGroupsCount()
     }
 
-    public fun getGroup(group: String): List<Excercise> {
-        currentGroup = allGroups.get(group)!!
+    public fun setGroup(group: String){
+        this.currentGroup = group
+    }
+
+    public fun getCurrentGroup(): String{
         return this.currentGroup
+    }
+    suspend fun getGroup(group: String): List<ExerciseInfo> {
+//        if(!group.isEmpty()) {
+//            return api.getExerciseList(1, group)
+//        }else{
+//            return emptyList()
+//        }
+        return api.getExerciseList(1, group)
+    }
+
+    public fun translateGroupName(group: String): String{
+        var res = group
+        when(res){
+            "Trapezius"-> res = "Трапеции"
+            "Neck"-> res = "Шея"
+            "Shoulders"-> res = "Плечи"
+            "Chest"-> res = "Грудь"
+            "Latissimus"-> res = "Широчайшие"
+            "Triceps"-> res = "Трицепсы"
+            "Biceps"-> res = "Бицепсы"
+            "Forearms"-> res = "Предплечья"
+            "MiddleBack"-> res = "Средняя часть спины"
+            "LowerBack"-> res = "Поясница"
+        }
+        return res
     }
 
     @SuppressLint("CoroutineCreationDuringComposition")

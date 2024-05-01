@@ -4,6 +4,7 @@ import Model.DTO.LoginRequest
 import Model.DTO.Registration
 import android.util.Log
 import com.example.sportapp.models.AbstractApi
+import com.example.sportapp.models.DTO.ExerciseInfo
 import com.example.sportapp.models.DTO.GroupPreview
 import com.example.sportapp.models.ExerciseGroupsPreview
 import com.example.sportapp.models.ExerciseListApi
@@ -125,18 +126,21 @@ class SportAppApi : AbstractApi {
         return this.status
     }
 
-    public fun getExerciseList(page: Int): JSONArray {
-        if (testConnection()) {
-            val request = this.retrofit.baseUrl(url)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create(ExerciseListApi::class.java)
-            val res = request.getExercises(1).execute()
-            if (res.isSuccessful) {
-                return JSONArray(res.message())
+    public suspend fun getExerciseList(page: Int, muscleGroup: String):List<ExerciseInfo> {
+        var exerciseList: List<ExerciseInfo> = listOf(ExerciseInfo(0,"","", "","", 0, "", "", ""))
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = retrofit.baseUrl(url)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+                    .create(ExerciseListApi::class.java)
+                val res = request.getExercises(page, muscleGroup, "Bearer ".plus(token))
+                if (!res.isEmpty()) {
+                    exerciseList = res
+                }
             }
+            return@withContext exerciseList
         }
-        return JSONArray("[]")
     }
 
     public suspend fun getExerciseGroupsCount(): List<GroupPreview> {
@@ -150,26 +154,10 @@ class SportAppApi : AbstractApi {
                     .create(ExerciseGroupsPreview::class.java)
                 val res = request.getExercisesGroups("Bearer ".plus(token))
                 if (!res.isEmpty()) {
-                    Log.e("tagCount", res.size.toString())
                     groupPreviews = res
                 }
             }
             return@withContext groupPreviews
         }
-//        CoroutineScope(Dispatchers.IO).async {
-//            if (testConnection()) {
-//                val request = retrofit.baseUrl(url)
-//                    .addConverterFactory(GsonConverterFactory.create())
-//                    .build()
-//                    .create(ExerciseGroupsPreview::class.java)
-//                val res = request.getExercisesGroups("Bearer ".plus(token))
-//                if (!res.isEmpty()) {
-//                    Log.e("tagCount", res.size.toString())
-//                    groupPreviews = res
-//                }
-//            }
-//        }
     }
-
-    //private fun getProperty(name: String): String = prop.getProperty(name)
 }

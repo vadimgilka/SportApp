@@ -12,7 +12,7 @@ import retrofit2.http.POST
 import retrofit2.http.Query
 
 interface ExerciseListApi {
- @Headers("Connection: keep-alive", "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyMCIsInN1YiI6MywiaWF0IjoxNzEzNDYwNzUxLCJleHAiOjE3MTM1NDcxNTF9.3_Dtc-3an5Y-QlMi2ikr8b4OdbASC77xg480eh6-gUo")
+ @Headers("Connection: keep-alive")
  @GET("/api/exercises")
- fun getExercises(@Query("page") page: Int): Call<MutableList<ExerciseInfo>>
+ suspend fun getExercises(@Query("page") page: Int, @Query("muscleGroup") group: String, @Header("Authorization") bearer: String): List<ExerciseInfo>
 }
