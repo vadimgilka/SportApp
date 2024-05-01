@@ -4,9 +4,13 @@ import Model.DTO.LoginRequest
 import Model.DTO.Registration
 import android.util.Log
 import com.example.sportapp.models.AbstractApi
+import com.example.sportapp.models.DTO.ExerciseInfo
 import com.example.sportapp.models.DTO.GroupPreview
+import com.example.sportapp.models.DTO.exercise.ExerciseCreation
+import com.example.sportapp.models.DTO.exercise.ExerciseUpdation
 import com.example.sportapp.models.ExerciseGroupsPreview
 import com.example.sportapp.models.ExerciseListApi
+import com.example.sportapp.models.api.ExerciseApi
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import kotlinx.coroutines.CoroutineScope
@@ -14,6 +18,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONObject
 import retrofit2.Retrofit
@@ -139,10 +147,92 @@ class SportAppApi : AbstractApi {
         return JSONArray("[]")
     }
 
+    private fun exerciseApi(): ExerciseApi {
+        return retrofit.baseUrl(url)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ExerciseApi::class.java);
+    }
+
+    public suspend fun createExercise(exerciseCreation: ExerciseCreation): ExerciseInfo? {
+        var exercise: ExerciseInfo? = null
+
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = exerciseApi();
+                val imageFile = exerciseCreation.image
+                val imageRequestBody = imageFile?.asRequestBody(null)
+                val imagePart = imageRequestBody?.let {
+                    MultipartBody.Part.createFormData("image", imageFile.name, it)
+                }
+
+                // Создание объекта для передачи данных формы
+                val namePart = exerciseCreation.name.toRequestBody("text/plain".toMediaTypeOrNull())
+                val descriptionPart = exerciseCreation.description.toRequestBody("text/plain".toMediaTypeOrNull())
+                val videoPart = exerciseCreation.video?.toRequestBody("text/plain".toMediaTypeOrNull())
+                val muscleGroupPart = exerciseCreation.muscleGroup.toRequestBody("text/plain".toMediaTypeOrNull())
+                val res = request.create(
+                    "Bearer ".plus(token),
+                    namePart,
+                    descriptionPart,
+                    muscleGroupPart,
+                    imagePart,
+                    videoPart
+                );
+
+                println(res)
+                if (res != null) {
+                    exercise = res
+                }
+            }
+            // Возвращаем значение exercise вне блока withContext
+            return@withContext exercise
+        }
+    }
+
+    public suspend fun updateExercise(exerciseUpdation: ExerciseUpdation): ExerciseInfo? {
+        var exercise: ExerciseInfo? = null
+
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                // Создание объекта для передачи изображения
+                val imageFile = exerciseUpdation.image
+                val imageRequestBody = imageFile?.asRequestBody(null)
+                val imagePart = imageRequestBody?.let {
+                    MultipartBody.Part.createFormData("image", imageFile.name, it)
+                }
+
+                // Создание объектов для передачи данных формы
+                val idPart = exerciseUpdation.id.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+                val namePart = exerciseUpdation.name.toRequestBody("text/plain".toMediaTypeOrNull())
+                val descriptionPart = exerciseUpdation.description.toRequestBody("text/plain".toMediaTypeOrNull())
+                val videoPart = exerciseUpdation.video?.toRequestBody("text/plain".toMediaTypeOrNull())
+                val muscleGroupPart = exerciseUpdation.muscleGroup.toRequestBody("text/plain".toMediaTypeOrNull())
+
+                // Вызов запроса
+                val request = exerciseApi();// Создание экземпляра интерфейса Retrofit
+                val result = request.update(
+                    "Bearer ".plus("token"),
+                    idPart,
+                    namePart,
+                    descriptionPart,
+                    muscleGroupPart,
+                    imagePart,
+                    videoPart,
+                )
+
+                exercise = result
+            }
+            // Возвращаем значение exercise вне блока withContext
+            return@withContext exercise
+        }
+    }
+
+
     public suspend fun getExerciseGroupsCount(): List<GroupPreview> {
         var groupPreviews: List<GroupPreview> =
             MutableList<GroupPreview>(1, { GroupPreview(0, "not set(") })
-        return withContext(Dispatchers.IO){
+        return withContext(Dispatchers.IO) {
             if (testConnection()) {
                 val request = retrofit.baseUrl(url)
                     .addConverterFactory(GsonConverterFactory.create())
@@ -156,6 +246,8 @@ class SportAppApi : AbstractApi {
             }
             return@withContext groupPreviews
         }
+
+
 //        CoroutineScope(Dispatchers.IO).async {
 //            if (testConnection()) {
 //                val request = retrofit.baseUrl(url)
@@ -170,6 +262,7 @@ class SportAppApi : AbstractApi {
 //            }
 //        }
     }
+
 
     //private fun getProperty(name: String): String = prop.getProperty(name)
 }
