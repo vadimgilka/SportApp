@@ -40,7 +40,7 @@ export class UpdateExercisePipe implements PipeTransform<any> {
         value.muscleGroup = parseMuscleGroup(value.muscleGroup);
       }
 
-      if (value.hasOwnProperty('muscleGroup')) {
+      if (!value.hasOwnProperty('id')) {
         throw Error('field id is not found');
       }
 
