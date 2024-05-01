@@ -23,6 +23,7 @@ export class UpdateExercisePipe implements PipeTransform<any> {
       return null;
     }
 
+    console.log(value);
     if (!metatype || this.toValidate(metatype)) {
       return value;
     }
