@@ -4,5 +4,5 @@ data class TrainUpdation(
     val id : Int,
     val name : String,
     val description : String,
-    val exercises : Array<ExerciseTrainInfo>,
+    val exercises : MutableList<ExerciseTrainInfo>,
 )

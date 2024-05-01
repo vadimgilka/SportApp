@@ -7,5 +7,5 @@ data class TrainInfo (
     val author_id : Int,
     val createAt :String,
     val updateAt : String,
-    val exercises : Array<ExerciseTrainInfo>,
+    val exercises : MutableList<ExerciseTrainInfo>,
 )

@@ -6,4 +6,5 @@ data class ExerciseTrainCreation(
     val repetition : Int,
     val approach : Int,
     val exerciseNumber : Int,
+    val weight : Int,
 )

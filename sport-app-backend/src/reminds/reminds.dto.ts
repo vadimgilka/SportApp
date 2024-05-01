@@ -31,6 +31,12 @@ export class UpdateRemindDTO {
     @IsInt()         
     period : number;
 
+    @IsInt()
+    measure : number;
+
+    @IsInt()
+    count_reception : number;
+
     @IsISO8601()
     last_reception?: string;
 }

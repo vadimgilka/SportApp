@@ -6,7 +6,7 @@ data class ExerciseUpdation(
     val id : Int,
     val name: String,
     val description: String,
-    val image : File,
-    val video : String,
+    val image : File?,
+    val video : String?,
     val muscleGroup : String,
 )
