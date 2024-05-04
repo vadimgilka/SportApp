@@ -6,10 +6,14 @@ import android.util.Log
 import com.example.sportapp.models.AbstractApi
 import com.example.sportapp.models.DTO.ExerciseInfo
 import com.example.sportapp.models.DTO.GroupPreview
+import com.example.sportapp.models.DTO.bodyreaction.BodyReactionCreation
+import com.example.sportapp.models.DTO.bodyreaction.BodyReactionInfo
+import com.example.sportapp.models.DTO.bodyreaction.BodyReactionUpdation
 import com.example.sportapp.models.DTO.exercise.ExerciseCreation
 import com.example.sportapp.models.DTO.exercise.ExerciseUpdation
 import com.example.sportapp.models.ExerciseGroupsPreview
 import com.example.sportapp.models.ExerciseListApi
+import com.example.sportapp.models.api.BodyReactionApi
 import com.example.sportapp.models.api.ExerciseApi
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -133,8 +137,8 @@ class SportAppApi : AbstractApi {
         return this.status
     }
 
-    public suspend fun getExerciseList(page: Int, muscleGroup: String):List<ExerciseInfo> {
-        var exerciseList: List<ExerciseInfo> = listOf(ExerciseInfo(0,"","", "","", 0, "", "", ""))
+    public suspend fun getExerciseList(page: Int, muscleGroup: String): List<ExerciseInfo> {
+        var exerciseList: List<ExerciseInfo> = listOf(ExerciseInfo(0, "", "", "", "", 0, "", "", ""))
         return withContext(Dispatchers.IO) {
             if (testConnection()) {
                 val request = retrofit.baseUrl(url)
@@ -247,6 +251,87 @@ class SportAppApi : AbstractApi {
                 }
             }
             return@withContext groupPreviews
+        }
+    }
+
+
+    /*============================ bodyReaction ============================ */
+
+    private fun bodyReactionApi(): BodyReactionApi {
+        return retrofit.baseUrl(url)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(BodyReactionApi::class.java);
+    }
+
+    public suspend fun getBodyReactionList(): List<BodyReactionInfo>? {
+
+        var bodyReactionList: List<BodyReactionInfo>? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = bodyReactionApi();
+                val res = request.getMany("Bearer ".plus(token))
+                if (!res.isEmpty()) {
+                    bodyReactionList = res
+                }
+            }
+            return@withContext bodyReactionList;
+        }
+    }
+
+    public suspend fun createBodyReaction(bodyReactionCreation: BodyReactionCreation) : BodyReactionInfo? {
+        var bodyReaction : BodyReactionInfo? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = bodyReactionApi();
+                val res = request.create("Bearer ".plus(token), bodyReactionCreation)
+                if (res != null) {
+                    bodyReaction = res
+                }
+            }
+            return@withContext bodyReaction;
+        }
+    }
+
+    public suspend fun updateBodyReaction(bodyReactionUpdation: BodyReactionUpdation) : BodyReactionInfo? {
+        var bodyReaction : BodyReactionInfo? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = bodyReactionApi();
+                val res = request.update("Bearer ".plus(token), bodyReactionUpdation)
+                if (res != null) {
+                    bodyReaction = res
+                }
+            }
+            return@withContext bodyReaction;
+        }
+    }
+
+    public suspend fun deleteBodyReaction(id : Int) : BodyReactionInfo?{
+        var bodyReaction : BodyReactionInfo? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = bodyReactionApi();
+                val res = request.delete("Bearer ".plus(token), id)
+                if (res != null) {
+                    bodyReaction = res
+                }
+            }
+            return@withContext bodyReaction;
+        }
+    }
+
+    public suspend fun getBodyReaction(id : Int) : BodyReactionInfo?{
+        var bodyReaction : BodyReactionInfo? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = bodyReactionApi();
+                val res = request.get("Bearer ".plus(token), id)
+                if (res != null) {
+                    bodyReaction = res
+                }
+            }
+            return@withContext bodyReaction;
         }
     }
 }
