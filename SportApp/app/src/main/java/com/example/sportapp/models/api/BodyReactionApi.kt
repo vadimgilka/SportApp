@@ -18,8 +18,9 @@ interface BodyReactionApi {
     @DELETE("api/bodyreaction/{id}")
     suspend fun delete(@Header("Authorization") bearer: String, @Path("id") id: Int) : BodyReactionInfo;
 
-    @DELETE("api/bodyreaction/{id}")
+    @GET("api/bodyreaction/{id}")
     suspend fun get(@Header("Authorization") bearer: String, @Path("id") id: Int): BodyReactionInfo;
 
+    @GET("api/bodyreaction")
     suspend fun getMany(@Header("Authorization") bearer: String) : MutableList<BodyReactionInfo>;
 }

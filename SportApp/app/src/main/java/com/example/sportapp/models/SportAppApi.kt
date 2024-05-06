@@ -6,6 +6,9 @@ import android.util.Log
 import com.example.sportapp.models.AbstractApi
 import com.example.sportapp.models.DTO.ExerciseInfo
 import com.example.sportapp.models.DTO.GroupPreview
+import com.example.sportapp.models.DTO.bio.BioAdditiveCreation
+import com.example.sportapp.models.DTO.bio.BioAdditiveInfo
+import com.example.sportapp.models.DTO.bio.BioAdditiveUpdation
 import com.example.sportapp.models.DTO.bodyreaction.BodyReactionCreation
 import com.example.sportapp.models.DTO.bodyreaction.BodyReactionInfo
 import com.example.sportapp.models.DTO.bodyreaction.BodyReactionUpdation
@@ -13,6 +16,7 @@ import com.example.sportapp.models.DTO.exercise.ExerciseCreation
 import com.example.sportapp.models.DTO.exercise.ExerciseUpdation
 import com.example.sportapp.models.ExerciseGroupsPreview
 import com.example.sportapp.models.ExerciseListApi
+import com.example.sportapp.models.api.BioAdditiveAPI
 import com.example.sportapp.models.api.BodyReactionApi
 import com.example.sportapp.models.api.ExerciseApi
 import com.google.gson.Gson
@@ -334,4 +338,86 @@ class SportAppApi : AbstractApi {
             return@withContext bodyReaction;
         }
     }
+
+    /*-------------------- BIOADDITIVE -----------------------*/
+
+
+    private fun bioAddtitveApi(): BioAdditiveAPI {
+        return retrofit.baseUrl(url)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(BioAdditiveAPI::class.java);
+    }
+
+    public suspend fun getBioAdditiveList(): List<BioAdditiveInfo>? {
+
+        var bioAdditive: List<BioAdditiveInfo>? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = bioAddtitveApi();
+                val res = request.getMany("Bearer ".plus(token))
+                if (!res.isEmpty()) {
+                    bioAdditive = res
+                }
+            }
+            return@withContext bioAdditive;
+        }
+    }
+
+    public suspend fun createBioAdditive(bioAdditiveCreation: BioAdditiveCreation) : BioAdditiveInfo? {
+        var bioAdditive : BioAdditiveInfo? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = bioAddtitveApi();
+                val res = request.create("Bearer ".plus(token), bioAdditiveCreation)
+                if (res != null) {
+                    bioAdditive = res
+                }
+            }
+            return@withContext bioAdditive;
+        }
+    }
+
+    public suspend fun updateBioAdditive(bioAdditiveUpdation: BioAdditiveUpdation) : BioAdditiveInfo? {
+        var bioAdditive : BioAdditiveInfo? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = bioAddtitveApi();
+                val res = request.update("Bearer ".plus(token), bioAdditiveUpdation)
+                if (res != null) {
+                    bioAdditive = res
+                }
+            }
+            return@withContext bioAdditive;
+        }
+    }
+
+    public suspend fun deleteBioAdditive(id : Int) : BioAdditiveInfo?{
+        var bioAdditive : BioAdditiveInfo? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = bioAddtitveApi();
+                val res = request.delete("Bearer ".plus(token), id)
+                if (res != null) {
+                    bioAdditive = res
+                }
+            }
+            return@withContext bioAdditive;
+        }
+    }
+
+    public suspend fun getBioAdditive(id : Int) : BioAdditiveInfo?{
+        var bioAdditive : BioAdditiveInfo? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = bioAddtitveApi();
+                val res = request.get("Bearer ".plus(token), id)
+                if (res != null) {
+                    bioAdditive = res
+                }
+            }
+            return@withContext bioAdditive;
+        }
+    }
+
 }
