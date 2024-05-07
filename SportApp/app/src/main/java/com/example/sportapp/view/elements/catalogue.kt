@@ -62,7 +62,11 @@ fun catalogueButton(mod: Int, nav:NavHostController) {
         .height(110.dp),
         colors = if(mod.mod(2) == 0){ ButtonColors(green, white, green, Color.Transparent)}else{ButtonColors(blue, white, blue, Color.Transparent)},
         shape = RoundedCornerShape(15.dp), onClick = {
-            nav.navigate("exerciseList")
+            if(mod == 1) {
+                nav.navigate("exerciseList")
+            }else if (mod == 2){
+                nav.navigate("complexList")
+            }
         }) {
         Row(
             Modifier

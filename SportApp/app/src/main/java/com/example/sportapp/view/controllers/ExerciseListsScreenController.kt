@@ -23,6 +23,8 @@ import kotlin.math.log
 class ExerciseListsScreenController(api: SportAppApi) {
     private var api: SportAppApi = api
     private var currentGroup = ""
+    private var exertionsList = listOf<ExerciseInfo>()
+    private var currentExertion = ExerciseInfo(0,"","", "","", 0, "", "", "")
 
     public fun getExerciseInfo(group: String): Int {
         /*TODO: do in future*/
@@ -37,16 +39,24 @@ class ExerciseListsScreenController(api: SportAppApi) {
         this.currentGroup = group
     }
 
+    public fun setExertion(currentExertion: String){
+        exertionsList.forEach{
+            if(it.name == currentExertion){
+                this.currentExertion = it
+            }
+        }
+    }
+
     public fun getCurrentGroup(): String{
         return this.currentGroup
     }
     suspend fun getGroup(group: String): List<ExerciseInfo> {
-//        if(!group.isEmpty()) {
-//            return api.getExerciseList(1, group)
-//        }else{
-//            return emptyList()
-//        }
-        return api.getExerciseList(1, group)
+        exertionsList = api.getExerciseList(1, group)
+        return exertionsList
+    }
+
+    public fun getExertion(): ExerciseInfo{
+        return this.currentExertion
     }
 
     public fun translateGroupName(group: String): String{

@@ -38,7 +38,7 @@ fun exertionList(nav: NavHostController, exercises: ExerciseListsScreenControlle
         elementslist.addAll(listOf(items))
     }
     Scaffold(
-        topBar = { searchAddNavBar { nav.navigate("exercise") } }
+        topBar = { searchAddNavBar ({ nav.navigate("exercise")}, {nav.navigate("updateExercise")}) }
     ) {
         Row(
             Modifier
@@ -57,7 +57,7 @@ fun exertionList(nav: NavHostController, exercises: ExerciseListsScreenControlle
                             "",
                             it.id,
                             nav,
-                            true,
+                            false,
                             exercises
                         )
                         Spacer(modifier = Modifier.height(8.dp))

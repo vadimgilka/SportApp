@@ -60,7 +60,7 @@ fun exerciseList(
         elementslist.addAll(listOf(exerciseGroupsList))
     }
     Scaffold(
-        topBar = { searchAddNavBar { nav.navigate("exercise") } }
+        topBar = { searchAddNavBar ({ nav.navigate("exercise") }, {nav.navigate("updateExercise")}) }
     ) {
         Row(
             Modifier
@@ -110,6 +110,7 @@ fun exerciseElement(
                 controller.setGroup(groupValue)
                 nav.navigate("exertionList")
             } else {
+                controller.setExertion(title)
                 nav.navigate("exerciseView")
             }
         }) {
