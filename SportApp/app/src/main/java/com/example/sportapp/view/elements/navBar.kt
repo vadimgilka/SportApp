@@ -71,7 +71,8 @@ fun goBackNavBar(
 
 @Composable
 fun searchAddNavBar(
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onAdd: () -> Unit
 ){
     Row(
         modifier = Modifier
@@ -103,7 +104,7 @@ fun searchAddNavBar(
         }
         IconButton(
             onClick = {
-
+                onAdd()
             }) {
             Icon(
                 painter = painterResource(id = R.drawable.add_circle),

@@ -22,6 +22,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.sportapp.view.controllers.ExerciseListsScreenController
 import com.example.sportapp.view.controllers.MainScreenController
+import com.example.sportapp.view.controllers.UpdateExerciseController
 import com.example.sportapp.view.elements.catalogue
 import com.example.sportapp.view.elements.complexList
 import com.example.sportapp.view.elements.defaultNavi
@@ -38,6 +39,7 @@ import com.example.sportapp.view.elements.timerSetUp
 import com.example.sportapp.view.elements.trainMenu
 import com.example.sportapp.view.elements.trainOptions
 import com.example.sportapp.view.elements.trainStart
+import com.example.sportapp.view.elements.updateExercise
 
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -67,6 +69,7 @@ fun screenGraph(
     api: SportAppApi
 ){
     val exerciseListsScreenController = ExerciseListsScreenController(api)
+    val updateExerciseController = UpdateExerciseController(api)
     NavHost(navController = nav, startDestination = "exercise"){
         composable("exercise"){
             trainStart(nav)
@@ -106,7 +109,12 @@ fun screenGraph(
             )
         }
         composable("exerciseView"){
-            exerciseView()
+            exerciseView(exerciseListsScreenController, nav)
+        }
+        composable("updateExercise"){
+            updateExercise(
+                nav, updateExerciseController
+            )
         }
     }
 }

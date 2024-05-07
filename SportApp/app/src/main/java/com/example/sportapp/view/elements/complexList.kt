@@ -36,7 +36,7 @@ fun complexList(
 )
 {
     Scaffold(
-        topBar = { searchAddNavBar { nav.navigate("exercise") } }
+        topBar = { searchAddNavBar ({ nav.navigate("exercise") }, {nav.navigate("updateExercise")}) }
     ) {
         Row(
             Modifier
@@ -48,7 +48,7 @@ fun complexList(
         ) {
             LazyColumn(modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)) {
                 items(3){
-                    coplexElement()
+                    complexElement()
                     Spacer(modifier = Modifier.height(20.dp))
                 }
             }
@@ -58,7 +58,7 @@ fun complexList(
 
 @Preview
 @Composable
-fun coplexElement()
+fun complexElement()
 {
     Button(modifier = Modifier.fillMaxWidth(), colors = ButtonColors(white, Color.Black, white, Color.Transparent), shape = RoundedCornerShape(8.dp), border = BorderStroke(1.dp, Color.Black),onClick = { /*TODO*/ }) {
         Row (Modifier.fillMaxWidth().padding(vertical = 5.dp), verticalAlignment = Alignment.CenterVertically){

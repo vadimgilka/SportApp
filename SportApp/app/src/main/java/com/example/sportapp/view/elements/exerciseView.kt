@@ -28,23 +28,19 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.sportapp.R
 import com.example.sportapp.ui.theme.blue
+import com.example.sportapp.view.controllers.ExerciseListsScreenController
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@Preview
 @Composable
-fun exerciseView(){
-    var weightInput by remember {
-        mutableStateOf("")
-    }
-    var countInput by remember {
-        mutableStateOf("")
-    }
+fun exerciseView(controller: ExerciseListsScreenController, nav: NavHostController){
+    val exertion = controller.getExertion()
     Scaffold (topBar = {
         goBackNavBar {
-            //nav.navigate("exercise")
+            nav.navigate("exercise")
         }
     }) {
         LazyColumn(
@@ -71,7 +67,7 @@ fun exerciseView(){
                     ) {
                         Text(text = "Наименование", fontSize = 18.sp, color = blue)
                         Spacer(modifier = Modifier.height(5.dp))
-                        Text(text = "Тяга головы к груди", color = Color.Black)
+                        Text(text = exertion.name, color = Color.Black)
                     }
                 }
                 Spacer(modifier = Modifier.height(20.dp))
@@ -112,8 +108,8 @@ fun exerciseView(){
                     ) {
                         Text(text = "Техника выполнения", fontSize = 18.sp, color = blue)
                         Spacer(modifier = Modifier.height(5.dp))
-                        for (i in 1..5)
-                            Text(text = (i).toString().plus(". Текст выполнения упражнения"), color = Color.Black)
+                        //for (i in 1..5)
+                            Text(text = (1).toString().plus(". ").plus(exertion.description), color = Color.Black)
                 }
             }
                 Spacer(modifier = Modifier.height(10.dp))

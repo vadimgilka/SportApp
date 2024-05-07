@@ -163,35 +163,43 @@ class SportAppApi : AbstractApi {
         var exercise: ExerciseInfo? = null
 
         return withContext(Dispatchers.IO) {
-            if (testConnection()) {
-                val request = exerciseApi();
-                val imageFile = exerciseCreation.image
-                val imageRequestBody = imageFile?.asRequestBody(null)
-                val imagePart = imageRequestBody?.let {
-                    MultipartBody.Part.createFormData("image", imageFile.name, it)
-                }
+            try {
+                if (testConnection()) {
+                    val request = exerciseApi();
+                    val imageFile = exerciseCreation.image
+                    val imageRequestBody = imageFile?.asRequestBody(null)
+                    val imagePart = imageRequestBody?.let {
+                        MultipartBody.Part.createFormData("image", imageFile.name, it)
+                    }
 
-                // Создание объекта для передачи данных формы
-                val namePart = exerciseCreation.name.toRequestBody("text/plain".toMediaTypeOrNull())
-                val descriptionPart = exerciseCreation.description.toRequestBody("text/plain".toMediaTypeOrNull())
-                val videoPart = exerciseCreation.video?.toRequestBody("text/plain".toMediaTypeOrNull())
-                val muscleGroupPart = exerciseCreation.muscleGroup.toRequestBody("text/plain".toMediaTypeOrNull())
-                val res = request.create(
-                    "Bearer ".plus(token),
-                    namePart,
-                    descriptionPart,
-                    muscleGroupPart,
-                    imagePart,
-                    videoPart
-                );
+                    // Создание объекта для передачи данных формы
+                    val namePart =
+                        exerciseCreation.name.toRequestBody("text/plain".toMediaTypeOrNull())
+                    val descriptionPart =
+                        exerciseCreation.description.toRequestBody("text/plain".toMediaTypeOrNull())
+                    val videoPart =
+                        exerciseCreation.video?.toRequestBody("text/plain".toMediaTypeOrNull())
+                    val muscleGroupPart =
+                        exerciseCreation.muscleGroup.toRequestBody("text/plain".toMediaTypeOrNull())
+                    val res = request.create(
+                        "Bearer ".plus(token),
+                        namePart,
+                        descriptionPart,
+                        muscleGroupPart,
+                        imagePart,
+                        videoPart
+                    );
 
-                println(res)
-                if (res != null) {
-                    exercise = res
+                    println(res)
+                    if (res != null) {
+                        exercise = res
+                    }
                 }
+            }catch (e: retrofit2.HttpException){
+
             }
-            // Возвращаем значение exercise вне блока withContext
-            return@withContext exercise
+                // Возвращаем значение exercise вне блока withContext
+                return@withContext exercise
         }
     }
 
