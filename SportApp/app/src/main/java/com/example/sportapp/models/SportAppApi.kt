@@ -2,32 +2,34 @@ package Model
 
 import Model.DTO.LoginRequest
 import Model.DTO.Registration
-import android.util.Log
 import com.example.sportapp.models.AbstractApi
 import com.example.sportapp.models.DTO.ExerciseInfo
 import com.example.sportapp.models.DTO.GroupPreview
+import com.example.sportapp.models.DTO.bio.BioAdditiveCreation
+import com.example.sportapp.models.DTO.bio.BioAdditiveInfo
+import com.example.sportapp.models.DTO.bio.BioAdditiveUpdation
+import com.example.sportapp.models.DTO.bodyreaction.BodyReactionCreation
+import com.example.sportapp.models.DTO.bodyreaction.BodyReactionInfo
+import com.example.sportapp.models.DTO.bodyreaction.BodyReactionUpdation
 import com.example.sportapp.models.DTO.exercise.ExerciseCreation
 import com.example.sportapp.models.DTO.exercise.ExerciseUpdation
+import com.example.sportapp.models.DTO.remind.RemindCreation
+import com.example.sportapp.models.DTO.remind.RemindInfo
+import com.example.sportapp.models.DTO.remind.RemindUpdation
 import com.example.sportapp.models.ExerciseGroupsPreview
 import com.example.sportapp.models.ExerciseListApi
+import com.example.sportapp.models.api.BioAdditiveApi
+import com.example.sportapp.models.api.BodyReactionApi
 import com.example.sportapp.models.api.ExerciseApi
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import kotlinx.coroutines.CoroutineScope
+import com.example.sportapp.models.api.RemindApi
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import org.json.JSONArray
-import org.json.JSONObject
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.io.FileReader
-import java.util.Properties
 
 class SportAppApi : AbstractApi {
     private val CONFIG = "enviroment.properties"
@@ -133,8 +135,8 @@ class SportAppApi : AbstractApi {
         return this.status
     }
 
-    public suspend fun getExerciseList(page: Int, muscleGroup: String):List<ExerciseInfo> {
-        var exerciseList: List<ExerciseInfo> = listOf(ExerciseInfo(0,"","", "","", 0, "", "", ""))
+    public suspend fun getExerciseList(page: Int, muscleGroup: String): List<ExerciseInfo> {
+        var exerciseList: List<ExerciseInfo> = listOf(ExerciseInfo(0, "", "", "", "", 0, "", "", ""))
         return withContext(Dispatchers.IO) {
             if (testConnection()) {
                 val request = retrofit.baseUrl(url)
@@ -255,6 +257,250 @@ class SportAppApi : AbstractApi {
                 }
             }
             return@withContext groupPreviews
+        }
+    }
+
+
+    /*============================ bodyReaction ============================ */
+
+    private fun bodyReactionApi(): BodyReactionApi {
+        return retrofit.baseUrl(url)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(BodyReactionApi::class.java);
+    }
+
+    public suspend fun getBodyReactionList(): List<BodyReactionInfo>? {
+
+        var bodyReactionList: List<BodyReactionInfo>? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = bodyReactionApi();
+                val res = request.getMany("Bearer ".plus(token))
+                if (!res.isEmpty()) {
+                    bodyReactionList = res
+                }
+            }
+            return@withContext bodyReactionList;
+        }
+    }
+
+    public suspend fun createBodyReaction(bodyReactionCreation: BodyReactionCreation) : BodyReactionInfo? {
+        var bodyReaction : BodyReactionInfo? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = bodyReactionApi();
+                val res = request.create("Bearer ".plus(token), bodyReactionCreation)
+                if (res != null) {
+                    bodyReaction = res
+                }
+            }
+            return@withContext bodyReaction;
+        }
+    }
+
+    public suspend fun updateBodyReaction(bodyReactionUpdation: BodyReactionUpdation) : BodyReactionInfo? {
+        var bodyReaction : BodyReactionInfo? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = bodyReactionApi();
+                val res = request.update("Bearer ".plus(token), bodyReactionUpdation)
+                if (res != null) {
+                    bodyReaction = res
+                }
+            }
+            return@withContext bodyReaction;
+        }
+    }
+
+    public suspend fun deleteBodyReaction(id : Int) : BodyReactionInfo?{
+        var bodyReaction : BodyReactionInfo? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = bodyReactionApi();
+                val res = request.delete("Bearer ".plus(token), id)
+                if (res != null) {
+                    bodyReaction = res
+                }
+            }
+            return@withContext bodyReaction;
+        }
+    }
+
+    public suspend fun getBodyReaction(id : Int) : BodyReactionInfo?{
+        var bodyReaction : BodyReactionInfo? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = bodyReactionApi();
+                val res = request.get("Bearer ".plus(token), id)
+                if (res != null) {
+                    bodyReaction = res
+                }
+            }
+            return@withContext bodyReaction;
+        }
+    }
+
+    /*-------------------- BIOADDITIVE -----------------------*/
+
+
+    private fun bioAddtitveApi(): BioAdditiveApi {
+        return retrofit.baseUrl(url)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(BioAdditiveApi::class.java);
+    }
+
+    public suspend fun getBioAdditiveList(): List<BioAdditiveInfo>? {
+
+        var bioAdditive: List<BioAdditiveInfo>? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = bioAddtitveApi();
+                val res = request.getMany("Bearer ".plus(token))
+                if (!res.isEmpty()) {
+                    bioAdditive = res
+                }
+            }
+            return@withContext bioAdditive;
+        }
+    }
+
+    public suspend fun createBioAdditive(bioAdditiveCreation: BioAdditiveCreation) : BioAdditiveInfo? {
+        var bioAdditive : BioAdditiveInfo? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = bioAddtitveApi();
+                val res = request.create("Bearer ".plus(token), bioAdditiveCreation)
+                if (res != null) {
+                    bioAdditive = res
+                }
+            }
+            return@withContext bioAdditive;
+        }
+    }
+
+    public suspend fun updateBioAdditive(bioAdditiveUpdation: BioAdditiveUpdation) : BioAdditiveInfo? {
+        var bioAdditive : BioAdditiveInfo? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = bioAddtitveApi();
+                val res = request.update("Bearer ".plus(token), bioAdditiveUpdation)
+                if (res != null) {
+                    bioAdditive = res
+                }
+            }
+            return@withContext bioAdditive;
+        }
+    }
+
+    public suspend fun deleteBioAdditive(id : Int) : BioAdditiveInfo?{
+        var bioAdditive : BioAdditiveInfo? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = bioAddtitveApi();
+                val res = request.delete("Bearer ".plus(token), id)
+                if (res != null) {
+                    bioAdditive = res
+                }
+            }
+            return@withContext bioAdditive;
+        }
+    }
+
+    public suspend fun getBioAdditive(id : Int) : BioAdditiveInfo?{
+        var bioAdditive : BioAdditiveInfo? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = bioAddtitveApi();
+                val res = request.get("Bearer ".plus(token), id)
+                if (res != null) {
+                    bioAdditive = res
+                }
+            }
+            return@withContext bioAdditive;
+        }
+    }
+
+
+    /*-------------------- Remind -----------------------*/
+
+
+    private fun remindApi(): RemindApi {
+        return retrofit.baseUrl(url)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(RemindApi::class.java);
+    }
+
+    public suspend fun getRemindList(): List<RemindInfo>? {
+
+        var remind: List<RemindInfo>? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = remindApi();
+                val res = request.getMany("Bearer ".plus(token))
+                if (!res.isEmpty()) {
+                    remind = res
+                }
+            }
+            return@withContext remind;
+        }
+    }
+
+    public suspend fun createRemind(remindCreation: RemindCreation) : RemindInfo? {
+        var remind : RemindInfo? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = remindApi();
+                val res = request.create("Bearer ".plus(token), remindCreation)
+                if (res != null) {
+                    remind = res
+                }
+            }
+            return@withContext remind;
+        }
+    }
+
+    public suspend fun updateRemind(remindUpdation: RemindUpdation) : RemindInfo? {
+        var remind : RemindInfo? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = remindApi();
+                val res = request.update("Bearer ".plus(token), remindUpdation)
+                if (res != null) {
+                    remind = res
+                }
+            }
+            return@withContext remind;
+        }
+    }
+
+    public suspend fun deleteRemind(id : Int) : RemindInfo?{
+        var remind : RemindInfo? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = remindApi();
+                val res = request.delete("Bearer ".plus(token), id)
+                if (res != null) {
+                    remind = res
+                }
+            }
+            return@withContext remind;
+        }
+    }
+
+    public suspend fun getRemind(id : Int) : RemindInfo?{
+        var Remind : RemindInfo? = null;
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = remindApi();
+                val res = request.get("Bearer ".plus(token), id)
+                if (res != null) {
+                    Remind = res
+                }
+            }
+            return@withContext Remind;
         }
     }
 }
