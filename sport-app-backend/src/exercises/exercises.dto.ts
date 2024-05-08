@@ -7,7 +7,7 @@ const nameLength = {
 };
 
 const descriptionLength = {
-  min : 10,
+  min : 3,
   max : 1024
 };
 
