@@ -68,6 +68,9 @@ import kotlinx.coroutines.launch
 fun updateExercise(
     navHostController: NavHostController, controller: UpdateExerciseController
 ) {
+    var showMessage by remember {
+        mutableStateOf(false)
+    }
     var algorhitmInput by remember {
         mutableStateOf("")
     }
@@ -103,7 +106,7 @@ fun updateExercise(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Spacer(modifier = Modifier.height(80.dp))
+            Spacer(modifier = Modifier.height(55.dp))
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -150,7 +153,7 @@ fun updateExercise(
             }
             Spacer(
                 modifier = Modifier
-                    .height(35.dp)
+                    .height(25.dp)
                     .background(white)
             )
             Button(modifier = Modifier
@@ -246,7 +249,7 @@ fun updateExercise(
             }
             Spacer(
                 modifier = Modifier
-                    .height(35.dp)
+                    .height(25.dp)
                     .background(white)
             )
             Box(
@@ -445,24 +448,43 @@ fun updateExercise(
                 ),
                 colors = ButtonColors(blue, white, blue, Color.Transparent),
                 shape = RoundedCornerShape(15.dp), onClick = {
-                    CoroutineScope(Dispatchers.IO).launch {
-                if (
-                controller.isComplex
-                ) {
+                    if(algorhitmInput.length<6 || nameInput.length< 3){
+                        if(algorhitmInput.length>0 || nameInput.length> 0)
+                        showMessage = true
+                    }else {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            if (
+                                controller.isComplex
+                            ) {
 
-                } else {
-                    val newExercise = ExerciseCreation(
-                        nameInput,
-                        algorhitmInput,
-                        null,
-                        youtubelinkInput,
-                        controller.translateGroupName(selectedGroup)
-                    )
-                    controller.createExercise(newExercise)
-                }
+                            } else {
+                                val newExercise = ExerciseCreation(
+                                    nameInput,
+                                    algorhitmInput,
+                                    null,
+                                    youtubelinkInput,
+                                    controller.translateGroupName(selectedGroup)
+                                )
+                                controller.createExercise(newExercise)
+                                navHostController.navigate("exerciseList")
+                            }
+                        }
                     }
                 }) {
                 Text(text = "Сохранить", fontSize = 15.sp)
+            }
+            if(showMessage) {
+                Spacer(modifier = Modifier.height(10.dp))
+                Column(
+                    modifier = Modifier.padding(horizontal = 10.dp).fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Минимальная длинна названия 3, техники выполнения 6",
+                        color = Color.Red,
+                        fontSize = 10.sp
+                    )
+                }
             }
         }
     }
