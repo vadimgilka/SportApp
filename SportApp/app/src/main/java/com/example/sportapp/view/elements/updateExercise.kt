@@ -449,8 +449,9 @@ fun updateExercise(
                 colors = ButtonColors(blue, white, blue, Color.Transparent),
                 shape = RoundedCornerShape(15.dp), onClick = {
                     if(algorhitmInput.length<6 || nameInput.length< 3){
-                        if(algorhitmInput.length>0 || nameInput.length> 0)
-                        showMessage = true
+                        if(algorhitmInput.length>0 || nameInput.length> 0) {
+                            showMessage = true
+                        }
                     }else {
                         CoroutineScope(Dispatchers.IO).launch {
                             if (
@@ -466,7 +467,9 @@ fun updateExercise(
                                     controller.translateGroupName(selectedGroup)
                                 )
                                 controller.createExercise(newExercise)
-                                navHostController.navigate("exerciseList")
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    navHostController.navigate("exerciseList")
+                                }
                             }
                         }
                     }

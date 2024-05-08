@@ -46,7 +46,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun exerciseList(
     nav: NavHostController,
-    controller: ExerciseListsScreenController
+    controller: ExerciseListsScreenController,
 ) {
     val elementslist = remember {
         mutableStateListOf(listOf<GroupPreview>())
@@ -57,10 +57,18 @@ fun exerciseList(
     var exerciseGroupsList: List<GroupPreview> = listOf()
     CoroutineScope(Dispatchers.IO).launch {
         exerciseGroupsList = controller.loadExercises()
-        elementslist.addAll(listOf(exerciseGroupsList))
+        if (elementslist.size > 1) {
+            elementslist[1] = exerciseGroupsList
+        } else {
+            elementslist.addAll(listOf(exerciseGroupsList))
+        }
     }
     Scaffold(
-        topBar = { searchAddNavBar ({ nav.navigate("exercise") }, {nav.navigate("updateExercise")}) }
+        topBar = {
+            searchAddNavBar(
+                { nav.navigate("exercise") },
+                { nav.navigate("updateExercise") })
+        }
     ) {
         Row(
             Modifier
