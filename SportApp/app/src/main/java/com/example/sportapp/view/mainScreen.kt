@@ -109,7 +109,7 @@ fun screenGraph(
             )
         }
         composable("exerciseView"){
-            exerciseView(exerciseListsScreenController, nav)
+            exerciseView(exerciseListsScreenController, nav, updateExerciseController)
         }
         composable("updateExercise"){
             updateExercise(

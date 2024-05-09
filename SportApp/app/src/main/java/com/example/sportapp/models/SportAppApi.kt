@@ -225,7 +225,7 @@ class SportAppApi : AbstractApi {
                 // Вызов запроса
                 val request = exerciseApi();// Создание экземпляра интерфейса Retrofit
                 val result = request.update(
-                    "Bearer ".plus("token"),
+                    "Bearer ".plus(token),
                     idPart,
                     namePart,
                     descriptionPart,

@@ -31,22 +31,29 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.sportapp.R
+import com.example.sportapp.models.DTO.exercise.ExerciseUpdation
 import com.example.sportapp.ui.theme.blue
 import com.example.sportapp.view.controllers.ExerciseListsScreenController
+import com.example.sportapp.view.controllers.UpdateExerciseController
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun exerciseView(controller: ExerciseListsScreenController, nav: NavHostController){
+fun exerciseView(controller: ExerciseListsScreenController, nav: NavHostController, editController: UpdateExerciseController) {
     val exertion = controller.getExertion()
-    Scaffold (topBar = {
-        goBackNavBar {
+    Scaffold(topBar = {
+        editNavBar({
             nav.navigate("exercise")
-        }
+        },
+            {
+                editController.setEditedExercise(ExerciseUpdation(exertion.id, exertion.name, exertion.description, null, exertion.video, exertion.muscleGroup))
+                nav.navigate("updateExercise")
+            })
     }) {
         LazyColumn(
             Modifier
                 .background(Color.White)
-                .fillMaxSize(1f)) {
+                .fillMaxSize(1f)
+        ) {
             item {
                 Spacer(modifier = Modifier.height(50.dp))
                 Box(
@@ -82,10 +89,11 @@ fun exerciseView(controller: ExerciseListsScreenController, nav: NavHostControll
                         .clip(RoundedCornerShape(10.dp))
                 ) {
                     AsyncImage(
-                                modifier = Modifier.fillMaxWidth(),
-                                model = R.drawable.welcome,
-                                contentScale = ContentScale.Crop,
-                                contentDescription = "")
+                        modifier = Modifier.fillMaxWidth(),
+                        model = R.drawable.welcome,
+                        contentScale = ContentScale.Crop,
+                        contentDescription = ""
+                    )
                 }
             }
             item {
@@ -109,9 +117,12 @@ fun exerciseView(controller: ExerciseListsScreenController, nav: NavHostControll
                         Text(text = "Техника выполнения", fontSize = 18.sp, color = blue)
                         Spacer(modifier = Modifier.height(5.dp))
                         //for (i in 1..5)
-                            Text(text = (1).toString().plus(". ").plus(exertion.description), color = Color.Black)
+                        Text(
+                            text = (1).toString().plus(". ").plus(exertion.description),
+                            color = Color.Black
+                        )
+                    }
                 }
-            }
                 Spacer(modifier = Modifier.height(10.dp))
                 Box(
                     modifier = Modifier

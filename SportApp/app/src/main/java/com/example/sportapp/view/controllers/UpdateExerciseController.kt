@@ -5,9 +5,22 @@ import com.example.sportapp.models.DTO.exercise.ExerciseCreation
 import com.example.sportapp.models.DTO.exercise.ExerciseUpdation
 
 class UpdateExerciseController(var api: SportAppApi) {
-    var isComplex = false
+    private var isComplex = false
+    private lateinit var editedExercise: ExerciseUpdation
     fun setIsComplex(isComplex: Boolean){
         this.isComplex = isComplex
+    }
+
+    fun setEditedExercise(exercise: ExerciseUpdation){
+        this.editedExercise = exercise
+    }
+
+    fun isEditedExercise(): Boolean{
+        return this::editedExercise.isInitialized
+    }
+
+    fun getEditedExercise(): ExerciseUpdation{
+        return this.editedExercise
     }
 
     fun isComplexExercise(): Boolean {
@@ -33,6 +46,16 @@ class UpdateExerciseController(var api: SportAppApi) {
             "Предплечья"-> res = "Forearms"
             "Средняя часть спины"-> res = "MiddleBack"
             "Поясница"-> res = "LowerBack"
+            "Trapezius"-> res = "Трапеции"
+            "Neck"-> res = "Шея"
+            "Shoulders"-> res = "Плечи"
+            "Chest"-> res = "Грудь"
+            "Latissimus"-> res = "Широчайшие"
+            "Triceps"-> res = "Трицепсы"
+            "Biceps"-> res = "Бицепсы"
+            "Forearms"-> res = "Предплечья"
+            "MiddleBack"-> res = "Средняя часть спины"
+            "LowerBack"-> res = "Поясница"
         }
         return res
     }

@@ -52,6 +52,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.sportapp.R
 import com.example.sportapp.models.DTO.exercise.ExerciseCreation
+import com.example.sportapp.models.DTO.exercise.ExerciseUpdation
 import com.example.sportapp.ui.theme.blue
 import com.example.sportapp.ui.theme.errorRed
 import com.example.sportapp.ui.theme.iconGray
@@ -62,11 +63,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun updateExercise(
-    navHostController: NavHostController, controller: UpdateExerciseController
+    navHostController: NavHostController, controller: UpdateExerciseController,
 ) {
     var showMessage by remember {
         mutableStateOf(false)
@@ -91,6 +92,15 @@ fun updateExercise(
     }
     var selectedGroup by remember {
         mutableStateOf("Средняя часть спины")
+    }
+    if (controller.isEditedExercise()) {
+        val exercise = controller.getEditedExercise()
+        selectedGroup = controller.translateGroupName(exercise.muscleGroup)
+        nameInput = exercise.name
+        algorhitmInput = exercise.description
+        if(!exercise.video?.isEmpty()!!){
+           youtubelinkInput = exercise.video
+        }
     }
     Scaffold(
         topBar = {
@@ -448,25 +458,37 @@ fun updateExercise(
                 ),
                 colors = ButtonColors(blue, white, blue, Color.Transparent),
                 shape = RoundedCornerShape(15.dp), onClick = {
-                    if(algorhitmInput.length<6 || nameInput.length< 3){
-                        if(algorhitmInput.length>0 || nameInput.length> 0) {
+                    if (algorhitmInput.length < 6 || nameInput.length < 3) {
+                        if (algorhitmInput.length > 0 || nameInput.length > 0) {
                             showMessage = true
                         }
-                    }else {
+                    } else {
                         CoroutineScope(Dispatchers.IO).launch {
                             if (
-                                controller.isComplex
+                                controller.isComplexExercise()
                             ) {
 
                             } else {
-                                val newExercise = ExerciseCreation(
-                                    nameInput,
-                                    algorhitmInput,
-                                    null,
-                                    youtubelinkInput,
-                                    controller.translateGroupName(selectedGroup)
-                                )
-                                controller.createExercise(newExercise)
+                                if (controller.isEditedExercise()) {
+                                    val updateExercise = ExerciseUpdation(
+                                        controller.getEditedExercise().id,
+                                        nameInput,
+                                        algorhitmInput,
+                                        null,
+                                        youtubelinkInput,
+                                        controller.translateGroupName(selectedGroup)
+                                    )
+                                    controller.updateExercise(updateExercise)
+                                } else {
+                                    val newExercise = ExerciseCreation(
+                                        nameInput,
+                                        algorhitmInput,
+                                        null,
+                                        youtubelinkInput,
+                                        controller.translateGroupName(selectedGroup)
+                                    )
+                                    controller.createExercise(newExercise)
+                                }
                                 CoroutineScope(Dispatchers.Main).launch {
                                     navHostController.navigate("exerciseList")
                                 }
@@ -476,10 +498,12 @@ fun updateExercise(
                 }) {
                 Text(text = "Сохранить", fontSize = 15.sp)
             }
-            if(showMessage) {
+            if (showMessage) {
                 Spacer(modifier = Modifier.height(10.dp))
                 Column(
-                    modifier = Modifier.padding(horizontal = 10.dp).fillMaxWidth(),
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp)
+                        .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(

@@ -114,3 +114,39 @@ fun searchAddNavBar(
         }
     }
 }
+
+@Composable
+fun editNavBar(
+    onClick: () -> Unit,
+    onEdit: () -> Unit
+){
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(40.dp)
+            .background(bgGray),
+    ) {
+        IconButton(
+            onClick = {
+                onClick()
+            }) {
+            Icon(
+                modifier = Modifier.padding(start = 15.dp),
+                painter = painterResource(id = R.drawable.arrow_back),
+                tint = Color.Black,
+                contentDescription = null
+            )
+        }
+        Spacer(modifier = Modifier.fillMaxWidth(0.65f))
+        IconButton(
+            onClick = {
+                onEdit()
+            }) {
+            Icon(
+                painter = painterResource(id = R.drawable.editexercise),
+                tint = Color.Black,
+                contentDescription = null
+            )
+        }
+    }
+}
