@@ -4,35 +4,29 @@ import Model.SportAppApi
 import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.sportapp.view.controllers.ExerciseListsScreenController
+import com.example.sportapp.models.api.ExerciseListsScreenController
+import com.example.sportapp.view.controllers.ComplexListScreenController
 import com.example.sportapp.view.controllers.MainScreenController
 import com.example.sportapp.view.controllers.UpdateExerciseController
 import com.example.sportapp.view.elements.catalogue
+import com.example.sportapp.view.elements.complexCreate
+import com.example.sportapp.view.elements.complexExercises
 import com.example.sportapp.view.elements.complexList
 import com.example.sportapp.view.elements.defaultNavi
-import com.example.sportapp.view.elements.exercise
 import com.example.sportapp.view.elements.exerciseList
 import com.example.sportapp.view.elements.exerciseView
 import com.example.sportapp.view.elements.exertionList
-import com.example.sportapp.view.elements.goOutNavBar
 import com.example.sportapp.view.elements.leaderboard
-import com.example.sportapp.view.elements.list
 import com.example.sportapp.view.elements.options
 import com.example.sportapp.view.elements.pill
 import com.example.sportapp.view.elements.timerSetUp
@@ -70,6 +64,7 @@ fun screenGraph(
 ){
     val exerciseListsScreenController = ExerciseListsScreenController(api)
     val updateExerciseController = UpdateExerciseController(api)
+    val complexListScreenController = ComplexListScreenController(api)
     NavHost(navController = nav, startDestination = "exercise"){
         composable("exercise"){
             trainStart(nav)
@@ -90,7 +85,7 @@ fun screenGraph(
             trainOptions(nav)
         }
         composable("complexList"){
-            complexList(nav)
+            complexList(nav, complexListScreenController)
         }
         composable("exerciseList"){
             exerciseList(nav, exerciseListsScreenController)
@@ -115,6 +110,12 @@ fun screenGraph(
             updateExercise(
                 nav, updateExerciseController
             )
+        }
+        composable("complexCreate"){
+            complexCreate()
+        }
+        composable("complexExercises"){
+            complexExercises(nav = nav, complexController = complexListScreenController, exerciseController = exerciseListsScreenController)
         }
     }
 }

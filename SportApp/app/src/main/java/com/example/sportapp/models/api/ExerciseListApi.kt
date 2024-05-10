@@ -1,4 +1,4 @@
-package com.example.sportapp.models
+package com.example.sportapp.models.api
 
 import Model.DTO.AppToken
 import Model.DTO.LoginRequest

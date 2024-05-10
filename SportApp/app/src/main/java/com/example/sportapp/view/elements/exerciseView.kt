@@ -16,16 +16,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -33,7 +28,7 @@ import coil.compose.AsyncImage
 import com.example.sportapp.R
 import com.example.sportapp.models.DTO.exercise.ExerciseUpdation
 import com.example.sportapp.ui.theme.blue
-import com.example.sportapp.view.controllers.ExerciseListsScreenController
+import com.example.sportapp.models.api.ExerciseListsScreenController
 import com.example.sportapp.view.controllers.UpdateExerciseController
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")

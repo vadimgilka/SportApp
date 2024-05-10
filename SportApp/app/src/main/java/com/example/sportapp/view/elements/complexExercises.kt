@@ -21,47 +21,28 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.sportapp.models.DTO.GroupPreview
-import com.example.sportapp.ui.theme.white
+import com.example.sportapp.models.DTO.ExerciseInfo
+import com.example.sportapp.models.DTO.train.TrainInfo
 import com.example.sportapp.models.api.ExerciseListsScreenController
+import com.example.sportapp.ui.theme.white
+import com.example.sportapp.view.controllers.ComplexListScreenController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
-
-
 @Composable
-fun exerciseList(
-    nav: NavHostController,
-    controller: ExerciseListsScreenController,
-) {
-    val elementslist = remember {
-        mutableStateListOf(listOf<GroupPreview>())
-    }
-    var selectedGroup by remember {
-        mutableStateOf("2")
-    }
-    var exerciseGroupsList: List<GroupPreview> = listOf()
-    CoroutineScope(Dispatchers.IO).launch {
-        exerciseGroupsList = controller.loadExercises()
-        if (elementslist.size > 1) {
-            elementslist[1] = exerciseGroupsList
-        } else {
-            elementslist.addAll(listOf(exerciseGroupsList))
-        }
-    }
+fun complexExercises(nav: NavHostController, complexController: ComplexListScreenController, exerciseController: ExerciseListsScreenController) {
+    var train = complexController.getTrainExercises()
     Scaffold(
         topBar = {
             searchAddNavBar(
@@ -73,7 +54,7 @@ fun exerciseList(
             Modifier
                 .background(Color.White)
                 .fillMaxSize()
-                .padding(vertical = 55.dp),
+                .padding(vertical = 65.dp),
             verticalAlignment = Alignment.Top,
             horizontalArrangement = Arrangement.Center
         ) {
@@ -81,17 +62,9 @@ fun exerciseList(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                if (elementslist.size > 1) {
-                    items(elementslist[1]) {
-                        selectedGroup = it.muscleGroup
-                        exerciseElement(
-                            controller.translateGroupName(it.muscleGroup),
-                            selectedGroup,
-                            it._count,
-                            nav,
-                            true,
-                            controller
-                        )
+                if (train.exercises.size > 1) {
+                    items(train.exercises) {
+                        complexExerciseElement(it.Exercise, nav = nav, exerciseController)
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
@@ -101,25 +74,17 @@ fun exerciseList(
 }
 
 @Composable
-fun exerciseElement(
-    title: String,
-    groupValue: String,
-    count: Int,
+fun complexExerciseElement(
+    exercise: ExerciseInfo,
     nav: NavHostController,
-    goExertion: Boolean,
-    controller: ExerciseListsScreenController,
+    exerciseController: ExerciseListsScreenController
 ) {
     Button(
         modifier = Modifier.fillMaxWidth(),
         colors = ButtonColors(white, Color.Black, white, Color.Transparent),
         onClick = {
-            if (goExertion) {
-                controller.setGroup(groupValue)
-                nav.navigate("exertionList")
-            } else {
-                controller.setExertion(title)
-                nav.navigate("exerciseView")
-            }
+            exerciseController.setCurrentExertion(exercise)
+            nav.navigate("exerciseView")
         }) {
         Row(
             Modifier
@@ -134,7 +99,7 @@ fun exerciseElement(
             ) {
             }
             Spacer(modifier = Modifier.width(15.dp))
-            Text(text = title, fontSize = 19.sp)
+            Text(text = exercise.name, fontSize = 19.sp)
         }
         Row(
             Modifier.fillMaxWidth(),
@@ -142,8 +107,8 @@ fun exerciseElement(
             horizontalArrangement = Arrangement.End
         ) {
             Text(
-                text = if (count < 100) {
-                    count.toString()
+                text = if (exercise.id < 100) {
+                    exercise.id.toString()
                 } else {
                     "99+"
                 }, fontSize = 19.sp
