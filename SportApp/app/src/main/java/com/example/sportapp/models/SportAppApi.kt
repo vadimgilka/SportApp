@@ -16,12 +16,18 @@ import com.example.sportapp.models.DTO.exercise.ExerciseUpdation
 import com.example.sportapp.models.DTO.remind.RemindCreation
 import com.example.sportapp.models.DTO.remind.RemindInfo
 import com.example.sportapp.models.DTO.remind.RemindUpdation
-import com.example.sportapp.models.ExerciseGroupsPreview
-import com.example.sportapp.models.ExerciseListApi
+import com.example.sportapp.models.DTO.train.ExerciseTrainInfo
+import com.example.sportapp.models.DTO.train.TrainInfo
+import com.example.sportapp.models.api.ExerciseGroupsPreview
+import com.example.sportapp.models.api.ExerciseListApi
 import com.example.sportapp.models.api.BioAdditiveApi
 import com.example.sportapp.models.api.BodyReactionApi
 import com.example.sportapp.models.api.ExerciseApi
+import com.example.sportapp.models.api.LoginApi
+import com.example.sportapp.models.api.RegistrationApi
 import com.example.sportapp.models.api.RemindApi
+import com.example.sportapp.models.api.RequestApi
+import com.example.sportapp.models.api.complexListApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -136,7 +142,8 @@ class SportAppApi : AbstractApi {
     }
 
     public suspend fun getExerciseList(page: Int, muscleGroup: String): List<ExerciseInfo> {
-        var exerciseList: List<ExerciseInfo> = listOf(ExerciseInfo(0, "", "", "", "", 0, "", "", ""))
+        var exerciseList: List<ExerciseInfo> =
+            listOf(ExerciseInfo(0, "", "", "", "", 0, "", "", ""))
         return withContext(Dispatchers.IO) {
             if (testConnection()) {
                 val request = retrofit.baseUrl(url)
@@ -149,6 +156,27 @@ class SportAppApi : AbstractApi {
                 }
             }
             return@withContext exerciseList
+        }
+    }
+
+    suspend fun getComplexList(page: Int): List<TrainInfo> {
+        var complexList = listOf(
+            TrainInfo(
+                1, "", "", 1, "", "", mutableListOf<ExerciseTrainInfo>()
+            )
+        )
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = retrofit.baseUrl(url)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+                    .create(complexListApi::class.java)
+                val res = request.getExercises(page, "Bearer ".plus(token))
+                if (!res.isEmpty()) {
+                    complexList = res
+                }
+            }
+            return@withContext complexList
         }
     }
 
@@ -195,11 +223,11 @@ class SportAppApi : AbstractApi {
                         exercise = res
                     }
                 }
-            }catch (e: retrofit2.HttpException){
+            } catch (e: retrofit2.HttpException) {
 
             }
-                // Возвращаем значение exercise вне блока withContext
-                return@withContext exercise
+            // Возвращаем значение exercise вне блока withContext
+            return@withContext exercise
         }
     }
 
@@ -216,11 +244,15 @@ class SportAppApi : AbstractApi {
                 }
 
                 // Создание объектов для передачи данных формы
-                val idPart = exerciseUpdation.id.toString().toRequestBody("text/plain".toMediaTypeOrNull())
+                val idPart =
+                    exerciseUpdation.id.toString().toRequestBody("text/plain".toMediaTypeOrNull())
                 val namePart = exerciseUpdation.name.toRequestBody("text/plain".toMediaTypeOrNull())
-                val descriptionPart = exerciseUpdation.description.toRequestBody("text/plain".toMediaTypeOrNull())
-                val videoPart = exerciseUpdation.video?.toRequestBody("text/plain".toMediaTypeOrNull())
-                val muscleGroupPart = exerciseUpdation.muscleGroup.toRequestBody("text/plain".toMediaTypeOrNull())
+                val descriptionPart =
+                    exerciseUpdation.description.toRequestBody("text/plain".toMediaTypeOrNull())
+                val videoPart =
+                    exerciseUpdation.video?.toRequestBody("text/plain".toMediaTypeOrNull())
+                val muscleGroupPart =
+                    exerciseUpdation.muscleGroup.toRequestBody("text/plain".toMediaTypeOrNull())
 
                 // Вызов запроса
                 val request = exerciseApi();// Создание экземпляра интерфейса Retrofit
@@ -285,8 +317,8 @@ class SportAppApi : AbstractApi {
         }
     }
 
-    public suspend fun createBodyReaction(bodyReactionCreation: BodyReactionCreation) : BodyReactionInfo? {
-        var bodyReaction : BodyReactionInfo? = null;
+    public suspend fun createBodyReaction(bodyReactionCreation: BodyReactionCreation): BodyReactionInfo? {
+        var bodyReaction: BodyReactionInfo? = null;
         return withContext(Dispatchers.IO) {
             if (testConnection()) {
                 val request = bodyReactionApi();
@@ -299,8 +331,8 @@ class SportAppApi : AbstractApi {
         }
     }
 
-    public suspend fun updateBodyReaction(bodyReactionUpdation: BodyReactionUpdation) : BodyReactionInfo? {
-        var bodyReaction : BodyReactionInfo? = null;
+    public suspend fun updateBodyReaction(bodyReactionUpdation: BodyReactionUpdation): BodyReactionInfo? {
+        var bodyReaction: BodyReactionInfo? = null;
         return withContext(Dispatchers.IO) {
             if (testConnection()) {
                 val request = bodyReactionApi();
@@ -313,8 +345,8 @@ class SportAppApi : AbstractApi {
         }
     }
 
-    public suspend fun deleteBodyReaction(id : Int) : BodyReactionInfo?{
-        var bodyReaction : BodyReactionInfo? = null;
+    public suspend fun deleteBodyReaction(id: Int): BodyReactionInfo? {
+        var bodyReaction: BodyReactionInfo? = null;
         return withContext(Dispatchers.IO) {
             if (testConnection()) {
                 val request = bodyReactionApi();
@@ -327,8 +359,8 @@ class SportAppApi : AbstractApi {
         }
     }
 
-    public suspend fun getBodyReaction(id : Int) : BodyReactionInfo?{
-        var bodyReaction : BodyReactionInfo? = null;
+    public suspend fun getBodyReaction(id: Int): BodyReactionInfo? {
+        var bodyReaction: BodyReactionInfo? = null;
         return withContext(Dispatchers.IO) {
             if (testConnection()) {
                 val request = bodyReactionApi();
@@ -366,8 +398,8 @@ class SportAppApi : AbstractApi {
         }
     }
 
-    public suspend fun createBioAdditive(bioAdditiveCreation: BioAdditiveCreation) : BioAdditiveInfo? {
-        var bioAdditive : BioAdditiveInfo? = null;
+    public suspend fun createBioAdditive(bioAdditiveCreation: BioAdditiveCreation): BioAdditiveInfo? {
+        var bioAdditive: BioAdditiveInfo? = null;
         return withContext(Dispatchers.IO) {
             if (testConnection()) {
                 val request = bioAddtitveApi();
@@ -380,8 +412,8 @@ class SportAppApi : AbstractApi {
         }
     }
 
-    public suspend fun updateBioAdditive(bioAdditiveUpdation: BioAdditiveUpdation) : BioAdditiveInfo? {
-        var bioAdditive : BioAdditiveInfo? = null;
+    public suspend fun updateBioAdditive(bioAdditiveUpdation: BioAdditiveUpdation): BioAdditiveInfo? {
+        var bioAdditive: BioAdditiveInfo? = null;
         return withContext(Dispatchers.IO) {
             if (testConnection()) {
                 val request = bioAddtitveApi();
@@ -394,8 +426,8 @@ class SportAppApi : AbstractApi {
         }
     }
 
-    public suspend fun deleteBioAdditive(id : Int) : BioAdditiveInfo?{
-        var bioAdditive : BioAdditiveInfo? = null;
+    public suspend fun deleteBioAdditive(id: Int): BioAdditiveInfo? {
+        var bioAdditive: BioAdditiveInfo? = null;
         return withContext(Dispatchers.IO) {
             if (testConnection()) {
                 val request = bioAddtitveApi();
@@ -408,8 +440,8 @@ class SportAppApi : AbstractApi {
         }
     }
 
-    public suspend fun getBioAdditive(id : Int) : BioAdditiveInfo?{
-        var bioAdditive : BioAdditiveInfo? = null;
+    public suspend fun getBioAdditive(id: Int): BioAdditiveInfo? {
+        var bioAdditive: BioAdditiveInfo? = null;
         return withContext(Dispatchers.IO) {
             if (testConnection()) {
                 val request = bioAddtitveApi();
@@ -448,8 +480,8 @@ class SportAppApi : AbstractApi {
         }
     }
 
-    public suspend fun createRemind(remindCreation: RemindCreation) : RemindInfo? {
-        var remind : RemindInfo? = null;
+    public suspend fun createRemind(remindCreation: RemindCreation): RemindInfo? {
+        var remind: RemindInfo? = null;
         return withContext(Dispatchers.IO) {
             if (testConnection()) {
                 val request = remindApi();
@@ -462,8 +494,8 @@ class SportAppApi : AbstractApi {
         }
     }
 
-    public suspend fun updateRemind(remindUpdation: RemindUpdation) : RemindInfo? {
-        var remind : RemindInfo? = null;
+    public suspend fun updateRemind(remindUpdation: RemindUpdation): RemindInfo? {
+        var remind: RemindInfo? = null;
         return withContext(Dispatchers.IO) {
             if (testConnection()) {
                 val request = remindApi();
@@ -476,8 +508,8 @@ class SportAppApi : AbstractApi {
         }
     }
 
-    public suspend fun deleteRemind(id : Int) : RemindInfo?{
-        var remind : RemindInfo? = null;
+    public suspend fun deleteRemind(id: Int): RemindInfo? {
+        var remind: RemindInfo? = null;
         return withContext(Dispatchers.IO) {
             if (testConnection()) {
                 val request = remindApi();
@@ -490,8 +522,8 @@ class SportAppApi : AbstractApi {
         }
     }
 
-    public suspend fun getRemind(id : Int) : RemindInfo?{
-        var Remind : RemindInfo? = null;
+    public suspend fun getRemind(id: Int): RemindInfo? {
+        var Remind: RemindInfo? = null;
         return withContext(Dispatchers.IO) {
             if (testConnection()) {
                 val request = remindApi();

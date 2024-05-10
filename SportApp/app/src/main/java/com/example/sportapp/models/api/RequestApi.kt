@@ -1,4 +1,4 @@
-package Model
+package com.example.sportapp.models.api
 
 import Model.DTO.Response
 import retrofit2.Call

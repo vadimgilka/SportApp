@@ -1,4 +1,4 @@
-package com.example.sportapp.models
+package com.example.sportapp.models.api
 
 import com.example.sportapp.models.DTO.ExerciseInfo
 import com.example.sportapp.models.DTO.GroupPreview
