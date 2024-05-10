@@ -7,13 +7,14 @@ import {
   UseFilters,
 } from '@nestjs/common';
 import { Exercise, ExerciseOnTrain, Prisma, Train } from '@prisma/client';
-import { CreateTrainDto, UpdateTrainDto } from './trains.dto';
+import { CreateTrainDto, UpdateTrainDto, ExerciseOnTrainDto } from './trains.dto';
 import { MAX_EXERCISE_IN_TRAIN, trainPage } from './constant';
 import { uniq } from 'lodash';
 import { ExercisesService } from 'src/exercises/exercises.service';
 import { ExerciseTrainDto } from 'src/exercises/exercises.dto';
 import e from 'express';
 import { HttpExceptionFilter } from 'src/utils/filters/httpexcepion.filter';
+import { UserDTO } from 'src/users/users.dto';
 
 @Injectable()
 @UseFilters(HttpExceptionFilter)
@@ -154,6 +155,29 @@ export class TrainsService {
     });
 
     return trains;
+  }
+
+
+  async updateExerciseOnTrain(exerciseOnTrainDto: ExerciseOnTrainDto, user : UserDTO){
+
+    const train : Train =  await this.findById(exerciseOnTrainDto.trainId, user);
+
+    if (!train) {
+      throw new NotFoundException('train not found');
+    }
+    
+    const where : Prisma.ExerciseOnTrainWhereUniqueInput = { unique_trainId_exerciseNumber: {
+      trainId : exerciseOnTrainDto.trainId, 
+      exerciseNumber : exerciseOnTrainDto.exerciseNumber,
+    }};
+
+    const data = await this.prisma.exerciseOnTrain.findUnique({where}) 
+
+    if (!data) {
+      throw new NotFoundException(`train has not exercise with number ${exerciseOnTrainDto.exerciseNumber}`);
+    }
+
+    return this.prisma.exerciseOnTrain.update({where, data : exerciseOnTrainDto});
   }
 
   private async checkExercises(exercises: ExerciseTrainDto[]) {

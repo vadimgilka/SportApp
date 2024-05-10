@@ -1,48 +1,75 @@
-import { IsNotEmpty, Length, MaxLength, MinLength } from "class-validator";
-import { ExerciseTrainDto } from "src/exercises/exercises.dto";
+import {
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  Length,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
+import { ExerciseTrainDto } from 'src/exercises/exercises.dto';
 
 const nameLength = {
-    min : 3,
-    max : 256
+  min: 3,
+  max: 256,
 };
 
 const descriptionLength = {
-    min : 3,
-    max : 1024
+  min: 3,
+  max: 1024,
 };
 
 export class CreateTrainDto {
-    
-    @IsNotEmpty()
-    @MinLength(nameLength.min)
-    @MaxLength(nameLength.max)
-    name : string;
+  @IsNotEmpty()
+  @MinLength(nameLength.min)
+  @MaxLength(nameLength.max)
+  name: string;
 
-    @IsNotEmpty()
-    @MinLength(descriptionLength.min)
-    @MaxLength(descriptionLength.max)
-    description : string;
+  @IsNotEmpty()
+  @MinLength(descriptionLength.min)
+  @MaxLength(descriptionLength.max)
+  description: string;
 
-    exercises : ExerciseTrainDto[];
-    author_id? : number;
+  exercises: ExerciseTrainDto[];
+  author_id?: number;
 }
 
-
 export class UpdateTrainDto {
+  id: number;
 
-    id : number;
+  @IsNotEmpty()
+  @MinLength(nameLength.min)
+  @MaxLength(nameLength.max)
+  name?: string;
 
-    @IsNotEmpty()
-    @MinLength(nameLength.min)
-    @MaxLength(nameLength.max)
-    name? : string;
+  @IsNotEmpty()
+  @MinLength(descriptionLength.min)
+  @MaxLength(descriptionLength.max)
+  description?: string;
 
-    @IsNotEmpty()
-    @MinLength(descriptionLength.min)
-    @MaxLength(descriptionLength.max)
-    description? : string;
+  exercises?: ExerciseTrainDto[];
+  author_id: number;
+}
 
-    exercises? : ExerciseTrainDto[];
-    author_id : number;
+export class ExerciseOnTrainDto {
+  @IsInt()
+  exerciseId: number;
 
+  @IsInt()
+  trainId: number;
+
+  @IsInt()
+  exerciseNumber: number;
+
+  @IsInt()
+  @IsOptional()
+  repetition?: number;
+  @IsInt()
+  @IsOptional()
+  approach?: number;
+  @IsInt()
+  @IsOptional()
+  time?: number;
+  @IsInt()
+  @IsOptional()
+  weight?: number;
 }
