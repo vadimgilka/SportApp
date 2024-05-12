@@ -14,7 +14,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.sportapp.models.api.ExerciseListsScreenController
+import com.example.sportapp.view.controllers.ExerciseListsScreenController
 import com.example.sportapp.view.controllers.ComplexListScreenController
 import com.example.sportapp.view.controllers.MainScreenController
 import com.example.sportapp.view.controllers.UpdateExerciseController

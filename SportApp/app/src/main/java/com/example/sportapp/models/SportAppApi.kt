@@ -17,6 +17,7 @@ import com.example.sportapp.models.DTO.remind.RemindCreation
 import com.example.sportapp.models.DTO.remind.RemindInfo
 import com.example.sportapp.models.DTO.remind.RemindUpdation
 import com.example.sportapp.models.DTO.train.ExerciseTrainInfo
+import com.example.sportapp.models.DTO.train.TrainExercise
 import com.example.sportapp.models.DTO.train.TrainInfo
 import com.example.sportapp.models.api.ExerciseGroupsPreview
 import com.example.sportapp.models.api.ExerciseListApi
@@ -27,6 +28,7 @@ import com.example.sportapp.models.api.LoginApi
 import com.example.sportapp.models.api.RegistrationApi
 import com.example.sportapp.models.api.RemindApi
 import com.example.sportapp.models.api.RequestApi
+import com.example.sportapp.models.api.UpdateTrainExerciseApi
 import com.example.sportapp.models.api.complexListApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -273,6 +275,17 @@ class SportAppApi : AbstractApi {
         }
     }
 
+    suspend fun updateTrainExercise(exerciseValue: TrainExercise) {
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = retrofit.baseUrl(url)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+                    .create(UpdateTrainExerciseApi::class.java)
+                request.update(exerciseValue, "Bearer ".plus(token))
+            }
+        }
+    }
 
     public suspend fun getExerciseGroupsCount(): List<GroupPreview> {
         var groupPreviews: List<GroupPreview> =

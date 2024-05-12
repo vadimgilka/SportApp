@@ -21,22 +21,16 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.example.sportapp.models.DTO.ExerciseInfo
-import com.example.sportapp.models.DTO.train.TrainInfo
-import com.example.sportapp.models.api.ExerciseListsScreenController
+import com.example.sportapp.models.DTO.train.ExerciseTrainInfo
+import com.example.sportapp.view.controllers.ExerciseListsScreenController
 import com.example.sportapp.ui.theme.white
 import com.example.sportapp.view.controllers.ComplexListScreenController
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
@@ -64,7 +58,7 @@ fun complexExercises(nav: NavHostController, complexController: ComplexListScree
             ) {
                 if (train.exercises.size > 1) {
                     items(train.exercises) {
-                        complexExerciseElement(it.Exercise, nav = nav, exerciseController)
+                        complexExerciseElement(it, nav = nav, exerciseController)
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
@@ -75,7 +69,7 @@ fun complexExercises(nav: NavHostController, complexController: ComplexListScree
 
 @Composable
 fun complexExerciseElement(
-    exercise: ExerciseInfo,
+    exercise: ExerciseTrainInfo,
     nav: NavHostController,
     exerciseController: ExerciseListsScreenController
 ) {
@@ -83,7 +77,7 @@ fun complexExerciseElement(
         modifier = Modifier.fillMaxWidth(),
         colors = ButtonColors(white, Color.Black, white, Color.Transparent),
         onClick = {
-            exerciseController.setCurrentExertion(exercise)
+            exerciseController.setComplexExertion(exercise)
             nav.navigate("exerciseView")
         }) {
         Row(
@@ -99,7 +93,7 @@ fun complexExerciseElement(
             ) {
             }
             Spacer(modifier = Modifier.width(15.dp))
-            Text(text = exercise.name, fontSize = 19.sp)
+            Text(text = exercise.Exercise.name, fontSize = 19.sp)
         }
         Row(
             Modifier.fillMaxWidth(),

@@ -1,23 +1,20 @@
-package com.example.sportapp.models.api
+package com.example.sportapp.view.controllers
 
 import Model.SportAppApi
-import android.annotation.SuppressLint
-import android.util.Log
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import com.example.sportapp.models.DTO.ExerciseInfo
 import com.example.sportapp.models.DTO.GroupPreview
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import com.example.sportapp.models.DTO.train.ExerciseTrainInfo
+import com.example.sportapp.models.DTO.train.TrainExercise
 
 class ExerciseListsScreenController(api: SportAppApi) {
     private var api: SportAppApi = api
     private var currentGroup = ""
     private var exertionsList = listOf<ExerciseInfo>()
+    private var weight = 0
+    private var approach = 0
+    private var repetition = 0
+    private var time = 0
+    private lateinit var currentComplexExertion: ExerciseTrainInfo
     private var currentExertion = ExerciseInfo(0,"","", "","", 0, "", "", "")
 
 
@@ -35,6 +32,25 @@ class ExerciseListsScreenController(api: SportAppApi) {
                 this.currentExertion = it
             }
         }
+    }
+
+    fun setComplexExertion(exercise: ExerciseTrainInfo){
+        this.currentComplexExertion = exercise
+        this.currentExertion = exercise.Exercise
+        this.approach = exercise.approach
+        if(exercise.weight == null || exercise.repetition == null || exercise.time == null) {
+            this.weight = 0
+            this.repetition = 0
+            this.time = 0
+        }else{
+            this.weight = exercise.weight!!
+            this.repetition = exercise.repetition!!
+            this.time = exercise.time!!
+        }
+    }
+
+    fun getComplexExertion(): ExerciseTrainInfo {
+        return this.currentComplexExertion
     }
 
     public fun getCurrentGroup(): String{
@@ -68,5 +84,37 @@ class ExerciseListsScreenController(api: SportAppApi) {
 
     fun setCurrentExertion(exercise: ExerciseInfo){
         this.currentExertion = exercise
+    }
+
+    fun getWeight(): Int {
+        return this.weight
+    }
+
+    fun setWeight(weight: Int) {
+        this.weight = weight
+    }
+
+    fun getApproach(): Int {
+        return this.approach
+    }
+
+    fun setApproach(approach: Int) {
+        this.approach = approach
+    }
+
+    fun getRepetition(): Int {
+        return this.repetition
+    }
+
+    fun setRepetition(repetition: Int) {
+        this.repetition = repetition
+    }
+
+    fun getTime(): Int {
+        return this.time
+    }
+
+    fun setTime(time: Int) {
+        this.time = time
     }
 }

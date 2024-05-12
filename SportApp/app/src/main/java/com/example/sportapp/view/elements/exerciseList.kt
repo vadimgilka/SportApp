@@ -34,7 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.sportapp.models.DTO.GroupPreview
 import com.example.sportapp.ui.theme.white
-import com.example.sportapp.models.api.ExerciseListsScreenController
+import com.example.sportapp.view.controllers.ExerciseListsScreenController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
