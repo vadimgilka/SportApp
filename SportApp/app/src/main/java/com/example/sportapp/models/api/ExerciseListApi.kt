@@ -15,4 +15,8 @@ interface ExerciseListApi {
  @Headers("Connection: keep-alive")
  @GET("/api/exercises")
  suspend fun getExercises(@Query("page") page: Int, @Query("muscleGroup") group: String, @Header("Authorization") bearer: String): List<ExerciseInfo>
+
+ @Headers("Connection: keep-alive")
+ @GET("/api/exercises")
+ suspend fun getAllExercises(@Header("Authorization") bearer: String): List<ExerciseInfo>
 }

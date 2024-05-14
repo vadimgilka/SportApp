@@ -14,11 +14,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.sportapp.view.controllers.ComplexCreateController
 import com.example.sportapp.view.controllers.ExerciseListsScreenController
 import com.example.sportapp.view.controllers.ComplexListScreenController
 import com.example.sportapp.view.controllers.MainScreenController
 import com.example.sportapp.view.controllers.UpdateExerciseController
 import com.example.sportapp.view.elements.catalogue
+import com.example.sportapp.view.elements.complexAdd
 import com.example.sportapp.view.elements.complexCreate
 import com.example.sportapp.view.elements.complexExercises
 import com.example.sportapp.view.elements.complexList
@@ -65,6 +67,7 @@ fun screenGraph(
     val exerciseListsScreenController = ExerciseListsScreenController(api)
     val updateExerciseController = UpdateExerciseController(api)
     val complexListScreenController = ComplexListScreenController(api)
+    val complexCreateController = ComplexCreateController(api)
     NavHost(navController = nav, startDestination = "exercise"){
         composable("exercise"){
             trainStart(nav)
@@ -112,10 +115,13 @@ fun screenGraph(
             )
         }
         composable("complexCreate"){
-            complexCreate()
+            complexCreate(nav = nav, controller = complexCreateController)
         }
         composable("complexExercises"){
             complexExercises(nav = nav, complexController = complexListScreenController, exerciseController = exerciseListsScreenController)
+        }
+        composable("complexAdd"){
+            complexAdd(nav = nav, controller = complexCreateController)
         }
     }
 }
