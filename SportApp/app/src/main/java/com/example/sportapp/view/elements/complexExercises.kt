@@ -78,6 +78,14 @@ fun complexExerciseElement(
         colors = ButtonColors(white, Color.Black, white, Color.Transparent),
         onClick = {
             exerciseController.setComplexExertion(exercise)
+            if(exercise.weight != null) {
+                exerciseController.setWeight(exercise.weight!!)
+            }else if(exercise.time != null){
+                exerciseController.setTime(exercise.time)
+            }
+            if(exercise.repetition != null){
+                exerciseController.setRepetition(exercise.repetition!!)
+            }
             nav.navigate("exerciseView")
         }) {
         Row(

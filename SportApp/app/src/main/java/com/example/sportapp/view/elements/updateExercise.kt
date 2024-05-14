@@ -80,8 +80,8 @@ fun updateExercise(
         selectedGroup = controller.translateGroupName(exercise.muscleGroup)
         nameInput = exercise.name
         algorhitmInput = exercise.description
-        if(!exercise.video?.isEmpty()!!){
-           youtubelinkInput = exercise.video
+        if(exercise.video?.isEmpty() == false){
+           youtubelinkInput = exercise.video!!
         }
     }
     val showPart = controller.isComplexExercise()
