@@ -78,7 +78,7 @@ class UpdateExerciseController(var api: SportAppApi) {
         val sendUpdate = TrainExercise(
             exercise.exerciseId,
             exercise.trainId,
-            exercise.id,
+            exercise.exerciseNumber,
             repetition,
             exercise.approach,
             weight,

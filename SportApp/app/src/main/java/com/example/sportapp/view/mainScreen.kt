@@ -6,10 +6,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,7 +13,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.sportapp.view.controllers.ComplexCreateController
 import com.example.sportapp.view.controllers.ExerciseListsScreenController
 import com.example.sportapp.view.controllers.ComplexListScreenController
-import com.example.sportapp.view.controllers.MainScreenController
 import com.example.sportapp.view.controllers.UpdateExerciseController
 import com.example.sportapp.view.elements.catalogue
 import com.example.sportapp.view.elements.complexAdd
@@ -42,15 +37,10 @@ import com.example.sportapp.view.elements.updateExercise
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun mainScreen(
-    nav: NavHostController,
     api: SportAppApi
 )
 {
     val contentNav = rememberNavController()
-    val controller = MainScreenController(navController = nav, SportAppApi(""))
-    var navBarMode by remember {
-        mutableStateOf(0)
-    }
     Scaffold(
         bottomBar = { defaultNavi(controller = contentNav)}
     ) {
@@ -91,7 +81,7 @@ fun screenGraph(
             complexList(nav, complexListScreenController)
         }
         composable("exerciseList"){
-            exerciseList(nav, exerciseListsScreenController)
+            exerciseList(nav, exerciseListsScreenController, updateExerciseController)
         }
         composable("exertionList"){
             exertionList(nav, exerciseListsScreenController)

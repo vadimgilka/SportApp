@@ -35,6 +35,7 @@ import androidx.navigation.NavHostController
 import com.example.sportapp.models.DTO.GroupPreview
 import com.example.sportapp.ui.theme.white
 import com.example.sportapp.view.controllers.ExerciseListsScreenController
+import com.example.sportapp.view.controllers.UpdateExerciseController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -46,7 +47,10 @@ import kotlinx.coroutines.launch
 fun exerciseList(
     nav: NavHostController,
     controller: ExerciseListsScreenController,
+    updateExerciseController: UpdateExerciseController,
 ) {
+    updateExerciseController.setIsComplex(false)
+    controller.unsetComplexData()
     val elementslist = remember {
         mutableStateListOf(listOf<GroupPreview>())
     }

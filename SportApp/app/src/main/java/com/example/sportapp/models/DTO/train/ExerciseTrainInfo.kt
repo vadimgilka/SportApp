@@ -8,6 +8,7 @@ data class ExerciseTrainInfo(
     val trainId : Int,
     val approach : Int,
     val time : Int?, // в секундах
+    var exerciseNumber : Int,
     var repetition: Int?,
     var weight : Int?,
     val Exercise : ExerciseInfo,

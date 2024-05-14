@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
                         },api = api)
                         }
                     composable("mainScreen"){
-                        mainScreen(navController, api)
+                        mainScreen(api)
                     }
                     }
                 }

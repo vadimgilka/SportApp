@@ -44,6 +44,9 @@ fun exerciseView(controller: ExerciseListsScreenController, nav: NavHostControll
                 if(controller.getApproach()>=1){
                     editController.setIsComplex(true)
                 }
+                else{
+                    editController.setIsComplex(false)
+                }
                 editController.setEditedExercise(ExerciseUpdation(exertion.id, exertion.name, exertion.description, null, exertion.video, exertion.muscleGroup))
                 nav.navigate("updateExercise")
             })
