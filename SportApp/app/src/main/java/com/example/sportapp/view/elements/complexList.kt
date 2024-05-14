@@ -46,7 +46,7 @@ fun complexList(
 )
 {
     Scaffold(
-        topBar = { searchAddNavBar ({ nav.navigate("exercise") }, {nav.navigate("complexCreate")}) }
+        topBar = { searchAddNavBar ({ nav.navigate("exercise") }, {nav.navigate("complexAdd")}) }
     ) {
         val elementslist = remember {
             mutableStateListOf(listOf<TrainInfo>())

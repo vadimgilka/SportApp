@@ -17,16 +17,20 @@ import com.example.sportapp.models.DTO.remind.RemindCreation
 import com.example.sportapp.models.DTO.remind.RemindInfo
 import com.example.sportapp.models.DTO.remind.RemindUpdation
 import com.example.sportapp.models.DTO.train.ExerciseTrainInfo
+import com.example.sportapp.models.DTO.train.TrainCreation
+import com.example.sportapp.models.DTO.train.TrainExercise
 import com.example.sportapp.models.DTO.train.TrainInfo
 import com.example.sportapp.models.api.ExerciseGroupsPreview
 import com.example.sportapp.models.api.ExerciseListApi
 import com.example.sportapp.models.api.BioAdditiveApi
 import com.example.sportapp.models.api.BodyReactionApi
+import com.example.sportapp.models.api.CreateComplexApi
 import com.example.sportapp.models.api.ExerciseApi
 import com.example.sportapp.models.api.LoginApi
 import com.example.sportapp.models.api.RegistrationApi
 import com.example.sportapp.models.api.RemindApi
 import com.example.sportapp.models.api.RequestApi
+import com.example.sportapp.models.api.UpdateTrainExerciseApi
 import com.example.sportapp.models.api.complexListApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -180,6 +184,21 @@ class SportAppApi : AbstractApi {
         }
     }
 
+    public suspend fun createComplex(train: TrainCreation): TrainInfo {
+        var complex = TrainInfo(0, "", "", 0, "", "", mutableListOf<ExerciseTrainInfo>())
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = retrofit.baseUrl(url)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+                    .create(CreateComplexApi::class.java)
+                val res = request.getExercises (train, "Bearer ".plus(token))
+                complex = res
+            }
+            return@withContext complex
+        }
+    }
+
     private fun exerciseApi(): ExerciseApi {
         return retrofit.baseUrl(url)
             .addConverterFactory(GsonConverterFactory.create())
@@ -273,6 +292,17 @@ class SportAppApi : AbstractApi {
         }
     }
 
+    suspend fun updateTrainExercise(exerciseValue: TrainExercise) {
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = retrofit.baseUrl(url)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+                    .create(UpdateTrainExerciseApi::class.java)
+                request.update(exerciseValue, "Bearer ".plus(token))
+            }
+        }
+    }
 
     public suspend fun getExerciseGroupsCount(): List<GroupPreview> {
         var groupPreviews: List<GroupPreview> =
@@ -291,6 +321,24 @@ class SportAppApi : AbstractApi {
             return@withContext groupPreviews
         }
     }
+
+    public suspend fun getAllExercises(): List<ExerciseInfo> {
+        var allExercises: List<ExerciseInfo> = listOf()
+        return withContext(Dispatchers.IO) {
+            if (testConnection()) {
+                val request = retrofit.baseUrl(url)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+                    .create(ExerciseListApi::class.java)
+                val res = request.getAllExercises("Bearer ".plus(token))
+                if (!res.isEmpty()) {
+                    allExercises = res
+                }
+            }
+            return@withContext allExercises
+        }
+    }
+
 
 
     /*============================ bodyReaction ============================ */

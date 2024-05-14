@@ -28,18 +28,25 @@ import coil.compose.AsyncImage
 import com.example.sportapp.R
 import com.example.sportapp.models.DTO.exercise.ExerciseUpdation
 import com.example.sportapp.ui.theme.blue
-import com.example.sportapp.models.api.ExerciseListsScreenController
+import com.example.sportapp.view.controllers.ExerciseListsScreenController
 import com.example.sportapp.view.controllers.UpdateExerciseController
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun exerciseView(controller: ExerciseListsScreenController, nav: NavHostController, editController: UpdateExerciseController) {
     val exertion = controller.getExertion()
+    editController.setEditedCompexExercise(controller.getComplexExertion())
     Scaffold(topBar = {
         editNavBar({
             nav.navigate("exercise")
         },
             {
+                if(controller.getApproach()>=1){
+                    editController.setIsComplex(true)
+                }
+                else{
+                    editController.setIsComplex(false)
+                }
                 editController.setEditedExercise(ExerciseUpdation(exertion.id, exertion.name, exertion.description, null, exertion.video, exertion.muscleGroup))
                 nav.navigate("updateExercise")
             })
@@ -111,7 +118,6 @@ fun exerciseView(controller: ExerciseListsScreenController, nav: NavHostControll
                     ) {
                         Text(text = "Техника выполнения", fontSize = 18.sp, color = blue)
                         Spacer(modifier = Modifier.height(5.dp))
-                        //for (i in 1..5)
                         Text(
                             text = (1).toString().plus(". ").plus(exertion.description),
                             color = Color.Black
@@ -135,7 +141,7 @@ fun exerciseView(controller: ExerciseListsScreenController, nav: NavHostControll
                         horizontalAlignment = Alignment.Start,
                         verticalArrangement = Arrangement.Top
                     ) {
-                        Text(text = "Вес кг.", color = Color.Black)
+                        Text(text = if(controller.getWeight()!= null){controller.getWeight().toString().plus(" кг.")}else{ "Вес кг."}, color = Color.Black)
                     }
                 }
                 Spacer(modifier = Modifier.height(10.dp))
@@ -155,7 +161,7 @@ fun exerciseView(controller: ExerciseListsScreenController, nav: NavHostControll
                         horizontalAlignment = Alignment.Start,
                         verticalArrangement = Arrangement.Top
                     ) {
-                        Text(text = "Количество повторений", color = Color.Black)
+                        Text(text = if(controller.getRepetition()!= null){controller.getRepetition().toString().plus(" повторений")}else if(controller.getTime()!=null){ controller.getTime().toString().plus(" сек.")} else {"Количество повторений"}, color = Color.Black)
                     }
                 }
                 Spacer(modifier = Modifier.height(60.dp))

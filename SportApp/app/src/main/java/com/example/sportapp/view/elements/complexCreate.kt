@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -24,42 +25,37 @@ import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import com.example.sportapp.models.DTO.ExerciseInfo
 import com.example.sportapp.ui.theme.blue
+import com.example.sportapp.ui.theme.green
 import com.example.sportapp.ui.theme.iconGray
 import com.example.sportapp.ui.theme.white
+import com.example.sportapp.view.controllers.ComplexCreateController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @Composable
-@Preview
-fun complexCreate()
-{
+fun complexCreate(nav: NavHostController, controller: ComplexCreateController) {
     var showMessage by remember {
         mutableStateOf(false)
-    }
-    var algorhitmInput by remember {
-        mutableStateOf("")
-    }
-    var youtubelinkInput by remember {
-        mutableStateOf("")
-    }
-    var nameInput by remember {
-        mutableStateOf("")
     }
     var weightInput by remember {
         mutableStateOf("")
@@ -67,16 +63,25 @@ fun complexCreate()
     var tryCountInput by remember {
         mutableStateOf("")
     }
-    var isExpanded by remember {
-        mutableStateOf(false)
+    var listOfExercises = remember {
+        mutableStateListOf(mutableListOf<ExerciseListItem>())
     }
-    var selectedGroup by remember {
-        mutableStateOf("Средняя часть спины")
+    var listOfIncomeExercises = remember {
+        mutableStateListOf(listOf<ExerciseInfo>())
+    }
+    CoroutineScope(Dispatchers.IO).launch {
+        listOfIncomeExercises[0] = controller.loadExercisesList()
+        listOfIncomeExercises[0].forEachIndexed { index, item ->
+            listOfExercises[0].add(
+                index,
+                ExerciseListItem(item.name, item.id, mutableStateOf(false))
+            )
+        }
     }
     Scaffold(
         topBar = {
             goBackNavBar {
-                //navHostController.navigate("exercise")
+                nav.navigate("complexAdd")
             }
         },
     ) {
@@ -91,11 +96,12 @@ fun complexCreate()
             LazyColumn(modifier = Modifier
                 .height(300.dp)
                 .padding(horizontal = 30.dp), content = {
-                items(15){
-                    exerciseElementSelect(
-                        title = "Упраженение",
-                        count = 3
-                    )
+                if (!listOfExercises[0].isEmpty()) {
+                    items(listOfExercises[0]) {
+                        exerciseElementSelect(
+                            it, listOfExercises
+                        )
+                    }
                 }
             })
             Spacer(modifier = Modifier.height(20.dp))
@@ -203,17 +209,51 @@ fun complexCreate()
                 ),
                 colors = ButtonColors(blue, white, blue, Color.Transparent),
                 shape = RoundedCornerShape(15.dp), onClick = {
-                    if (algorhitmInput.length < 6 || nameInput.length < 3) {
-                        if (algorhitmInput.length > 0 || nameInput.length > 0) {
-                            showMessage = true
-                        }
-                    } else {
-                        CoroutineScope(Dispatchers.IO).launch {
-
+                    if (!weightInput.isEmpty() && !tryCountInput.isEmpty()) {
+                        listOfExercises[0].forEachIndexed { index, exerciseListItem ->
+                            if (exerciseListItem.getIsSelected().value) {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    //Тут пишем сохранение всего комплекса
+                                    controller.addExercise(listOfIncomeExercises[0], exerciseListItem, tryCountInput, weightInput)
+                                    controller.createComplex()
+                                    CoroutineScope(Dispatchers.Main).launch {
+                                        nav.navigate("complexList")
+                                    }
+                                }
+                                return@forEachIndexed
+                            }
                         }
                     }
                 }) {
-                Text(text = "Сохранить", fontSize = 15.sp)
+                Text(text = "Сохранить комплекс", fontSize = 15.sp)
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+            Button(modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
+                .padding(horizontal = 60.dp)
+                .shadow(
+                    elevation = 10.dp,
+                    ambientColor = Color.DarkGray,
+                    spotColor = Color.DarkGray,
+                    shape = RoundedCornerShape(10.dp)
+                ),
+                colors = ButtonColors(green, white, green, Color.Transparent),
+                shape = RoundedCornerShape(15.dp), onClick = {
+                    if (!weightInput.isEmpty() && !tryCountInput.isEmpty()) {
+                        var exercise = ExerciseListItem("", 0, mutableStateOf(false))
+                        listOfExercises[0].forEachIndexed { index, exerciseListItem ->
+                            if (exerciseListItem.getIsSelected().value) {
+                                exercise = exerciseListItem
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    controller.addExercise(listOfIncomeExercises[0], exercise, tryCountInput, weightInput)
+                                }
+                                return@forEachIndexed
+                            }
+                        }
+                    }
+                }) {
+                Text(text = "Добавить упражнение", fontSize = 15.sp)
             }
             if (showMessage) {
                 Spacer(modifier = Modifier.height(10.dp))
@@ -236,17 +276,19 @@ fun complexCreate()
 
 @Composable
 fun exerciseElementSelect(
-    title: String,
-    count: Int,
+    item: ExerciseListItem,
+    listOfExercises: SnapshotStateList<MutableList<ExerciseListItem>>,
 ) {
-    var isSelected by remember {
-        mutableStateOf(false)
-    }
     Button(
         modifier = Modifier.fillMaxWidth(),
         colors = ButtonColors(white, Color.Black, white, Color.Transparent),
         onClick = {
-            isSelected = !isSelected
+            listOfExercises[0].forEach {
+                if (it.getIsSelected().value) {
+                    it.setSelected(false)
+                }
+            }
+            item.setSelected(!item.getIsSelected().value)
         }) {
         Row(
             Modifier
@@ -259,14 +301,19 @@ fun exerciseElementSelect(
                     .size(width = 40.dp, height = 40.dp)
                     .border(1.dp, Color.Black, CircleShape)
             ) {
-                if(isSelected){
-                    Box (Modifier.fillMaxSize().clip(RoundedCornerShape(25.dp)).background(blue)){
+                if (item.getIsSelected().value) {
+                    Box(
+                        Modifier
+                            .fillMaxSize()
+                            .clip(RoundedCornerShape(25.dp))
+                            .background(blue)
+                    ) {
 
                     }
                 }
             }
             Spacer(modifier = Modifier.width(15.dp))
-            Text(text = title, fontSize = 19.sp)
+            Text(text = item.getName(), fontSize = 19.sp)
         }
         Row(
             Modifier.fillMaxWidth(),
@@ -274,12 +321,34 @@ fun exerciseElementSelect(
             horizontalArrangement = Arrangement.End
         ) {
             Text(
-                text = if (count < 100) {
-                    count.toString()
+                text = if (item.getId() < 100) {
+                    item.getId().toString()
                 } else {
                     "99+"
                 }, fontSize = 19.sp
             )
         }
+    }
+}
+
+class ExerciseListItem(
+    private val name: String,
+    private val id: Int,
+    private var isSelected: MutableState<Boolean>,
+) {
+    fun getName(): String {
+        return this.name
+    }
+
+    fun getId(): Int {
+        return this.id
+    }
+
+    fun setSelected(selected: Boolean) {
+        this.isSelected.value = selected
+    }
+
+    fun getIsSelected(): MutableState<Boolean> {
+        return this.isSelected
     }
 }

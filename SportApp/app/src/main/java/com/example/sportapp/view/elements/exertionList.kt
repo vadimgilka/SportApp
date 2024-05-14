@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.sportapp.models.DTO.ExerciseInfo
-import com.example.sportapp.models.api.ExerciseListsScreenController
+import com.example.sportapp.view.controllers.ExerciseListsScreenController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
