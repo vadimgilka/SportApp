@@ -13,12 +13,14 @@ import androidx.navigation.compose.rememberNavController
 import com.example.sportapp.view.controllers.ComplexCreateController
 import com.example.sportapp.view.controllers.ExerciseListsScreenController
 import com.example.sportapp.view.controllers.ComplexListScreenController
+import com.example.sportapp.view.controllers.TrainingProcessController
 import com.example.sportapp.view.controllers.UpdateExerciseController
 import com.example.sportapp.view.elements.catalogue
 import com.example.sportapp.view.elements.complexAdd
 import com.example.sportapp.view.elements.complexCreate
 import com.example.sportapp.view.elements.complexExercises
 import com.example.sportapp.view.elements.complexList
+import com.example.sportapp.view.elements.complexSelect
 import com.example.sportapp.view.elements.defaultNavi
 import com.example.sportapp.view.elements.exerciseList
 import com.example.sportapp.view.elements.exerciseView
@@ -26,6 +28,7 @@ import com.example.sportapp.view.elements.exertionList
 import com.example.sportapp.view.elements.leaderboard
 import com.example.sportapp.view.elements.options
 import com.example.sportapp.view.elements.pill
+import com.example.sportapp.view.elements.restTimer
 import com.example.sportapp.view.elements.timerSetUp
 import com.example.sportapp.view.elements.trainMenu
 import com.example.sportapp.view.elements.trainOptions
@@ -58,6 +61,7 @@ fun screenGraph(
     val updateExerciseController = UpdateExerciseController(api)
     val complexListScreenController = ComplexListScreenController(api)
     val complexCreateController = ComplexCreateController(api)
+    val trainingProcessController = TrainingProcessController(api)
     NavHost(navController = nav, startDestination = "exercise"){
         composable("exercise"){
             trainStart(nav)
@@ -88,12 +92,14 @@ fun screenGraph(
         }
         composable("timerSetUp"){
             timerSetUp(
-                nav
+                nav,
+                trainingProcessController
             )
         }
         composable("trainMenu"){
             trainMenu(
-                nav
+                nav,
+                trainingProcessController
             )
         }
         composable("exerciseView"){
@@ -112,6 +118,12 @@ fun screenGraph(
         }
         composable("complexAdd"){
             complexAdd(nav = nav, controller = complexCreateController)
+        }
+        composable("complexSelect"){
+            complexSelect(nav, complexListScreenController, trainingProcessController)
+        }
+        composable("restTimer"){
+            restTimer(nav, trainingProcessController)
         }
     }
 }

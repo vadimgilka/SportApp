@@ -95,12 +95,6 @@ class ExerciseListsScreenController(api: SportAppApi) {
         if(this.approach!=null) {
             this.approach = 0
         }
-//        if(this.currentExertion != null){
-//            this.currentComplexExertion = Exe
-//        }
-//        if(this.currentExertion != null) {
-//            this.currentExertion = listOf<ExerciseInfo>()[0]
-//        }
     }
 
     fun getWeight(): Int {

@@ -72,7 +72,7 @@ fun trainOptions(nav: NavHostController){
                 .fillMaxWidth()
                 .height(50.dp)
                 .padding(horizontal = 60.dp), colors = ButtonColors(green, white, green, Color.Transparent), shape = RoundedCornerShape(15.dp), onClick = {
-                    nav.navigate("timerSetUp")
+                    nav.navigate("complexSelect")
             }
             ) {
                 Text(text = "Комплексная тренировка", fontSize = 15.sp)
