@@ -11,9 +11,11 @@ import { HistoryModule } from 'src/history/history.module';
 import { BodyReactionsModule } from 'src/bodyreactions/bodyreactions.module';
 import { BiologicalAdditivesModule } from 'src/biological-additives/biological-additives.module';
 import { RemindsModule } from 'src/reminds/reminds.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
     AuthModule,
     ExercisesModule,
     TrainsModule,

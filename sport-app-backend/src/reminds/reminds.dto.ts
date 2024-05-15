@@ -1,4 +1,5 @@
-import { IsISO8601, IsInt, IsNotEmpty } from "class-validator";
+import { Optional } from "@nestjs/common";
+import { IsISO8601, IsInt, IsNotEmpty, IsString } from "class-validator";
 
 export class CreateRemindDTO {
 
@@ -16,7 +17,12 @@ export class CreateRemindDTO {
     period : number;
 
     @IsISO8601()
-    last_reception? : string;
+    @Optional()
+    last_reception?: string;
+
+    @IsString()
+    @Optional()
+    token? : string;    
 }
 
 
@@ -38,5 +44,10 @@ export class UpdateRemindDTO {
     count_reception : number;
 
     @IsISO8601()
+    @Optional()
     last_reception?: string;
+
+    @IsString()
+    @Optional()
+    token? : string;
 }

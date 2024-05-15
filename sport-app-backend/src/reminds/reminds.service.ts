@@ -1,74 +1,124 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, Remind } from '@prisma/client';
+import { Cron } from '@nestjs/schedule';
+import { Prisma, Remind, BiologicalAdditive } from '@prisma/client';
+import { FcmNotificationService } from 'src/fcm-notification/fcm-notification.service';
+import { PayloadFCM } from 'src/fcm-notification/payload';
+import logger from 'src/prisma/logger';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserDTO } from 'src/users/users.dto';
 
 @Injectable()
 export class RemindsService {
-    constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private fcm: FcmNotificationService,
+  ) {}
 
-    async remind(
-        where: Prisma.RemindWhereUniqueInput,
-      ): Promise<Remind | null> {
-        return this.prisma.remind.findUnique({
-          where,
-        });
-      }
-    
-      async reminds(params: {
-        skip?: number;
-        take?: number;
-        cursor?: Prisma.RemindWhereUniqueInput;
-        where?: Prisma.RemindWhereInput;
-        orderBy?: Prisma.RemindOrderByWithRelationInput;
-      }): Promise<Remind[]> {
-        const { skip, take, cursor, where, orderBy } = params;
-        return this.prisma.remind.findMany({
-          skip,
-          take,
-          cursor,
-          where,
-          orderBy,
-        });
-      }
-    
-      async create(data: Prisma.RemindCreateInput, user : UserDTO, biologicalAdditiveId : number): Promise<Remind> {
-    
-        data.User ={
-            connect: {
-                id : user.userId
-            }
-        };
+  async remind(where: Prisma.RemindWhereUniqueInput): Promise<Remind | null> {
+    return this.prisma.remind.findUnique({
+      where,
+    });
+  }
 
-        data.BiologicalAdditive = {
-            connect : {
-                id : biologicalAdditiveId
-            }
+  async reminds(params: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.RemindWhereUniqueInput;
+    where?: Prisma.RemindWhereInput;
+    orderBy?: Prisma.RemindOrderByWithRelationInput;
+    include?: Prisma.RemindInclude
+  }): Promise<Remind[]> {
+    const { skip, take, cursor, where, orderBy } = params;
+    return this.prisma.remind.findMany({
+      skip,
+      take,
+      cursor,
+      where,
+      orderBy,
+    });
+  }
+
+  async create(
+    data: Prisma.RemindCreateInput,
+    user: UserDTO,
+    biologicalAdditiveId: number,
+  ): Promise<Remind> {
+    data.User = {
+      connect: {
+        id: user.userId,
+      },
+    };
+
+    data.BiologicalAdditive = {
+      connect: {
+        id: biologicalAdditiveId,
+      },
+    };
+    console.log(user);
+    console.log(data);
+    return this.prisma.remind.create({
+      data,
+    });
+  }
+
+  async update(
+    params: {
+      where: Prisma.RemindWhereUniqueInput;
+      data: Prisma.RemindUpdateInput;
+    },
+    user: UserDTO,
+  ): Promise<Remind> {
+    const { where, data } = params;
+    where.userId = user.userId;
+    return this.prisma.remind.update({
+      data,
+      where,
+    });
+  }
+
+  async delete(where: Prisma.RemindWhereUniqueInput): Promise<Remind> {
+    return this.prisma.remind.delete({
+      where,
+    });
+  }
+
+  @Cron('*/1 * * * *')
+  async sendReminder() {
+
+    logger.info("cron exists");
+     const time = this.getTime();
+     const reminds = await this.reminds({
+      where : {time},
+      // include : {
+      //   BiologicalAdditive : true
+      // }
+     })
+
+     for(const remind of reminds){
+        if(remind.token){
+            await this.fcm.sendMessage(this.remindToPayloadFCM(remind));
         }
-        console.log(user)
-        console.log(data)
-        return this.prisma.remind.create({
-          data,
-        });
-      }
-    
-      async update(params: {
-        where: Prisma.RemindWhereUniqueInput;
-        data: Prisma.RemindUpdateInput;
-      }, user : UserDTO): Promise<Remind> {
-        const { where, data } = params;
-        where.userId = user.userId;
-        return this.prisma.remind.update({
-          data,
-          where,
-        });
-      }
-    
-      async delete(
-        where: Prisma.RemindWhereUniqueInput,
-      ): Promise<Remind> {
-        return this.prisma.remind.delete({
-          where,
-        });
-      }
+     }
+  }
+
+  private getTime() {
+    const currentTime = new Date();
+    const hours = currentTime.getUTCHours();
+    const minutes = currentTime.getUTCHours();
+
+    return hours * 60 + minutes;
+  }
+
+  private remindToPayloadFCM(remind : Remind) : PayloadFCM{
+     const payload : PayloadFCM = {
+       token : remind.token,
+       data : {
+         id : remind.id,
+         time : remind.time,
+         measure : remind.measure,
+       }
+     }
+
+     return payload;
+  }
 }
