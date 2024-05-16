@@ -1,6 +1,7 @@
 package com.example.sportapp
 
 import Model.SportAppApi
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
@@ -10,6 +11,7 @@ import androidx.annotation.RequiresApi
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.sportapp.services.NotificationMessagingService
 import com.example.sportapp.ui.theme.SportAppTheme
 import com.example.sportapp.view.loginScreen
 import com.example.sportapp.view.mainScreen
@@ -20,11 +22,12 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val api = SportAppApi("st");
+        val api = SportAppApi("st")
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContent {
             val navController = rememberNavController()
             SportAppTheme {
+                startService(Intent(this, NotificationMessagingService::class.java))
                 NavHost(navController = navController, startDestination = "welcomeScreen"){
                     composable("welcomeScreen"){
                         welcomeScreen(

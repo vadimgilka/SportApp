@@ -11,4 +11,5 @@ data class RemindInfo(
     val current_reception : Int,
     val createdAt : String,
     val updateAt : String,
+    val token : String
 )
