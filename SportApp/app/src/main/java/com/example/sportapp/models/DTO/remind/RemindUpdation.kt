@@ -8,4 +8,5 @@ data class RemindUpdation(
     val measure : Int,
     val count_reception : Int,
     val last_reception: String,
+    val token : String
 )
