@@ -28,9 +28,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.sportapp.R
 import com.example.sportapp.ui.theme.blue
 import com.example.sportapp.ui.theme.white
@@ -38,11 +38,10 @@ import com.example.sportapp.view.elements.goBackNavBar
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-@Preview
-fun bioListView(){
+fun bioListView(nav: NavHostController){
     Scaffold(
         topBar = { goBackNavBar {
-            //nav.navigate("exercise")
+            nav.navigate("exercise")
         } }
     ) {
         Spacer(modifier = Modifier.height(50.dp))
@@ -61,8 +60,9 @@ fun bioListView(){
                             true,
                             "Таблетосы",
                             1,
-                            {},
-                            {}
+                            //в лямбдах пишешь подгрухку данных по выбранному элементу через котнроллер
+                            {nav.navigate("bioUpdateCreateView")},
+                            {nav.navigate("bioUpdateCreateView")}
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                     }
@@ -82,7 +82,7 @@ fun bioListView(){
                 .padding(horizontal = 60.dp),
                 colors = ButtonColors(blue, white, blue, Color.Transparent),
                 shape = RoundedCornerShape(15.dp), onClick = {
-
+                    nav.navigate("bioAdd")
                 }) {
                 Text(text = "Добавить напоминание", fontSize = 15.sp)
             }
@@ -137,7 +137,7 @@ fun bioListItem(
             ) {
                 IconButton(
                     onClick = {
-                        onEditPressed
+                        onEditPressed()
                     }) {
                     Icon(
                         modifier = Modifier.width(20.dp),

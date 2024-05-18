@@ -15,7 +15,9 @@ import com.example.sportapp.view.controllers.ExerciseListsScreenController
 import com.example.sportapp.view.controllers.ComplexListScreenController
 import com.example.sportapp.view.controllers.TrainingProcessController
 import com.example.sportapp.view.controllers.UpdateExerciseController
+import com.example.sportapp.view.elements.bio.bioAdd
 import com.example.sportapp.view.elements.bio.bioListView
+import com.example.sportapp.view.elements.bio.bioUpdateCreateView
 import com.example.sportapp.view.elements.catalogue
 import com.example.sportapp.view.elements.complexAdd
 import com.example.sportapp.view.elements.complexCreate
@@ -28,7 +30,6 @@ import com.example.sportapp.view.elements.exerciseView
 import com.example.sportapp.view.elements.exertionList
 import com.example.sportapp.view.elements.leaderboard
 import com.example.sportapp.view.elements.options
-import com.example.sportapp.view.elements.pill
 import com.example.sportapp.view.elements.restTimer
 import com.example.sportapp.view.elements.timerSetUp
 import com.example.sportapp.view.elements.trainMenu
@@ -71,7 +72,7 @@ fun screenGraph(
             catalogue(nav)
         }
         composable("pill"){
-            bioListView()
+            bioListView(nav)
         }
         composable("leaderboard"){
             leaderboard()
@@ -125,6 +126,12 @@ fun screenGraph(
         }
         composable("restTimer"){
             restTimer(nav, trainingProcessController)
+        }
+        composable("bioAdd"){
+            bioAdd(nav)
+        }
+        composable("bioUpdateCreateView"){
+            bioUpdateCreateView(nav)
         }
     }
 }
