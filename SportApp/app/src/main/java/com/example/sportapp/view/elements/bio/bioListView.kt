@@ -55,7 +55,7 @@ fun bioListView(){
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                for (i in  1..3)
+                for (i in  1..15) {
                     items(1) {
                         bioListItem(
                             true,
@@ -66,6 +66,10 @@ fun bioListView(){
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                     }
+                }
+                item{
+                    Spacer(modifier = Modifier.height(35.dp))
+                }
             }
         }
         Column( Modifier
@@ -82,7 +86,7 @@ fun bioListView(){
                 }) {
                 Text(text = "Добавить напоминание", fontSize = 15.sp)
             }
-            Spacer(modifier = Modifier.height(50.dp))
+            Spacer(modifier = Modifier.height(65.dp))
         }
     }
 }
