@@ -15,6 +15,7 @@ import com.example.sportapp.view.controllers.ExerciseListsScreenController
 import com.example.sportapp.view.controllers.ComplexListScreenController
 import com.example.sportapp.view.controllers.TrainingProcessController
 import com.example.sportapp.view.controllers.UpdateExerciseController
+import com.example.sportapp.view.elements.bio.bioListView
 import com.example.sportapp.view.elements.catalogue
 import com.example.sportapp.view.elements.complexAdd
 import com.example.sportapp.view.elements.complexCreate
@@ -70,7 +71,7 @@ fun screenGraph(
             catalogue(nav)
         }
         composable("pill"){
-            pill()
+            bioListView()
         }
         composable("leaderboard"){
             leaderboard()
