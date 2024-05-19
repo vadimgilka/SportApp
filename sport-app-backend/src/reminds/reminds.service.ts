@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { Prisma, Remind, BiologicalAdditive } from '@prisma/client';
+import { isNumber } from 'lodash';
 import { FcmNotificationService } from 'src/fcm-notification/fcm-notification.service';
 import { PayloadFCM } from 'src/fcm-notification/payload';
 import logger from 'src/prisma/logger';
@@ -56,6 +57,13 @@ export class RemindsService {
     };
     console.log(user);
     console.log(data);
+
+    const time = data.time;
+
+    if(!time || time < 0 || time > 1440){
+      throw new BadRequestException("incorrect time value. Time must be between 0 and 1440");
+    }
+
     return this.prisma.remind.create({
       data,
     });
@@ -70,6 +78,13 @@ export class RemindsService {
   ): Promise<Remind> {
     const { where, data } = params;
     where.userId = user.userId;
+
+    const time = data.time;
+
+    if(isNumber(time) && (time < 0 || time > 1440)){
+      throw new BadRequestException("incorrect time value. Time must be between 0 and 1440");
+    }
+
     return this.prisma.remind.update({
       data,
       where,

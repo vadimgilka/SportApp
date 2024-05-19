@@ -12,7 +12,7 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @MinLength(7)
-  @Matches(/^[a-zA-Z0-9!@#$%^&*()-+=`~{}\[\]|:;"'<>,.?\\]{7,}$/, {
+  @Matches(/^[a-zA-Z0-9!@#$%^&*()_\-+=`~{}\[\]|:;"'<>,.?\\]{7,}$/, {
     message: 'Password is too weak',
   })
   password: string;
