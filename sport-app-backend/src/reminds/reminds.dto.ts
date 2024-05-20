@@ -1,5 +1,6 @@
 import { Optional } from "@nestjs/common";
-import { IsISO8601, IsInt, IsNotEmpty, IsString } from "class-validator";
+import { BioType, Prisma } from "@prisma/client";
+import { IsEnum, IsISO8601, IsInt, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class CreateRemindDTO {
 
@@ -17,11 +18,11 @@ export class CreateRemindDTO {
     period : number;
 
     @IsISO8601()
-    @Optional()
+    @IsOptional()
     last_reception?: string;
 
     @IsString()
-    @Optional()
+    @IsOptional()
     token? : string;    
 }
 
@@ -34,6 +35,11 @@ export class UpdateRemindDTO {
     @IsInt()
     time : number;   
 
+
+    @IsNotEmpty()
+    @IsInt()
+    biologicalAdditiveId : number;
+
     @IsInt()         
     period : number;
 
@@ -44,10 +50,43 @@ export class UpdateRemindDTO {
     count_reception : number;
 
     @IsISO8601()
-    @Optional()
+    @IsOptional()
     last_reception?: string;
 
     @IsString()
-    @Optional()
+    @IsOptional()
     token? : string;
+
+}
+
+
+export class CreateBioAdditiveRemindDTO {
+
+    @IsNotEmpty()
+    @IsInt()
+    time : number;   
+
+
+    @IsInt()         
+    period : number;
+
+    @IsISO8601()
+    @IsOptional()
+    last_reception?: string;
+
+    @IsString()
+    @IsOptional()
+    token? : string;    
+
+
+    static toCreateInput(object: CreateBioAdditiveRemindDTO, userId: number) : Prisma.RemindCreateInput{
+
+        return {... object, 
+            User : {
+                connect : {
+                    id: userId
+                }
+            }
+        }
+    }
 }
