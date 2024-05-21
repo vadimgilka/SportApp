@@ -4,7 +4,7 @@ import { JwtAuthGuard } from 'src/auth/authguard/jwt-auth.guard';
 import { User } from 'src/users/user.annotation';
 import { UserDTO } from 'src/users/users.dto';
 import { BiologicalAdditivesService } from './biological-additives.service';
-import { CreateBiologicalAdditiveDTO, UpdateBiologicalAdditiveDTO } from './biological-additives.dto';
+import { CreateBiologicalAdditiveDTO, CreateBiologicalAdditiveWithRemindsDTO, UpdateBiologicalAdditiveDTO, UpdateBiologicalAdditiveWithRemindsDTO } from './biological-additives.dto';
 
 
 @UseGuards(JwtAuthGuard)
@@ -16,6 +16,12 @@ export class BiologicalAdditivesController {
     @HttpCode(HttpStatus.CREATED)
     async create(@Body() reaction : CreateBiologicalAdditiveDTO, @User() user : UserDTO){
         return await this.bioService.create(reaction, user);
+    }
+
+    @Post("/reminds")
+    @HttpCode(HttpStatus.CREATED)
+    async createWithReminds(@Body() reaction : CreateBiologicalAdditiveWithRemindsDTO, @User() user : UserDTO){
+        return await this.bioService.createWithReminds(reaction, user);
     }
 
     @Get(':id')
@@ -34,6 +40,12 @@ export class BiologicalAdditivesController {
     async update(@Body() data : UpdateBiologicalAdditiveDTO, @User() user : UserDTO){
         const where : Prisma.BiologicalAdditiveWhereUniqueInput = {id : data.id};
         return await this.bioService.update({data, where}, user);
+    }
+
+    @Put("/reminds")
+    async updateWithReminds(@Body() data : UpdateBiologicalAdditiveWithRemindsDTO, @User() user : UserDTO){
+        const where : Prisma.BiologicalAdditiveWhereUniqueInput = {id : data.id};
+        return await this.bioService.updateWithReminds(data, user)
     }
 
     @Delete(':id')
