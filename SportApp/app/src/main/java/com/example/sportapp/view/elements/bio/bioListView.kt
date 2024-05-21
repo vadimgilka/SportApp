@@ -23,6 +23,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,13 +34,28 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.sportapp.R
+import com.example.sportapp.models.DTO.bio.BioAdditiveInfo
+import com.example.sportapp.models.DTO.bio.BioAdditiveUpdation
 import com.example.sportapp.ui.theme.blue
 import com.example.sportapp.ui.theme.white
+import com.example.sportapp.view.controllers.bio.BioAdditiveController
 import com.example.sportapp.view.elements.goBackNavBar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun bioListView(nav: NavHostController){
+fun bioListView(nav: NavHostController, controller : BioAdditiveController){
+
+    val elementslist = remember {
+        mutableStateListOf(listOf<BioAdditiveInfo>())
+    }
+
+    CoroutineScope(Dispatchers.IO).launch {
+        elementslist[0] = controller.getMany()!!
+    }
+
     Scaffold(
         topBar = { goBackNavBar {
             nav.navigate("exercise")
@@ -54,15 +71,17 @@ fun bioListView(nav: NavHostController){
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                for (i in  1..15) {
-                    items(1) {
+                for ( element in  elementslist[0]) {
+                    item{
                         bioListItem(
                             true,
-                            "Таблетосы",
-                            1,
+                            element.name,
+                            element.reminds.size,
                             //в лямбдах пишешь подгрухку данных по выбранному элементу через котнроллер
                             {nav.navigate("bioUpdateCreateView")},
-                            {nav.navigate("bioUpdateCreateView")}
+                            {nav.navigate("bioUpdateCreateView")},
+                            controller,
+                            element
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                     }
@@ -82,6 +101,7 @@ fun bioListView(nav: NavHostController){
                 .padding(horizontal = 60.dp),
                 colors = ButtonColors(blue, white, blue, Color.Transparent),
                 shape = RoundedCornerShape(15.dp), onClick = {
+                    controller.operation = BioAdditiveController.Operation.CREATE;
                     nav.navigate("bioAdd")
                 }) {
                 Text(text = "Добавить напоминание", fontSize = 15.sp)
@@ -97,7 +117,9 @@ fun bioListItem(
     name: String,
     countPerDay: Int,
     onEditPressed: () -> Unit,
-    onDeletePressed: () -> Unit
+    onDeletePressed: () -> Unit,
+    controller : BioAdditiveController,
+    bio: BioAdditiveInfo
 ){
     Box(
         modifier = Modifier
@@ -137,6 +159,8 @@ fun bioListItem(
             ) {
                 IconButton(
                     onClick = {
+                        controller.operation = BioAdditiveController.Operation.UPDATE;
+                        controller.bioAdditiveInfo = bio;
                         onEditPressed()
                     }) {
                     Icon(
@@ -148,6 +172,8 @@ fun bioListItem(
                 }
                 IconButton(
                     onClick = {
+                        controller.operation = BioAdditiveController.Operation.DELETE;
+                        controller.bioAdditiveInfo = bio;
                         onDeletePressed
                     }) {
                     Icon(
