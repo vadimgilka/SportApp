@@ -1,10 +1,10 @@
 package com.example.sportapp.view
 
 import Model.SportAppApi
+import android.annotation.SuppressLint
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -16,11 +16,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -43,10 +41,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.decode.ImageSource
+import androidx.navigation.NavHostController
 import com.example.sportapp.R
 import com.example.sportapp.ui.theme.bgGray
 import com.example.sportapp.ui.theme.blue
@@ -60,11 +57,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+@SuppressLint("SuspiciousIndentation")
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun registrationScreen(
     onClick: () -> Unit,
-    api: SportAppApi
+    api: SportAppApi,
+    navController: NavHostController,
 ) {
     var passwordInput by remember {
         mutableStateOf("")
@@ -87,7 +86,7 @@ fun registrationScreen(
             .fillMaxWidth()
             .height(40.dp)
             .background(bgGray),
-        ) {
+    ) {
         IconButton(
             onClick = {
                 onClick()
@@ -102,7 +101,8 @@ fun registrationScreen(
     Row(
         Modifier
             .fillMaxWidth()
-            .padding(top = 5.dp), horizontalArrangement = Arrangement.Center) {
+            .padding(top = 5.dp), horizontalArrangement = Arrangement.Center
+    ) {
         Text(text = "Регистрация", fontSize = 20.sp)
     }
     Column(
@@ -137,20 +137,23 @@ fun registrationScreen(
                 onValueChange = {
                     loginInput = it
                 },
-                decorationBox = {
-                        innerTextField ->
-                    Row (
+                decorationBox = { innerTextField ->
+                    Row(
                         Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Box (Modifier.weight(1f)) {
-                            if(loginInput.isEmpty()){
+                        Box(Modifier.weight(1f)) {
+                            if (loginInput.isEmpty()) {
                                 Text(text = "Логин", color = iconGray)
-                            }else {
+                            } else {
                                 innerTextField()
                             }
                         }
-                        Icon(ImageVector.vectorResource(id = R.drawable.person), tint = iconGray, contentDescription = null)
+                        Icon(
+                            ImageVector.vectorResource(id = R.drawable.person),
+                            tint = iconGray,
+                            contentDescription = null
+                        )
                     }
                 })
         }
@@ -196,18 +199,28 @@ fun registrationScreen(
                                 innerTextField()
                             }
                         }
-                        Icon(ImageVector.vectorResource(id = R.drawable.bx_lock_alt), tint = iconGray, contentDescription = null)
+                        Icon(
+                            ImageVector.vectorResource(id = R.drawable.bx_lock_alt),
+                            tint = iconGray,
+                            contentDescription = null
+                        )
                     }
                 }
             )
         }
         Spacer(modifier = Modifier.height(15.dp))
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp)
-            .padding(horizontal = 50.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
+                .padding(horizontal = 50.dp)
+        )
         {
-            Text(text = "Не менее 8 символов.\nЗапрещен ввод «?», «#», «<», «>», «%», «@», «/»", fontSize = 11.sp, color = blue)
+            Text(
+                text = "Не менее 8 символов.\nЗапрещен ввод «?», «#», «<», «>», «%», «@», «/»",
+                fontSize = 11.sp,
+                color = blue
+            )
         }
         Spacer(modifier = Modifier.height(15.dp))
         Box(
@@ -234,24 +247,30 @@ fun registrationScreen(
                 onValueChange = {
                     emailInput = it
                 },
-                decorationBox = {
-                        innerTextField ->
-                    Row (
+                decorationBox = { innerTextField ->
+                    Row(
                         Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Box (Modifier.weight(1f)) {
-                            if(emailInput.isEmpty()){
+                        Box(Modifier.weight(1f)) {
+                            if (emailInput.isEmpty()) {
                                 Text(text = "Email", color = iconGray)
-                            }else {
+                            } else {
                                 innerTextField()
                             }
                         }
-                        Icon(ImageVector.vectorResource(id = R.drawable.doge), tint = iconGray, contentDescription = null)
+                        Icon(
+                            ImageVector.vectorResource(id = R.drawable.doge),
+                            tint = iconGray,
+                            contentDescription = null
+                        )
                     }
                 })
         }
-        Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 70.dp).alpha(showError)) {
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 70.dp)
+            .alpha(showError)) {
             Spacer(modifier = Modifier.height(5.dp))
             Text(text = "Введены неверные данные", color = errorRed, fontSize = 12.sp)
         }
@@ -268,25 +287,30 @@ fun registrationScreen(
             ),
             colors = ButtonColors(green, white, green, Color.Transparent),
             shape = RoundedCornerShape(15.dp), onClick = {
-                CoroutineScope(Dispatchers.IO).launch{
+                CoroutineScope(Dispatchers.IO).launch {
                     val res = controller.onRegister(loginInput, passwordInput, emailInput)
                     Log.e("tag1", res) //"testuser0", "password1234567"
-                    if(res.equals("Authorized"))
+                    if (res.equals("Authorized")) {
                         showDialog = true
+                        CoroutineScope(Dispatchers.Main).launch {
+                            navController.navigate("mainScreen")
+                        }
+                    }
                     else
-                        showError = 1f
+                    showError = 1f
                 }
-                //onClick()
             }) {
             Text(text = "Завершить регистрацию", fontSize = 15.sp)
         }
-        if(showDialog == true) {
+        if (showDialog == true) {
             AlertDialog(
                 onDismissRequest = { showDialog = false },
                 title = { Text(text = "you have been registrated!") },
-                confirmButton = { TextButton(onClick = { showDialog = false}) {
-                    Text(text = "Закрыть", color = Color.White)
-                } })
+                confirmButton = {
+                    TextButton(onClick = { showDialog = false }) {
+                        Text(text = "Закрыть", color = Color.White)
+                    }
+                })
         }
     }
 }

@@ -210,8 +210,9 @@ fun loginScreen(nav: NavHostController,onClick: () -> Unit, api: SportAppApi) {
             colors = ButtonColors(blue, white, blue, Color.Transparent),
             shape = RoundedCornerShape(15.dp), onClick = {
                 CoroutineScope(Dispatchers.IO).launch{
-                    val res = controller.onLogin("testuser0", "password1234567")//loginInput, passwordInput)
-                    Log.e("tag1", res) //"testuser0", "password1234567"
+                    val res = controller.onLogin(loginInput, passwordInput)
+                    //"testuser0", "password1234567"
+                    //"fortesting" "fortesting"
                     if(res.equals("Authorized")) {
                         showDialog = true
                         CoroutineScope(Dispatchers.Main).launch {

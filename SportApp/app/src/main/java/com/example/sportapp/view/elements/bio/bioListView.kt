@@ -55,7 +55,7 @@ fun bioListView(nav: NavHostController){
         ) {
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
                 for (i in  1..15) {
-                    items(1) {
+                    item {
                         bioListItem(
                             true,
                             "Таблетосы",

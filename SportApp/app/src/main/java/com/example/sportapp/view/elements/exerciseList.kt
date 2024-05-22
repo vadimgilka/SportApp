@@ -86,17 +86,19 @@ fun exerciseList(
                     .fillMaxWidth()
             ) {
                 if (elementslist.size > 1) {
-                    items(elementslist[1]) {
-                        selectedGroup = it.muscleGroup
-                        exerciseElement(
-                            controller.translateGroupName(it.muscleGroup),
-                            selectedGroup,
-                            it._count,
-                            nav,
-                            true,
-                            controller
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
+                    if (elementslist[0].isNotEmpty()) {
+                        items(elementslist[1]) {
+                            selectedGroup = it.muscleGroup
+                            exerciseElement(
+                                controller.translateGroupName(it.muscleGroup),
+                                selectedGroup,
+                                it._count,
+                                nav,
+                                true,
+                                controller
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
                     }
                 }
             }
@@ -117,12 +119,14 @@ fun exerciseElement(
         modifier = Modifier.fillMaxWidth(),
         colors = ButtonColors(white, Color.Black, white, Color.Transparent),
         onClick = {
-            if (goExertion) {
-                controller.setGroup(groupValue)
-                nav.navigate("exertionList")
-            } else {
-                controller.setExertion(title)
-                nav.navigate("exerciseView")
+            if(groupValue!= null) {
+                if (goExertion) {
+                    controller.setGroup(groupValue)
+                    nav.navigate("exertionList")
+                } else {
+                    controller.setExertion(title)
+                    nav.navigate("exerciseView")
+                }
             }
         }) {
         Row(

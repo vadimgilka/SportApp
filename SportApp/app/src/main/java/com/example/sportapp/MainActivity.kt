@@ -48,7 +48,7 @@ class MainActivity : ComponentActivity() {
                                     inclusive = true
                                 }
                             }
-                        }, api = api)
+                        }, api = api, navController)
                     }
                     composable("loginScreen"){
                         loginScreen (navController,{

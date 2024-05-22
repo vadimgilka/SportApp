@@ -11,7 +11,7 @@ class RegistrationScreenController {
 
     public fun onRegister(login: String, password: String, mail: String): String {
         if(validateLogin(login) and validatePassword(password) and validateEmail(mail)) {
-            //this.api.registration(login, mail, password)
+            this.api.registration(login, mail, password)
             return "Authorized"//this.api.getStatus()
         }else{
             return "incorrect"
