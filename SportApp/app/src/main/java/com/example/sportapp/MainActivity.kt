@@ -23,6 +23,7 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        var mainActivity = this
         val api = SportAppApi("st")
         FirebaseApp.initializeApp(this);
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -62,7 +63,7 @@ class MainActivity : ComponentActivity() {
                         },api = api)
                         }
                     composable("mainScreen"){
-                        mainScreen(api)
+                        mainScreen(api, mainActivity)
                     }
                     }
                 }

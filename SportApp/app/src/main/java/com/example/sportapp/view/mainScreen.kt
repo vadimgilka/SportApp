@@ -2,6 +2,7 @@ package com.example.sportapp.view
 
 import Model.SportAppApi
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.Scaffold
@@ -43,14 +44,15 @@ import com.example.sportapp.view.elements.updateExercise
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun mainScreen(
-    api: SportAppApi
+    api: SportAppApi,
+    context : Context
 )
 {
     val contentNav = rememberNavController()
     Scaffold(
         bottomBar = { defaultNavi(controller = contentNav)}
     ) {
-        screenGraph(nav = contentNav, api = api)
+        screenGraph(nav = contentNav, api = api, context)
     }
 }
 
@@ -58,14 +60,15 @@ fun mainScreen(
 @Composable
 fun screenGraph(
     nav: NavHostController,
-    api: SportAppApi
+    api: SportAppApi,
+    context : Context
 ){
     val exerciseListsScreenController = ExerciseListsScreenController(api)
     val updateExerciseController = UpdateExerciseController(api)
     val complexListScreenController = ComplexListScreenController(api)
     val complexCreateController = ComplexCreateController(api)
     val trainingProcessController = TrainingProcessController(api)
-    val bioAdditiveController = BioAdditiveController(api)
+    val bioAdditiveController = BioAdditiveController(api, context)
     NavHost(navController = nav, startDestination = "exercise"){
         composable("exercise"){
             trainStart(nav)

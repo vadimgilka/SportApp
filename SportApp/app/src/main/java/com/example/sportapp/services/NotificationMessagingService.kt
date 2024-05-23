@@ -3,6 +3,7 @@ package com.example.sportapp.services
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.util.Log
@@ -11,7 +12,6 @@ import com.example.sportapp.MainActivity
 import com.example.sportapp.R
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import kotlin.text.toInt as toInt
 
 class NotificationMessagingService : FirebaseMessagingService() {
 
@@ -31,7 +31,7 @@ class NotificationMessagingService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         Log.d(TAG, "Refreshed token: $token")
-
+        getSharedPreferences("_", MODE_PRIVATE).edit().putString("fb", token).apply();
     }
 
     private fun sendNotification(name: String?, time: String, measure: String?) {
@@ -89,6 +89,14 @@ class NotificationMessagingService : FirebaseMessagingService() {
         private const val TAG = "NotificationMessagingService"
         private const val TIME = "time"
         private const val MEASURE = "measure"
+
+        fun getToken(context: Context): String {
+            context.getSharedPreferences("_", MODE_PRIVATE).getString("fb", "empty")?.let {
+                return it;
+            }
+
+            return "empty_token";
+        }
     }
 
 }

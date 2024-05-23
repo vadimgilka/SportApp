@@ -1,14 +1,16 @@
 package com.example.sportapp.view.controllers.bio
 
 import Model.SportAppApi
+import android.content.Context
 import com.example.sportapp.models.DTO.bio.BioAdditiveCreation
 import com.example.sportapp.models.DTO.bio.BioAdditiveInfo
 import com.example.sportapp.models.DTO.bio.BioAdditiveUpdation
 import com.example.sportapp.models.DTO.remind.RemindCreation
 import com.example.sportapp.models.DTO.remind.RemindInfo
 import com.example.sportapp.models.DTO.remind.RemindToBioCreation
+import com.example.sportapp.services.NotificationMessagingService
 
-class BioAdditiveController(var api: SportAppApi) {
+class BioAdditiveController(var api: SportAppApi, var context : Context) {
 
     private val map: Map<String, String>;
     var operation: Operation = Operation.CREATE;
@@ -84,7 +86,7 @@ class BioAdditiveController(var api: SportAppApi) {
                 info.measure,
                 info.count_reception,
                 info.last_reception,
-                info.token
+                NotificationMessagingService.getToken(context)
             )
             mutableList.add(remind)
         }
