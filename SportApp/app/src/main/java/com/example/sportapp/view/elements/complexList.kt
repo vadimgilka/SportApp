@@ -85,9 +85,9 @@ fun complexElement(name: String, index: Int, id: Int, complexListScreenControlle
         nav.navigate("complexExercises")
     }) {
         Row (Modifier.fillMaxWidth().padding(vertical = 5.dp), verticalAlignment = Alignment.CenterVertically){
-            Text(text = index.toString().plus("."))
+            Text(text = index.toString().plus("."), color = Color.Black)
             Spacer(modifier = Modifier.width(10.dp))
-            Text(text = name)
+            Text(text = name, color = Color.Black)
         }
     }
 }

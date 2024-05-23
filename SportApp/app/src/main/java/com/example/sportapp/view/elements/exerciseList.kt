@@ -148,7 +148,7 @@ fun exerciseElement(
             ) {
             }
             Spacer(modifier = Modifier.width(15.dp))
-            Text(text = title, fontSize = 19.sp)
+            Text(text = title, fontSize = 19.sp, color = Color.Black)
         }
         Row(
             Modifier.fillMaxWidth(),
@@ -160,7 +160,7 @@ fun exerciseElement(
                     count.toString()
                 } else {
                     "99+"
-                }, fontSize = 19.sp
+                }, fontSize = 19.sp, color = Color.Black
             )
         }
     }

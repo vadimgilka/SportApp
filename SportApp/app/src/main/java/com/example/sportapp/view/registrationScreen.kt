@@ -106,7 +106,7 @@ fun registrationScreen(
         Text(text = "Регистрация", fontSize = 20.sp)
     }
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.background(Color.White).fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
@@ -301,16 +301,6 @@ fun registrationScreen(
                 }
             }) {
             Text(text = "Завершить регистрацию", fontSize = 15.sp)
-        }
-        if (showDialog == true) {
-            AlertDialog(
-                onDismissRequest = { showDialog = false },
-                title = { Text(text = "you have been registrated!") },
-                confirmButton = {
-                    TextButton(onClick = { showDialog = false }) {
-                        Text(text = "Закрыть", color = Color.White)
-                    }
-                })
         }
     }
 }

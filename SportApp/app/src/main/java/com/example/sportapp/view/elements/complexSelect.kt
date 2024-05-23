@@ -93,9 +93,9 @@ fun complexElementForTrainStart(
             Modifier
                 .fillMaxWidth()
                 .padding(vertical = 5.dp), verticalAlignment = Alignment.CenterVertically){
-            Text(text = index.toString().plus("."))
+            Text(text = index.toString().plus("."), color = Color.Black)
             Spacer(modifier = Modifier.width(10.dp))
-            Text(text = item.name)
+            Text(text = item.name, color = Color.Black)
         }
     }
 }

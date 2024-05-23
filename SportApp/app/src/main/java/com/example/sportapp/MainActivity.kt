@@ -17,12 +17,14 @@ import com.example.sportapp.view.loginScreen
 import com.example.sportapp.view.mainScreen
 import com.example.sportapp.view.registrationScreen
 import com.example.sportapp.view.welcomeScreen
+import com.google.firebase.FirebaseApp
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val api = SportAppApi("st")
+        FirebaseApp.initializeApp(this);
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContent {
             val navController = rememberNavController()

@@ -43,7 +43,7 @@ fun welcomeScreen(
     onRegClick: () -> Unit, onLoginClick: () -> Unit
 ){
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.background(Color.White).fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center) {
         GifImage(modifier = Modifier.size(320.dp), R.drawable.welcome)

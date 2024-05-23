@@ -97,7 +97,7 @@ fun loginScreen(nav: NavHostController,onClick: () -> Unit, api: SportAppApi) {
         }
     }
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.background(Color.White).fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {

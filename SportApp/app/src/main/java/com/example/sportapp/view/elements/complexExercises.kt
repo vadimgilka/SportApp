@@ -101,7 +101,7 @@ fun complexExerciseElement(
             ) {
             }
             Spacer(modifier = Modifier.width(15.dp))
-            Text(text = exercise.Exercise.name, fontSize = 19.sp)
+            Text(text = exercise.Exercise.name, fontSize = 19.sp, color = Color.Black)
         }
         Row(
             Modifier.fillMaxWidth(),
@@ -113,7 +113,7 @@ fun complexExerciseElement(
                     exercise.id.toString()
                 } else {
                     "99+"
-                }, fontSize = 19.sp
+                }, fontSize = 19.sp, color = Color.Black
             )
         }
     }
