@@ -81,8 +81,9 @@ fun bioUpdateCreateView(nav: NavHostController, controller : BioAdditiveControll
     var count : Int = 1;
 
     var listOfDoaseges = remember {
-        mutableStateListOf(dosageList(controller.bioAdditiveInfo.reminds))
+        mutableStateListOf(listOf<Dosage>())
     }
+    listOfDoaseges[0] = dosageList(controller.bioAdditiveInfo.reminds)
     Scaffold(
         topBar = {
             goBackNavBar {
@@ -122,6 +123,7 @@ fun bioUpdateCreateView(nav: NavHostController, controller : BioAdditiveControll
                     singleLine = true,
                     onValueChange = {
                         name = it
+                        controller.bioAdditiveInfo.name = it
                     },
                     decorationBox = { innerTextField ->
                         Row(
@@ -150,7 +152,7 @@ fun bioUpdateCreateView(nav: NavHostController, controller : BioAdditiveControll
                     .background(white)
             )
             LazyColumn(content = {
-                items(listOfDoaseges[0].toList()) {
+                items(listOfDoaseges[0]) {
                     dosageView(dosage = it, controller = controller)
                 }
                 item {
@@ -160,7 +162,9 @@ fun bioUpdateCreateView(nav: NavHostController, controller : BioAdditiveControll
                             .height(32.dp),
                             colors = ButtonColors(blue, white, blue, Color.Transparent),
                             shape = RoundedCornerShape(15.dp),
-                            onClick = { listOfDoaseges[0].add(Dosage("Дозировка " + listOfDoaseges[0].size, RemindInfo.default())) }) {
+                            onClick = { controller.bioAdditiveInfo.reminds.add(RemindInfo.default())
+                                listOfDoaseges[0] = dosageList(controller.bioAdditiveInfo.reminds)// listOfDoaseges[0].add(Dosage("Дозировка " + listOfDoaseges[0].size, RemindInfo.default()))
+                           }) {
                             Text(text = "+", color = Color.White)
                         }
                     }
@@ -194,9 +198,15 @@ fun dosageView(dosage: Dosage, controller: BioAdditiveController) {
     var time by remember {
         mutableStateOf("8:00")
     }
+    //var should = dosage.remind.id>0
     var count by remember {
         mutableStateOf("")
     }
+//    if(dosage::remind.isInitialized){
+//        time = controller.intToTimeString(dosage.remind.time)
+//        count = dosage.remind.measure.toString()
+//        should = false
+//    }
     Box(
         Modifier
             .fillMaxWidth()
@@ -232,7 +242,9 @@ fun dosageView(dosage: Dosage, controller: BioAdditiveController) {
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 onValueChange = {
                     count = it
-                    dosage.remind.measure = it.toInt()
+                    if(it.isEmpty()) {
+                        dosage.remind.measure = it.toInt()
+                    }else{dosage.remind.measure = 0}
                 },
                 decorationBox = { innerTextField ->
                     Row(
@@ -273,7 +285,9 @@ fun dosageView(dosage: Dosage, controller: BioAdditiveController) {
                     singleLine = true,
                     onValueChange = {
                         time = it
-                        dosage.remind.time = controller.timeStringToInt(it)
+                        if(it.isNotEmpty()){
+                        //dosage.remind.time = controller.timeStringToInt(it)
+                        }
                     },
                     decorationBox = { innerTextField ->
                         Row(

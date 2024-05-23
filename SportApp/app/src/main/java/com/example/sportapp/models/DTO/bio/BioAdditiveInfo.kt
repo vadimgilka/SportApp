@@ -4,7 +4,7 @@ import com.example.sportapp.models.DTO.remind.RemindInfo
 
 data class BioAdditiveInfo(
     val id : Int,
-    val name : String,
+    var name : String,
     val description : String,
     val author_id : Int,
     val createdAt: String,

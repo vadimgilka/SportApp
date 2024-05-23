@@ -12,17 +12,15 @@ class BioAdditiveController(var api: SportAppApi) {
 
     private val map: Map<String, String>;
     var operation: Operation = Operation.CREATE;
-    var bioAdditiveInfo: BioAdditiveInfo = BioAdditiveInfo(
-        id = -1,
-        name = "name",
-        description = "description",
-        author_id = 1,
-        bioType = "Pill",
-        createdAt = "data",
-        updatedAt = "data",
-        reminds = mutableListOf()
-    );
-
+    lateinit var bioAdditiveInfo: BioAdditiveInfo;
+//id = -1,
+//        name = "name",
+//        description = "description",
+//        author_id = 1,
+//        bioType = "Pill",
+//        createdAt = "data",
+//        updatedAt = "data",
+//        reminds = mutableListOf()
     init {
         map = mapOf(PILL to PILL_RUSSIAN, POWDER to POWDER_RUSSIAN);
     }
