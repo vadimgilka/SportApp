@@ -100,7 +100,6 @@ export class RemindsService {
   @Cron('*/1 * * * *')
   async sendReminder() {
 
-    logger.info("cron exists");
      const time = this.getTime();
      const reminds = await this.reminds({
       where : {time},
@@ -110,6 +109,7 @@ export class RemindsService {
      })
 
      for(const remind of reminds){
+        logger.info(remind)
         if(remind.token){
             await this.fcm.sendMessage(this.remindToPayloadFCM(remind));
         }
@@ -119,7 +119,9 @@ export class RemindsService {
   private getTime() {
     const currentTime = new Date();
     const hours = currentTime.getUTCHours();
-    const minutes = currentTime.getUTCHours();
+    const minutes = currentTime.getUTCMinutes();
+
+    console.log(hours + ":" + minutes)
 
     return hours * 60 + minutes;
   }

@@ -1,5 +1,6 @@
+import { Optional } from '@nestjs/common';
 import { Exercise, MuscleGroup } from '@prisma/client';
-import { IsIn, IsInt, IsNotEmpty, IsNumber, MaxLength, MinLength } from 'class-validator';
+import { IsEnum, IsIn, IsInt, IsNotEmpty, IsNumber, IsOptional, MaxLength, MinLength } from 'class-validator';
 
 const nameLength = {
   min : 3,
@@ -24,6 +25,9 @@ export class CreateExerciseDto {
 
   image?: string;
   video?: string;
+
+  @IsOptional()
+  @IsEnum(MuscleGroup)
   muscleGroup : MuscleGroup;
 }
 
@@ -44,6 +48,10 @@ export class UpdateExerciseDto {
   image?: string;
   video?: string;
   author_id: number;
+
+  @IsOptional()
+  @IsEnum(MuscleGroup)
+  muscleGroup : MuscleGroup;
 }
 
 export class ExerciseTrainDto {

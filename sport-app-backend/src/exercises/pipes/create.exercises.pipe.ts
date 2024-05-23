@@ -36,6 +36,7 @@ export class CreateExercisePipe implements PipeTransform<any> {
 
     try {
       if (value.hasOwnProperty('muscleGroup')) {
+        console.log(value)
         value.muscleGroup = parseMuscleGroup(value.muscleGroup);
       }
     } catch (e) {

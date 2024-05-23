@@ -9,12 +9,9 @@ export function parseMuscleGroup(value: string): MuscleGroup {
     throw new Error('Invalid muscle group');
   }
 
-  const normalizedValue =
-    value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
-
-  if (!(normalizedValue in MuscleGroup)) {
+  if (!(value in MuscleGroup)) {
     throw new Error('Invalid muscle group');
   }
 
-  return MuscleGroup[normalizedValue];
+  return MuscleGroup[value];
 }

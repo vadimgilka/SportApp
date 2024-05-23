@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Exercise, Prisma } from '@prisma/client';
+import { Exercise, MuscleGroup, Prisma } from '@prisma/client';
 import { PrismaService } from 'nestjs-prisma';
 import { UpdateExerciseDto } from './exercises.dto';
 import { exercisePage } from './constant';
@@ -13,6 +13,7 @@ export class ExercisesService {
   constructor(private prisma: PrismaService) {}
 
   async create(data: Prisma.ExerciseCreateInput): Promise<Exercise> {
+    console.log(MuscleGroup)
     return this.prisma.exercise.create({ data });
   }
 
