@@ -86,7 +86,7 @@ fun exerciseList(
                     .fillMaxWidth()
             ) {
                 if (elementslist.size > 1) {
-                    if (elementslist[0].isNotEmpty()) {
+                    //if (elementslist[0].isNotEmpty()) {
                         items(elementslist[1]) {
                             selectedGroup = it.muscleGroup
                             exerciseElement(
@@ -98,7 +98,7 @@ fun exerciseList(
                                 controller
                             )
                             Spacer(modifier = Modifier.height(8.dp))
-                        }
+                        //}
                     }
                 }
             }
