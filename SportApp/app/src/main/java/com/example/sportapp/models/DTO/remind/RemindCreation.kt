@@ -7,5 +7,5 @@ data class RemindCreation(
     val measure : Int,
     val count_reception : Int,
     val last_reception: String,
-    val token : String
+    var token : String
 )

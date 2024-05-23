@@ -26,11 +26,12 @@ import com.example.sportapp.ui.theme.blue
 import com.example.sportapp.ui.theme.green
 import com.example.sportapp.ui.theme.iconGray
 import com.example.sportapp.ui.theme.white
+import com.example.sportapp.view.controllers.bio.BioAdditiveController
 import com.example.sportapp.view.elements.goBackNavBar
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun bioAdd(nav: NavHostController) {
+fun bioAdd(nav: NavHostController, controller: BioAdditiveController) {
     Scaffold(
         topBar = { goBackNavBar {
             nav.navigate("pill")
@@ -51,9 +52,10 @@ fun bioAdd(nav: NavHostController) {
                 .padding(horizontal = 60.dp),
                 colors = ButtonColors(blue, white, blue, Color.Transparent),
                 shape = RoundedCornerShape(15.dp), onClick = {
+                    controller.bioAdditiveInfo.bioType = BioAdditiveController.PILL;
                     nav.navigate("bioUpdateCreateView")
                 }) {
-                Text(text = "Таблетки", fontSize = 15.sp)
+                Text(text = BioAdditiveController.PILL_RUSSIAN, fontSize = 15.sp)
             }
             Spacer(modifier = Modifier.height(15.dp))
             Button(modifier = Modifier
@@ -62,9 +64,10 @@ fun bioAdd(nav: NavHostController) {
                 .padding(horizontal = 60.dp),
                 colors = ButtonColors(green, white, blue, Color.Transparent),
                 shape = RoundedCornerShape(15.dp), onClick = {
+                    controller.bioAdditiveInfo.bioType = BioAdditiveController.POWDER;
                     nav.navigate("bioUpdateCreateView")
                 }) {
-                Text(text = "Порошки", fontSize = 15.sp)
+                Text(text = BioAdditiveController.POWDER_RUSSIAN, fontSize = 15.sp)
             }
             Spacer(modifier = Modifier.height(15.dp))
             Button(modifier = Modifier

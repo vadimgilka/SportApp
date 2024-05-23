@@ -15,6 +15,7 @@ import com.example.sportapp.view.controllers.ExerciseListsScreenController
 import com.example.sportapp.view.controllers.ComplexListScreenController
 import com.example.sportapp.view.controllers.TrainingProcessController
 import com.example.sportapp.view.controllers.UpdateExerciseController
+import com.example.sportapp.view.controllers.bio.BioAdditiveController
 import com.example.sportapp.view.elements.bio.bioAdd
 import com.example.sportapp.view.elements.bio.bioListView
 import com.example.sportapp.view.elements.bio.bioUpdateCreateView
@@ -64,6 +65,7 @@ fun screenGraph(
     val complexListScreenController = ComplexListScreenController(api)
     val complexCreateController = ComplexCreateController(api)
     val trainingProcessController = TrainingProcessController(api)
+    val bioAdditiveController = BioAdditiveController(api)
     NavHost(navController = nav, startDestination = "exercise"){
         composable("exercise"){
             trainStart(nav)
@@ -72,7 +74,7 @@ fun screenGraph(
             catalogue(nav)
         }
         composable("pill"){
-            bioListView(nav)
+            bioListView(nav, bioAdditiveController)
         }
         composable("leaderboard"){
             leaderboard()
@@ -128,10 +130,10 @@ fun screenGraph(
             restTimer(nav, trainingProcessController)
         }
         composable("bioAdd"){
-            bioAdd(nav)
+            bioAdd(nav, bioAdditiveController)
         }
         composable("bioUpdateCreateView"){
-            bioUpdateCreateView(nav)
+            bioUpdateCreateView(nav, bioAdditiveController)
         }
     }
 }

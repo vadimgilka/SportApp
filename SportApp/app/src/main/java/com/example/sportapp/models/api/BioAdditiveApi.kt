@@ -8,13 +8,13 @@ import retrofit2.http.*
 interface BioAdditiveApi {
 
     @Headers("Connection: keep-alive")
-    @POST("api/biological-additives")
+    @POST("api/biological-additives/reminds")
     suspend fun create(
         @Header("Authorization") bearer: String, bioAdditiveCreation: BioAdditiveCreation
     ): BioAdditiveInfo
 
     @Headers("Connection: keep-alive")
-    @PUT("api/biological-additives")
+    @PUT("api/biological-additives/reminds")
     suspend fun update(
         @Header("Authorization") bearer: String, bioAdditiveUpdation: BioAdditiveUpdation
     ): BioAdditiveInfo

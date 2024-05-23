@@ -32,6 +32,7 @@ import com.example.sportapp.models.api.RemindApi
 import com.example.sportapp.models.api.RequestApi
 import com.example.sportapp.models.api.UpdateTrainExerciseApi
 import com.example.sportapp.models.api.complexListApi
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -431,9 +432,9 @@ class SportAppApi : AbstractApi {
             .create(BioAdditiveApi::class.java);
     }
 
-    public suspend fun getBioAdditiveList(): List<BioAdditiveInfo>? {
+    public suspend fun getBioAdditiveList(): List<BioAdditiveInfo> {
 
-        var bioAdditive: List<BioAdditiveInfo>? = null;
+        var bioAdditive: List<BioAdditiveInfo> = listOf();
         return withContext(Dispatchers.IO) {
             if (testConnection()) {
                 val request = bioAddtitveApi();
@@ -533,6 +534,7 @@ class SportAppApi : AbstractApi {
         return withContext(Dispatchers.IO) {
             if (testConnection()) {
                 val request = remindApi();
+                remindCreation.token = FirebaseMessaging.getInstance().token.toString();
                 val res = request.create("Bearer ".plus(token), remindCreation)
                 if (res != null) {
                     remind = res

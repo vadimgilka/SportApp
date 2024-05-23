@@ -43,24 +43,45 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.sportapp.R
+import com.example.sportapp.models.DTO.remind.RemindInfo
 import com.example.sportapp.ui.theme.blue
 import com.example.sportapp.ui.theme.green
 import com.example.sportapp.ui.theme.iconGray
 import com.example.sportapp.ui.theme.white
+import com.example.sportapp.view.controllers.bio.BioAdditiveController
 import com.example.sportapp.view.elements.goBackNavBar
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class Dosage(var name: String, var time: String, var count: Int) {
+class Dosage(var name: String,  var remind : RemindInfo) {
 
+}
+
+fun dosageList(reminds: List<RemindInfo>) : MutableList<Dosage> {
+    var list = mutableListOf<Dosage>()
+    var cnt = 1;
+    for(remind in reminds){
+        list.add(Dosage("Дозировка $cnt", remind))
+    }
+
+    return list
+}
+
+fun remindList(dosage: List<Dosage>) : MutableList<RemindInfo>{
+    return dosage.map{it.remind}.toMutableList();
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun bioUpdateCreateView(nav: NavHostController) {
+fun bioUpdateCreateView(nav: NavHostController, controller : BioAdditiveController) {
     var name by remember {
-        mutableStateOf("")
+        mutableStateOf(controller.bioAdditiveInfo.name)
     }
+    var count : Int = 1;
+
     var listOfDoaseges = remember {
-        mutableStateListOf(Dosage("Дозирока 1", "8:00", 0))
+        mutableStateListOf(dosageList(controller.bioAdditiveInfo.reminds))
     }
     Scaffold(
         topBar = {
@@ -129,8 +150,8 @@ fun bioUpdateCreateView(nav: NavHostController) {
                     .background(white)
             )
             LazyColumn(content = {
-                items(listOfDoaseges.toList()) {
-                    dosageView(dosage = it)
+                items(listOfDoaseges[0].toList()) {
+                    dosageView(dosage = it, controller = controller)
                 }
                 item {
                     Row (modifier = Modifier
@@ -139,7 +160,7 @@ fun bioUpdateCreateView(nav: NavHostController) {
                             .height(32.dp),
                             colors = ButtonColors(blue, white, blue, Color.Transparent),
                             shape = RoundedCornerShape(15.dp),
-                            onClick = { listOfDoaseges.add(Dosage(name, "11:00", 0)) }) {
+                            onClick = { listOfDoaseges[0].add(Dosage("Дозировка " + listOfDoaseges[0].size, RemindInfo.default())) }) {
                             Text(text = "+", color = Color.White)
                         }
                     }
@@ -154,6 +175,10 @@ fun bioUpdateCreateView(nav: NavHostController) {
                 .padding(horizontal = 60.dp),
                 colors = ButtonColors(green, white, iconGray, Color.Transparent),
                 shape = RoundedCornerShape(15.dp), onClick = {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        controller.bioAdditiveInfo.reminds = remindList(listOfDoaseges[0])
+                        controller.makeOperation();
+                    }
                     nav.navigate("pill")
                 }) {
                 Text(text = "Сохранить", fontSize = 15.sp)
@@ -165,7 +190,7 @@ fun bioUpdateCreateView(nav: NavHostController) {
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun dosageView(dosage: Dosage) {
+fun dosageView(dosage: Dosage, controller: BioAdditiveController) {
     var time by remember {
         mutableStateOf("8:00")
     }
@@ -207,7 +232,7 @@ fun dosageView(dosage: Dosage) {
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 onValueChange = {
                     count = it
-                    dosage.count = it.toInt()
+                    dosage.remind.measure = it.toInt()
                 },
                 decorationBox = { innerTextField ->
                     Row(
@@ -248,7 +273,7 @@ fun dosageView(dosage: Dosage) {
                     singleLine = true,
                     onValueChange = {
                         time = it
-                        dosage.time = it
+                        dosage.remind.time = controller.timeStringToInt(it)
                     },
                     decorationBox = { innerTextField ->
                         Row(
