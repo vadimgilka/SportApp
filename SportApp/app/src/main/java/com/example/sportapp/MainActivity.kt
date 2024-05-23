@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -25,12 +26,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         var mainActivity = this
         val api = SportAppApi("st")
-        FirebaseApp.initializeApp(this);
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContent {
             val navController = rememberNavController()
             SportAppTheme {
                 startService(Intent(this, NotificationMessagingService::class.java))
+                FirebaseApp.initializeApp(this);
+                Log.d("Token ", NotificationMessagingService.getToken(this))
                 NavHost(navController = navController, startDestination = "welcomeScreen"){
                     composable("welcomeScreen"){
                         welcomeScreen(
