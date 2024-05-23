@@ -307,7 +307,7 @@ class SportAppApi : AbstractApi {
 
     public suspend fun getExerciseGroupsCount(): List<GroupPreview> {
         var groupPreviews: List<GroupPreview> =
-            MutableList<GroupPreview>(1, { GroupPreview(0, "not set(") })
+            listOf<GroupPreview>()
         return withContext(Dispatchers.IO) {
             if (testConnection()) {
                 val request = retrofit.baseUrl(url)

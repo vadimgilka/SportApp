@@ -10,13 +10,13 @@ interface BioAdditiveApi {
     @Headers("Connection: keep-alive")
     @POST("api/biological-additives/reminds")
     suspend fun create(
-        @Header("Authorization") bearer: String, bioAdditiveCreation: BioAdditiveCreation
+        @Header("Authorization") bearer: String, @Body bioAdditiveCreation: BioAdditiveCreation
     ): BioAdditiveInfo
 
     @Headers("Connection: keep-alive")
     @PUT("api/biological-additives/reminds")
     suspend fun update(
-        @Header("Authorization") bearer: String, bioAdditiveUpdation: BioAdditiveUpdation
+        @Header("Authorization") bearer: String, @Body bioAdditiveUpdation: BioAdditiveUpdation
     ): BioAdditiveInfo
 
     @DELETE("api/biological-additives/{id}")

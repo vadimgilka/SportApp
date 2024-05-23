@@ -51,6 +51,9 @@ fun exerciseList(
 ) {
     updateExerciseController.setIsComplex(false)
     controller.unsetComplexData()
+    var shouldShow by remember {
+        mutableStateOf(false)
+    }
     val elementslist = remember {
         mutableStateListOf(listOf<GroupPreview>())
     }
@@ -60,6 +63,9 @@ fun exerciseList(
     var exerciseGroupsList: List<GroupPreview> = listOf()
     CoroutineScope(Dispatchers.IO).launch {
         exerciseGroupsList = controller.loadExercises()
+        if (exerciseGroupsList.isNotEmpty()) {
+            shouldShow = true
+        }
         if (elementslist.size > 1) {
             elementslist[1] = exerciseGroupsList
         } else {
@@ -86,7 +92,7 @@ fun exerciseList(
                     .fillMaxWidth()
             ) {
                 if (elementslist.size > 1) {
-                    //if (elementslist[0].isNotEmpty()) {
+                    if (shouldShow) {
                         items(elementslist[1]) {
                             selectedGroup = it.muscleGroup
                             exerciseElement(
@@ -98,7 +104,7 @@ fun exerciseList(
                                 controller
                             )
                             Spacer(modifier = Modifier.height(8.dp))
-                        //}
+                        }
                     }
                 }
             }
