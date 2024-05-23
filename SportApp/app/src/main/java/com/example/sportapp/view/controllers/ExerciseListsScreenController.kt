@@ -49,6 +49,9 @@ class ExerciseListsScreenController(api: SportAppApi) {
         }
     }
 
+    fun isSetComplexEcertion(): Boolean{
+        if(::currentComplexExertion.isInitialized){return true}else{return false}
+    }
     fun getComplexExertion(): ExerciseTrainInfo {
         return this.currentComplexExertion
     }

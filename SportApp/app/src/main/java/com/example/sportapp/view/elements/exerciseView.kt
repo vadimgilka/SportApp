@@ -35,7 +35,9 @@ import com.example.sportapp.view.controllers.UpdateExerciseController
 @Composable
 fun exerciseView(controller: ExerciseListsScreenController, nav: NavHostController, editController: UpdateExerciseController) {
     val exertion = controller.getExertion()
-    editController.setEditedCompexExercise(controller.getComplexExertion())
+    if(controller.isSetComplexEcertion()) {
+        editController.setEditedCompexExercise(controller.getComplexExertion())
+    }
     Scaffold(topBar = {
         editNavBar({
             nav.navigate("exercise")
