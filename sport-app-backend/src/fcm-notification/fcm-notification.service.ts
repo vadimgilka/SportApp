@@ -14,6 +14,7 @@ import logger from 'src/prisma/logger';
 
    async sendMessage(payload : PayloadFCM){
       try {
+        logger.info(JSON.stringify(payload))
          await admin.messaging().send(payload);
       }
       catch(e){
