@@ -130,8 +130,13 @@ export class RemindsService {
      const payload : PayloadFCM = {
        token : remind.token,
        data : {
-         id : remind.id,
-         time : remind.time,
+
+        notification : {
+          title : "время пить таблетки",
+          body : "твоя дозировка =  " + remind.measure,  
+      },
+         id : String(remind.id),
+         time : String(remind.time),
          measure : remind.measure,
        }
      }
