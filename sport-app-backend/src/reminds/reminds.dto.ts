@@ -17,10 +17,6 @@ export class CreateRemindDTO {
     @IsInt()         
     period : number;
 
-    @IsISO8601()
-    @IsOptional()
-    last_reception?: string;
-
     @IsString()
     @IsOptional()
     token? : string;    
@@ -49,10 +45,6 @@ export class UpdateRemindDTO {
     @IsInt()
     count_reception : number;
 
-    @IsISO8601()
-    @IsOptional()
-    last_reception?: string;
-
     @IsString()
     @IsOptional()
     token? : string;
@@ -69,10 +61,6 @@ export class CreateBioAdditiveRemindDTO {
 
     @IsInt()         
     period : number;
-
-    @IsISO8601()
-    @IsOptional()
-    last_reception?: string;
 
     @IsString()
     @IsOptional()

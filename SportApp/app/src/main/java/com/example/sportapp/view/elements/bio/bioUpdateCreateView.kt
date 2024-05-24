@@ -241,7 +241,7 @@ fun dosageView(dosage: Dosage, controller: BioAdditiveController) {
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 onValueChange = {
                     count = it
-                    if(it.isEmpty()) {
+                    if(it.isNotEmpty()) {
                         dosage.remind.measure = it.toInt()
                     }else{dosage.remind.measure = 0}
                 },

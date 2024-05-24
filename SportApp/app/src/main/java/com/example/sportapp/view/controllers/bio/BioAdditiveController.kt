@@ -7,11 +7,17 @@ import com.example.sportapp.models.DTO.remind.RemindInfo
 import com.example.sportapp.models.DTO.remind.RemindToBioCreation
 import com.example.sportapp.services.NotificationMessagingService
 
-class BioAdditiveController(var api: SportAppApi, var context : Context) {
+class BioAdditiveController(var api: SportAppApi, var context: Context) {
 
     private val map: Map<String, String>;
     var operation: Operation = Operation.CREATE;
-    lateinit var currentBioAdditive : BioAdditiveDTO;
+    var currentBioAdditive = BioAdditiveDTO(
+        id = -1,
+        name = "default",
+        description = "default",
+        reminds = mutableListOf(),
+        bioType = PILL
+    );
 
     fun initBioAdditive(info: BioAdditiveInfo) {
         currentBioAdditive = BioAdditiveDTO(
@@ -23,19 +29,19 @@ class BioAdditiveController(var api: SportAppApi, var context : Context) {
         )
     }
 
-    fun getName() : String {
+    fun getName(): String {
         return currentBioAdditive.name
     }
 
-    fun setName(name : String) {
+    fun setName(name: String) {
         currentBioAdditive.name = name
     }
 
-    fun setBioType(type : String){
+    fun setBioType(type: String) {
         currentBioAdditive.bioType = type
     }
 
-    fun addRemind(){
+    fun addRemind() {
         currentBioAdditive.reminds.add(RemindDto(-1, 100, "08:00", "set_token"))
     }
 
@@ -116,11 +122,18 @@ class BioAdditiveController(var api: SportAppApi, var context : Context) {
         return mutableList;
     }
 
-    fun infoToDto(reminds : MutableList<RemindInfo>) : MutableList<RemindDto>{
+    fun infoToDto(reminds: MutableList<RemindInfo>): MutableList<RemindDto> {
         var list = mutableListOf<RemindDto>()
 
-        for(remind in reminds){
-            list.add(RemindDto(remind.id, measure = remind.measure, time = intToTimeString(remind.time), token = remind.token))
+        for (remind in reminds) {
+            list.add(
+                RemindDto(
+                    remind.id,
+                    measure = remind.measure,
+                    time = intToTimeString(remind.time),
+                    token = remind.token
+                )
+            )
         }
         return list
     }

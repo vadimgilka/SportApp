@@ -92,6 +92,7 @@ class NotificationMessagingService : FirebaseMessagingService() {
 
         fun getToken(context: Context): String {
             context.getSharedPreferences("_", MODE_PRIVATE).getString("fb", "empty")?.let {
+                Log.d(TAG, it)
                 return it;
             }
 

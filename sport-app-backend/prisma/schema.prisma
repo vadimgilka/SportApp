@@ -141,7 +141,6 @@ model Remind {
   measure              Float               @default(2.5)
   count_reception      Int                 @default(1)
   current_reception    Int                 @default(0)
-  last_reception       DateTime            @default(now()) // последнее употребление 
   createdAt            DateTime            @default(now())
   updatedAt            DateTime            @updatedAt
   BiologicalAdditive   BiologicalAdditive? @relation(fields: [biologicalAdditiveId], references: [id])
