@@ -31,6 +31,10 @@ class BioAdditiveController(var api: SportAppApi, var context : Context) {
         currentBioAdditive.name = name
     }
 
+    fun setBioType(type : String){
+        currentBioAdditive.bioType = type
+    }
+
     fun addRemind(){
         currentBioAdditive.reminds.add(RemindDto(-1, 100, "08:00", "set_token"))
     }

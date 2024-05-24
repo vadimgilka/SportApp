@@ -52,7 +52,7 @@ fun bioAdd(nav: NavHostController, controller: BioAdditiveController) {
                 .padding(horizontal = 60.dp),
                 colors = ButtonColors(blue, white, blue, Color.Transparent),
                 shape = RoundedCornerShape(15.dp), onClick = {
-                    controller.bioAdditiveInfo.bioType = BioAdditiveController.PILL;
+                    controller.setBioType(BioAdditiveController.PILL);
                     nav.navigate("bioUpdateCreateView")
                 }) {
                 Text(text = BioAdditiveController.PILL_RUSSIAN, fontSize = 15.sp)
@@ -64,7 +64,7 @@ fun bioAdd(nav: NavHostController, controller: BioAdditiveController) {
                 .padding(horizontal = 60.dp),
                 colors = ButtonColors(green, white, blue, Color.Transparent),
                 shape = RoundedCornerShape(15.dp), onClick = {
-                    controller.bioAdditiveInfo.bioType = BioAdditiveController.POWDER;
+                    controller.setBioType(BioAdditiveController.POWDER);
                     nav.navigate("bioUpdateCreateView")
                 }) {
                 Text(text = BioAdditiveController.POWDER_RUSSIAN, fontSize = 15.sp)
