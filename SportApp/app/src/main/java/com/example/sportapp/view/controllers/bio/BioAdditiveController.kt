@@ -2,10 +2,7 @@ package com.example.sportapp.view.controllers.bio
 
 import Model.SportAppApi
 import android.content.Context
-import com.example.sportapp.models.DTO.bio.BioAdditiveCreation
-import com.example.sportapp.models.DTO.bio.BioAdditiveInfo
-import com.example.sportapp.models.DTO.bio.BioAdditiveUpdation
-import com.example.sportapp.models.DTO.remind.RemindCreation
+import com.example.sportapp.models.DTO.bio.*
 import com.example.sportapp.models.DTO.remind.RemindInfo
 import com.example.sportapp.models.DTO.remind.RemindToBioCreation
 import com.example.sportapp.services.NotificationMessagingService
@@ -14,17 +11,37 @@ class BioAdditiveController(var api: SportAppApi, var context : Context) {
 
     private val map: Map<String, String>;
     var operation: Operation = Operation.CREATE;
-    lateinit var bioAdditiveInfo: BioAdditiveInfo;
-//id = -1,
-//        name = "name",
-//        description = "description",
-//        author_id = 1,
-//        bioType = "Pill",
-//        createdAt = "data",
-//        updatedAt = "data",
-//        reminds = mutableListOf()
+    lateinit var currentBioAdditive : BioAdditiveDTO;
+
+    fun initBioAdditive(info: BioAdditiveInfo) {
+        currentBioAdditive = BioAdditiveDTO(
+            id = info.id,
+            name = info.name,
+            description = info.description,
+            reminds = infoToDto(info.reminds),
+            bioType = info.bioType
+        )
+    }
+
+    fun getName() : String {
+        return currentBioAdditive.name
+    }
+
+    fun setName(name : String) {
+        currentBioAdditive.name = name
+    }
+
+    fun addRemind(){
+        currentBioAdditive.reminds.add(RemindDto(-1, 100, "08:00", "set_token"))
+    }
+
+    fun getReminds(): MutableList<RemindDto> {
+        return currentBioAdditive.reminds
+    }
+
+
     init {
-        map = mapOf(PILL to PILL_RUSSIAN, POWDER to POWDER_RUSSIAN);
+        map = mapOf(PILL to PILL_RUSSIAN, POWDER to POWDER_RUSSIAN)
     }
 
     suspend fun create(bioAdditiveCreation: BioAdditiveCreation): BioAdditiveInfo? {
@@ -75,23 +92,33 @@ class BioAdditiveController(var api: SportAppApi, var context : Context) {
         UPDATE,
     }
 
-    fun remindInfoToCreation(remindInfos: MutableList<RemindInfo>): MutableList<RemindToBioCreation> {
 
-        var mutableList: MutableList<RemindToBioCreation> = mutableListOf();
+    fun remindInfoToCreation(reminds: MutableList<RemindDto>): MutableList<RemindToBioCreation> {
 
-        for (info in remindInfos) {
+        var mutableList: MutableList<RemindToBioCreation> = mutableListOf()
+
+        for (info in reminds) {
             var remind = RemindToBioCreation(
-                info.time,
-                period = info.period,
+                timeStringToInt(info.time),
+                period = 1,
                 info.measure,
-                info.count_reception,
-                info.last_reception,
+                30,
+                null,
                 NotificationMessagingService.getToken(context)
             )
             mutableList.add(remind)
         }
 
         return mutableList;
+    }
+
+    fun infoToDto(reminds : MutableList<RemindInfo>) : MutableList<RemindDto>{
+        var list = mutableListOf<RemindDto>()
+
+        for(remind in reminds){
+            list.add(RemindDto(remind.id, measure = remind.measure, time = intToTimeString(remind.time), token = remind.token))
+        }
+        return list
     }
 
     fun intToTimeString(minutes: Int): String {
@@ -102,7 +129,7 @@ class BioAdditiveController(var api: SportAppApi, var context : Context) {
 
     fun timeStringToInt(time: String): Int {
 
-        val regex = """^\d{2}:\d{2}$""".toRegex()
+        val regex = """^\d{1,2}:\d{2}$""".toRegex()
         if (!regex.matches(time)) {
             return 0
         }
@@ -122,29 +149,33 @@ class BioAdditiveController(var api: SportAppApi, var context : Context) {
         when (this.operation) {
             Operation.CREATE -> {
                 var bioAdditiveCreation = BioAdditiveCreation(
-                    bioAdditiveInfo.name,
-                    bioAdditiveInfo.description,
-                    remindInfoToCreation(bioAdditiveInfo.reminds),
-                    bioAdditiveInfo.bioType
+                    currentBioAdditive.name,
+                    currentBioAdditive.description,
+                    remindInfoToCreation(currentBioAdditive.reminds),
+                    currentBioAdditive.bioType
                 )
 
                 this.create(bioAdditiveCreation);
             };
             Operation.DELETE -> {
-                delete(bioAdditiveInfo.id)
+                delete(currentBioAdditive.id)
             };
             Operation.UPDATE -> {
                 var bioAdditiveUpdation = BioAdditiveUpdation(
-                    bioAdditiveInfo.id,
-                    bioAdditiveInfo.name,
-                    bioAdditiveInfo.description,
-                    remindInfoToCreation(bioAdditiveInfo.reminds),
-                    bioAdditiveInfo.bioType
+                    currentBioAdditive.id,
+                    currentBioAdditive.name,
+                    currentBioAdditive.description,
+                    remindInfoToCreation(currentBioAdditive.reminds),
+                    currentBioAdditive.bioType
                 )
 
                 this.update(bioAdditiveUpdation);
             };
 
         }
+    }
+
+    fun setReminds(remindList: MutableList<RemindDto>) {
+        currentBioAdditive.reminds = remindList
     }
 }

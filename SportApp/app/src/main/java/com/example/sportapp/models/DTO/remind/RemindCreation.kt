@@ -6,6 +6,6 @@ data class RemindCreation(
     val biologicalAdditiveId: Int,
     val measure : Int,
     val count_reception : Int,
-    val last_reception: String,
+    val last_reception: String?,
     var token : String
 )

@@ -160,7 +160,7 @@ fun bioListItem(
                 IconButton(
                     onClick = {
                         controller.operation = BioAdditiveController.Operation.UPDATE;
-                        controller.bioAdditiveInfo = bio;
+                        controller.initBioAdditive(bio);
                         onEditPressed()
                     }) {
                     Icon(
@@ -173,7 +173,7 @@ fun bioListItem(
                 IconButton(
                     onClick = {
                         controller.operation = BioAdditiveController.Operation.DELETE;
-                        controller.bioAdditiveInfo = bio;
+                        controller.initBioAdditive(bio);
                         onDeletePressed
                     }) {
                     Icon(

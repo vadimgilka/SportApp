@@ -43,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.sportapp.R
+import com.example.sportapp.models.DTO.bio.RemindDto
 import com.example.sportapp.models.DTO.remind.RemindInfo
 import com.example.sportapp.ui.theme.blue
 import com.example.sportapp.ui.theme.green
@@ -54,11 +55,11 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class Dosage(var name: String,  var remind : RemindInfo) {
+class Dosage(var name: String,  var remind : RemindDto) {
 
 }
 
-fun dosageList(reminds: List<RemindInfo>) : MutableList<Dosage> {
+fun dosageList(reminds: List<RemindDto>) : MutableList<Dosage> {
     var list = mutableListOf<Dosage>()
     var cnt = 1;
     for(remind in reminds){
@@ -68,7 +69,7 @@ fun dosageList(reminds: List<RemindInfo>) : MutableList<Dosage> {
     return list
 }
 
-fun remindList(dosage: List<Dosage>) : MutableList<RemindInfo>{
+fun remindList(dosage: List<Dosage>) : MutableList<RemindDto>{
     return dosage.map{it.remind}.toMutableList();
 }
 
@@ -76,14 +77,14 @@ fun remindList(dosage: List<Dosage>) : MutableList<RemindInfo>{
 @Composable
 fun bioUpdateCreateView(nav: NavHostController, controller : BioAdditiveController) {
     var name by remember {
-        mutableStateOf(controller.bioAdditiveInfo.name)
+        mutableStateOf(controller.getName())
     }
     var count : Int = 1;
 
     var listOfDoaseges = remember {
         mutableStateListOf(listOf<Dosage>())
     }
-    listOfDoaseges[0] = dosageList(controller.bioAdditiveInfo.reminds)
+    listOfDoaseges[0] = dosageList(controller.getReminds())
     Scaffold(
         topBar = {
             goBackNavBar {
@@ -123,7 +124,7 @@ fun bioUpdateCreateView(nav: NavHostController, controller : BioAdditiveControll
                     singleLine = true,
                     onValueChange = {
                         name = it
-                        controller.bioAdditiveInfo.name = it
+                        controller.setName(name)
                     },
                     decorationBox = { innerTextField ->
                         Row(
@@ -162,8 +163,8 @@ fun bioUpdateCreateView(nav: NavHostController, controller : BioAdditiveControll
                             .height(32.dp),
                             colors = ButtonColors(blue, white, blue, Color.Transparent),
                             shape = RoundedCornerShape(15.dp),
-                            onClick = { controller.bioAdditiveInfo.reminds.add(RemindInfo.default())
-                                listOfDoaseges[0] = dosageList(controller.bioAdditiveInfo.reminds)// listOfDoaseges[0].add(Dosage("Дозировка " + listOfDoaseges[0].size, RemindInfo.default()))
+                            onClick = { controller.addRemind()
+                                listOfDoaseges[0] = dosageList(controller.getReminds())// listOfDoaseges[0].add(Dosage("Дозировка " + listOfDoaseges[0].size, RemindInfo.default()))
                            }) {
                             Text(text = "+", color = Color.White)
                         }
@@ -180,7 +181,7 @@ fun bioUpdateCreateView(nav: NavHostController, controller : BioAdditiveControll
                 colors = ButtonColors(green, white, iconGray, Color.Transparent),
                 shape = RoundedCornerShape(15.dp), onClick = {
                     CoroutineScope(Dispatchers.IO).launch {
-                        controller.bioAdditiveInfo.reminds = remindList(listOfDoaseges[0])
+                        controller.setReminds(remindList(listOfDoaseges[0]))
                         controller.makeOperation();
                     }
                     nav.navigate("pill")
@@ -198,15 +199,13 @@ fun dosageView(dosage: Dosage, controller: BioAdditiveController) {
     var time by remember {
         mutableStateOf("8:00")
     }
-    //var should = dosage.remind.id>0
     var count by remember {
         mutableStateOf("")
     }
-//    if(dosage::remind.isInitialized){
-//        time = controller.intToTimeString(dosage.remind.time)
-//        count = dosage.remind.measure.toString()
-//        should = false
-//    }
+    if(dosage.remind.id > 0){
+        time = dosage.remind.time
+        count = dosage.remind.measure.toString()
+    }
     Box(
         Modifier
             .fillMaxWidth()
@@ -285,9 +284,7 @@ fun dosageView(dosage: Dosage, controller: BioAdditiveController) {
                     singleLine = true,
                     onValueChange = {
                         time = it
-                        if(it.isNotEmpty()){
-                        //dosage.remind.time = controller.timeStringToInt(it)
-                        }
+                        dosage.remind.time = it
                     },
                     decorationBox = { innerTextField ->
                         Row(
