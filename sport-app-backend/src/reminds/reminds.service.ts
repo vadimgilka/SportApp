@@ -132,17 +132,17 @@ export class RemindsService {
   private remindToPayloadFCM(remind: Remind): PayloadFCM {
     const payload: PayloadFCM = {
       token: remind.token,
+      notification: {
+        title: 'время пить таблетки',
+        body: 'твоя дозировка =  ' + remind.measure,
+      },
       data: {
-        notification: {
-          title: 'время пить таблетки',
-          body: 'твоя дозировка =  ' + remind.measure,
-        },
         id: String(remind.id),
         time: String(remind.time),
         measure: String(remind.measure),
       },
     };
-
+    
     return payload;
   }
 }
