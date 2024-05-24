@@ -17,7 +17,7 @@ import logger from 'src/prisma/logger';
          await admin.messaging().send(payload);
       }
       catch(e){
-        logger.error(payload + " not was messaged");
+        logger.error(payload + " not was messaged because " + e.message);
       }
    }
  }

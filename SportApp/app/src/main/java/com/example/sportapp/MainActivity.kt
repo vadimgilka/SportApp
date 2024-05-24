@@ -5,7 +5,10 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -26,6 +29,13 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         var mainActivity = this
         val api = SportAppApi("st")
+        // Устанавливаем глобальный обработчик исключений
+        Thread.setDefaultUncaughtExceptionHandler { thread, throwable ->
+            // Обработка исключения
+            Handler(Looper.getMainLooper()).post {
+                showToastWithException(throwable)
+            }
+        }
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContent {
             val navController = rememberNavController()
@@ -71,4 +81,10 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+
+    private fun showToastWithException(throwable: Throwable) {
+        // Показ Toast с исключением
+        val message = throwable.localizedMessage ?: "Unknown error"
+        Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()
+    }
     }

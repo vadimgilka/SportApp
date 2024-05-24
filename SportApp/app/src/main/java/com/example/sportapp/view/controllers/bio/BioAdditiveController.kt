@@ -2,6 +2,7 @@ package com.example.sportapp.view.controllers.bio
 
 import Model.SportAppApi
 import android.content.Context
+import android.util.Log
 import com.example.sportapp.models.DTO.bio.*
 import com.example.sportapp.models.DTO.remind.RemindInfo
 import com.example.sportapp.models.DTO.remind.RemindToBioCreation
@@ -11,13 +12,23 @@ class BioAdditiveController(var api: SportAppApi, var context: Context) {
 
     private val map: Map<String, String>;
     var operation: Operation = Operation.CREATE;
-    var currentBioAdditive = BioAdditiveDTO(
+    private var currentBioAdditive = BioAdditiveDTO(
         id = -1,
         name = "default",
         description = "default",
         reminds = mutableListOf(),
         bioType = PILL
     );
+
+    private fun setDefaultBioAdditive(){
+        currentBioAdditive = BioAdditiveDTO(
+            id = -1,
+            name = "default",
+            description = "default",
+            reminds = mutableListOf(),
+            bioType = PILL
+        );
+    }
 
     fun initBioAdditive(info: BioAdditiveInfo) {
         currentBioAdditive = BioAdditiveDTO(
@@ -113,7 +124,6 @@ class BioAdditiveController(var api: SportAppApi, var context: Context) {
                 period = 1,
                 info.measure,
                 30,
-                null,
                 NotificationMessagingService.getToken(context)
             )
             mutableList.add(remind)
@@ -171,11 +181,12 @@ class BioAdditiveController(var api: SportAppApi, var context: Context) {
                     remindInfoToCreation(currentBioAdditive.reminds),
                     currentBioAdditive.bioType
                 )
-
+                setDefaultBioAdditive()
                 this.create(bioAdditiveCreation);
             };
             Operation.DELETE -> {
                 delete(currentBioAdditive.id)
+                setDefaultBioAdditive()
             };
             Operation.UPDATE -> {
                 var bioAdditiveUpdation = BioAdditiveUpdation(
@@ -185,7 +196,8 @@ class BioAdditiveController(var api: SportAppApi, var context: Context) {
                     remindInfoToCreation(currentBioAdditive.reminds),
                     currentBioAdditive.bioType
                 )
-
+                Log.d("DEBUG", bioAdditiveUpdation.toString())
+                setDefaultBioAdditive()
                 this.update(bioAdditiveUpdation);
             };
 

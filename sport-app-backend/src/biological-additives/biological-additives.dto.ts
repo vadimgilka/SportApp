@@ -89,8 +89,7 @@ export class UpdateBiologicalAdditiveWithRemindsDTO {
   reminds: CreateBioAdditiveToRemindDTO[];
 
   static toUpdateInput(object : UpdateBiologicalAdditiveWithRemindsDTO): Prisma.BiologicalAdditiveUpdateInput {
-    const updateInput = {
-      id: object.id,
+    const updateInput :  Prisma.BiologicalAdditiveUpdateInput  = {
       name: object.name,
       description: object.description,
       User: { connect: { id: object.author_id } },

@@ -5,6 +5,5 @@ data class RemindToBioCreation(
     val period: Int?,
     val measure : Int,
     val count_reception: Int?,
-    val last_reception: String?,
     val token : String
 )

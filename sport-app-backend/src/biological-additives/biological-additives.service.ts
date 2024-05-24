@@ -113,13 +113,13 @@ export class BiologicalAdditivesService {
     const reminds: Prisma.RemindCreateInput[] = data.reminds.map((x) => 
       CreateBioAdditiveRemindDTO.toCreateInput(x, user.userId)
     );
-    const updateInput: Prisma.BiologicalAdditiveUpdateInput = {
+     const updateInput: Prisma.BiologicalAdditiveUpdateInput = {
       ...UpdateBiologicalAdditiveWithRemindsDTO.toUpdateInput(data),
       reminds: {
         create: reminds,
       },
     };
-
+    
     return this.prisma.biologicalAdditive.update({
       where : {
         id : data.id
