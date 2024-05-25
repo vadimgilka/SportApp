@@ -24,12 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -79,11 +74,18 @@ fun bioUpdateCreateView(nav: NavHostController, controller : BioAdditiveControll
     var name by remember {
         mutableStateOf(controller.getName())
     }
-    var count : Int = 1;
 
     var listOfDoaseges = remember {
         mutableStateListOf(listOf<Dosage>())
     }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            controller.setDefaultBioAdditive()
+            println("Composable screen is being left")
+        }
+    }
+
     listOfDoaseges[0] = dosageList(controller.getReminds())
     Scaffold(
         topBar = {

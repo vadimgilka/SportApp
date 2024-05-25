@@ -46,7 +46,7 @@ import kotlinx.coroutines.launch
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "CoroutineCreationDuringComposition")
 @Composable
-fun bioListView(nav: NavHostController, controller : BioAdditiveController){
+fun bioListView(nav: NavHostController, controller: BioAdditiveController) {
 
     val elementslist = remember {
         mutableStateListOf(listOf<BioAdditiveInfo>())
@@ -57,9 +57,11 @@ fun bioListView(nav: NavHostController, controller : BioAdditiveController){
     }
 
     Scaffold(
-        topBar = { goBackNavBar {
-            nav.navigate("exercise")
-        } }
+        topBar = {
+            goBackNavBar {
+                nav.navigate("exercise")
+            }
+        }
     ) {
         Spacer(modifier = Modifier.height(50.dp))
         Column(
@@ -71,30 +73,37 @@ fun bioListView(nav: NavHostController, controller : BioAdditiveController){
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                for ( element in  elementslist[0]) {
-                    item{
+                for (element in elementslist[0]) {
+                    item {
                         bioListItem(
                             true,
                             element.name,
                             element.reminds.size,
                             //в лямбдах пишешь подгрухку данных по выбранному элементу через котнроллер
-                            {nav.navigate("bioUpdateCreateView")},
-                            {nav.navigate("bioUpdateCreateView")},
-                            controller,
-                            element
+                            {
+                                controller.onEditPressed(bio = element, nav = nav)
+                            },
+                            {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    controller.onDeletePressed(bio = element)
+                                    elementslist[0] = controller.deleteElementFromList(elementslist[0], element)
+                                }
+                            },
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                     }
                 }
-                item{
+                item {
                     Spacer(modifier = Modifier.height(35.dp))
                 }
             }
         }
-        Column( Modifier
-            .fillMaxHeight(),
+        Column(
+            Modifier
+                .fillMaxHeight(),
             verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally) {
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Button(modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp)
@@ -118,9 +127,7 @@ fun bioListItem(
     countPerDay: Int,
     onEditPressed: () -> Unit,
     onDeletePressed: () -> Unit,
-    controller : BioAdditiveController,
-    bio: BioAdditiveInfo
-){
+) {
     Box(
         modifier = Modifier
             .background(Color.White)
@@ -130,17 +137,23 @@ fun bioListItem(
             .clip(RoundedCornerShape(10.dp))
     )
     {
-        Row (Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.Start,){
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.Top, horizontalArrangement = Arrangement.Start) {
             Column(
                 Modifier
                     .padding(horizontal = 10.dp, vertical = 10.dp),
             ) {
-                Row{
+                Row {
                     Icon(
                         modifier = Modifier
                             .width(34.dp)
                             .padding(end = 10.dp),
-                        painter = painterResource(id = if(singlePill){R.drawable.singlepill}else{R.drawable.pills}),
+                        painter = painterResource(
+                            id = if (singlePill) {
+                                R.drawable.singlepill
+                            } else {
+                                R.drawable.pills
+                            }
+                        ),
                         tint = Color.Black,
                         contentDescription = null
                     )
@@ -159,8 +172,6 @@ fun bioListItem(
             ) {
                 IconButton(
                     onClick = {
-                        controller.operation = BioAdditiveController.Operation.UPDATE;
-                        controller.initBioAdditive(bio);
                         onEditPressed()
                     }) {
                     Icon(
@@ -172,9 +183,7 @@ fun bioListItem(
                 }
                 IconButton(
                     onClick = {
-                        controller.operation = BioAdditiveController.Operation.DELETE;
-                        controller.initBioAdditive(bio);
-                        onDeletePressed
+                        onDeletePressed()
                     }) {
                     Icon(
                         modifier = Modifier.width(20.dp),

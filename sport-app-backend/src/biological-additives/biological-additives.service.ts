@@ -105,27 +105,37 @@ export class BiologicalAdditivesService {
     });
   }
 
-  async updateWithReminds(
-    data: UpdateBiologicalAdditiveWithRemindsDTO,
-    user: UserDTO,
-  ) {
-    data.author_id = user.userId;
-    const reminds: Prisma.RemindCreateInput[] = data.reminds.map((x) => 
-      CreateBioAdditiveRemindDTO.toCreateInput(x, user.userId)
-    );
-     const updateInput: Prisma.BiologicalAdditiveUpdateInput = {
-      ...UpdateBiologicalAdditiveWithRemindsDTO.toUpdateInput(data),
-      reminds: {
-        create: reminds,
-      },
-    };
+    async updateWithReminds(
+      data: UpdateBiologicalAdditiveWithRemindsDTO,
+      user: UserDTO,
+    )  {
+      data.author_id = user.userId;
+      const reminds: Prisma.RemindCreateInput[] = data.reminds.map((x) => 
+        CreateBioAdditiveRemindDTO.toCreateInput(x, user.userId)
+      );
+      const updateInput: Prisma.BiologicalAdditiveUpdateInput = {
+        ...UpdateBiologicalAdditiveWithRemindsDTO.toUpdateInput(data),
+        reminds: {
+          create: reminds,
+        },
+      };
+
+      
+
+      return this.prisma.$transaction(async (prisma) => {
+        await prisma.remind.deleteMany({
+          where: {
+            biologicalAdditiveId: data.id,
+          },
+        });
     
-    return this.prisma.biologicalAdditive.update({
-      where : {
-        id : data.id
-      },
-      data: updateInput,
-      include: { reminds: true },
-    });
+        return prisma.biologicalAdditive.update({
+          where: {
+            id: data.id,
+          },
+          data: updateInput,
+          include: { reminds: true },
+        });
+      });
+    }
   }
-}

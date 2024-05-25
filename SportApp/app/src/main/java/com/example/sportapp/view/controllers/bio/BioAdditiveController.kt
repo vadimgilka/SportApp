@@ -3,10 +3,12 @@ package com.example.sportapp.view.controllers.bio
 import Model.SportAppApi
 import android.content.Context
 import android.util.Log
+import androidx.navigation.NavController
 import com.example.sportapp.models.DTO.bio.*
 import com.example.sportapp.models.DTO.remind.RemindInfo
 import com.example.sportapp.models.DTO.remind.RemindToBioCreation
 import com.example.sportapp.services.NotificationMessagingService
+import java.lang.IllegalArgumentException
 
 class BioAdditiveController(var api: SportAppApi, var context: Context) {
 
@@ -20,7 +22,7 @@ class BioAdditiveController(var api: SportAppApi, var context: Context) {
         bioType = PILL
     );
 
-    private fun setDefaultBioAdditive(){
+    fun setDefaultBioAdditive(){
         currentBioAdditive = BioAdditiveDTO(
             id = -1,
             name = "default",
@@ -158,7 +160,7 @@ class BioAdditiveController(var api: SportAppApi, var context: Context) {
 
         val regex = """^\d{1,2}:\d{2}$""".toRegex()
         if (!regex.matches(time)) {
-            return 0
+            throw IllegalArgumentException("Некорректное время")
         }
 
         val parts = time.split(":")
@@ -166,7 +168,7 @@ class BioAdditiveController(var api: SportAppApi, var context: Context) {
         val minutes = parts[1].toInt()
 
         if (hours !in 0..23 || minutes !in 0..59) {
-            return 0
+            throw IllegalArgumentException("Некорректное время")
         }
 
         return hours * 60 + minutes
@@ -204,7 +206,24 @@ class BioAdditiveController(var api: SportAppApi, var context: Context) {
         }
     }
 
+     fun onEditPressed(bio : BioAdditiveInfo, nav : NavController){
+        operation = Operation.UPDATE;
+        initBioAdditive(bio);
+        nav.navigate("bioUpdateCreateView")
+    }
+    suspend fun onDeletePressed(bio : BioAdditiveInfo) {
+        operation = Operation.DELETE;
+        initBioAdditive(bio);
+        makeOperation()
+    }
+
+    fun deleteElementFromList(list : List<BioAdditiveInfo>, bio : BioAdditiveInfo): List<BioAdditiveInfo> {
+        var newList = list.filter { it.id != bio.id}
+        return newList
+    }
+
     fun setReminds(remindList: MutableList<RemindDto>) {
         currentBioAdditive.reminds = remindList
     }
+
 }
