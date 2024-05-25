@@ -42,7 +42,7 @@ fun trainMenu(nav: NavHostController, trainingProcessController: TrainingProcess
         mutableStateOf(false)
     }
     var isLast by remember {
-        mutableStateOf(false)
+        mutableStateOf(trainingProcessController.isLastExercise())
     }
     var currentExerciseInfo = trainingProcessController.getCurrentExercise()
     var currentWeight by remember {

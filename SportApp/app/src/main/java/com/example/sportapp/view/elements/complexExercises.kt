@@ -56,7 +56,7 @@ fun complexExercises(nav: NavHostController, complexController: ComplexListScree
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                if (train.exercises.size > 1) {
+                if (train.exercises.size > 0) {
                     items(train.exercises) {
                         complexExerciseElement(it, nav = nav, exerciseController)
                         Spacer(modifier = Modifier.height(8.dp))
