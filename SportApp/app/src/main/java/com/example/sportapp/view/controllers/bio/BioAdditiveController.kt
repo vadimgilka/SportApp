@@ -79,7 +79,7 @@ class BioAdditiveController(var api: SportAppApi, var context: Context) {
     }
 
     suspend fun getMany(): List<BioAdditiveInfo> {
-        return api.getBioAdditiveList();
+        return api.getBioAdditiveList()
     }
 
     suspend fun getOne(id: Int): BioAdditiveInfo? {
@@ -97,7 +97,7 @@ class BioAdditiveController(var api: SportAppApi, var context: Context) {
             }
         }
 
-        return PILL;
+        return PILL
     }
 
     fun typeToRussian(res: String): String {
@@ -210,7 +210,7 @@ class BioAdditiveController(var api: SportAppApi, var context: Context) {
                 setDefaultBioAdditive()
             }
             Operation.UPDATE -> {
-                var bioAdditiveUpdation = BioAdditiveUpdation(
+                val bioAdditiveUpdation = BioAdditiveUpdation(
                     currentBioAdditive.id,
                     currentBioAdditive.name,
                     currentBioAdditive.description,
@@ -238,12 +238,20 @@ class BioAdditiveController(var api: SportAppApi, var context: Context) {
     }
 
     fun deleteElementFromList(list: List<BioAdditiveInfo>, bio: BioAdditiveInfo): List<BioAdditiveInfo> {
-        var newList = list.filter { it.id != bio.id }
+        val newList = list.filter { it.id != bio.id }
         return newList
     }
 
     fun setReminds(remindList: MutableList<RemindDto>) {
         currentBioAdditive.reminds = remindList
     }
+
+    fun backScreen(): String {
+        if(this.operation == Operation.UPDATE){
+            return "pill"
+        }
+        return  "bioAdd"
+    }
+
 
 }
