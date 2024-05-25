@@ -41,6 +41,9 @@ fun trainMenu(nav: NavHostController, trainingProcessController: TrainingProcess
     var goRest by remember {
         mutableStateOf(false)
     }
+    var isLast by remember {
+        mutableStateOf(false)
+    }
     var currentExerciseInfo = trainingProcessController.getCurrentExercise()
     var currentWeight by remember {
         mutableStateOf(currentExerciseInfo.weight)
@@ -108,8 +111,8 @@ fun trainMenu(nav: NavHostController, trainingProcessController: TrainingProcess
                 colors = ButtonColors(green, white, green, Color.Transparent),
                 shape = RoundedCornerShape(10.dp), onClick = {
                     trainingProcessController.addApproach()
-                    currentExerciseInfo = trainingProcessController.getCurrentExercise()
-                    currentApproach = currentExerciseInfo.approach
+                    //currentExerciseInfo = trainingProcessController.getCurrentExercise()
+                    currentApproach = trainingProcessController.getApproach()
                 }) {
                 Text(text = "Добавить подход", fontSize = 15.sp)
             }
@@ -126,15 +129,26 @@ fun trainMenu(nav: NavHostController, trainingProcessController: TrainingProcess
                 ),
                 colors = ButtonColors(blue, white, blue, Color.Transparent),
                 shape = RoundedCornerShape(10.dp), onClick = {
-                    trainingProcessController.switchToNextExercise()
-                    currentExerciseInfo = trainingProcessController.getCurrentExercise()
-                    currentName = currentExerciseInfo.Exercise.name
-                    currentDescription = currentExerciseInfo.Exercise.description
-                    currentWeight = currentExerciseInfo.weight
-                    currentRepetition = currentExerciseInfo.repetition
-                    currentApproach = currentExerciseInfo.approach
+                    if(isLast){
+                        trainingProcessController.clean()
+                        currentApproach = 1
+                        nav.navigate("exercise")
+                    }else {
+                        trainingProcessController.switchToNextExercise()
+                        currentExerciseInfo = trainingProcessController.getCurrentExercise()
+                        currentName = currentExerciseInfo.Exercise.name
+                        currentDescription = currentExerciseInfo.Exercise.description
+                        currentWeight = currentExerciseInfo.weight
+                        currentRepetition = currentExerciseInfo.repetition
+                        currentApproach = currentExerciseInfo.approach
+                        isLast = trainingProcessController.isLastExercise()
+                    }
                 }) {
-                Text(text = "Следующее упражнение", fontSize = 15.sp)
+                if(isLast){
+                    Text(text = "Завершить тренировку", fontSize = 15.sp)
+                }else {
+                    Text(text = "Следующее упражнение", fontSize = 15.sp)
+                }
             }
         }
     }

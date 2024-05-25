@@ -64,10 +64,18 @@ fun complexList(
         ) {
             LazyColumn(modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp)) {
                 if(elementslist[0].isNotEmpty()) {
-                    for (i in 0..<elementslist[0].size) {
-                        item {
-                            complexElement(elementslist[0][i].name, i+1, elementslist[0][i].id, complexListScreenController, nav)
-                            Spacer(modifier = Modifier.height(20.dp))
+                    if(elementslist[0][0].id != -1) {
+                        for (i in 0..<elementslist[0].size) {
+                            item {
+                                complexElement(
+                                    elementslist[0][i].name,
+                                    i + 1,
+                                    elementslist[0][i].id,
+                                    complexListScreenController,
+                                    nav
+                                )
+                                Spacer(modifier = Modifier.height(20.dp))
+                            }
                         }
                     }
                 }
