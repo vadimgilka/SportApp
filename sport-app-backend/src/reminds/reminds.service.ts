@@ -104,7 +104,7 @@ export class RemindsService {
   @Cron('*/1 * * * *')
   async sendReminder() {
     const time = this.getTime();
-    const reminds = await this.reminds({
+    const reminds : Remind[]= await this.reminds({
       where: { time },
       // include : {
       //   BiologicalAdditive : true
@@ -130,11 +130,12 @@ export class RemindsService {
   }
 
   private remindToPayloadFCM(remind: Remind): PayloadFCM {
+
     const payload: PayloadFCM = {
       token: remind.token,
       notification: {
-        title: 'время пить таблетки',
-        body: 'твоя дозировка =  ' + remind.measure,
+        title: 'время приема БАД!',
+        body: 'твоя дозировка равняется ' + remind.measure,
       },
       data: {
         id: String(remind.id),

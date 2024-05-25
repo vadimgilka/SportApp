@@ -111,6 +111,10 @@ export class ExercisesController {
         author_id : user.userId
       };
     }
+
+    param.orderBy = {
+      createdAt : 'asc'
+    }
     
     
     //param.where.author_id = user.userId;

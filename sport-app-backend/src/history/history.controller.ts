@@ -24,6 +24,6 @@ export class HistoryController {
             authorId : user.userId
         };
 
-        return await this.historyService.historiesByPage({page, where})
+        return await this.historyService.historiesByPage({page, where, orderBy : {createdAt : 'asc'}})
     }
 }

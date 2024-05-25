@@ -103,7 +103,7 @@ export class TrainsService {
     return this.prisma.$transaction(async (prisma) => {
       await prisma.exerciseOnTrain.deleteMany({
         where: {
-          trainId: train.id,
+          trainId: tra.id,
         },
       });
 
@@ -115,6 +115,9 @@ export class TrainsService {
             include: {
               Exercise: true,
             },
+            orderBy: {
+              exerciseNumber: 'asc'
+            }
           },
         },
       });
@@ -129,6 +132,9 @@ export class TrainsService {
           include: {
             Exercise: true,
           },
+          orderBy: {
+            exerciseNumber: 'asc'
+          }
         },
       },
     });
@@ -162,6 +168,9 @@ export class TrainsService {
           include: {
             Exercise: true,
           },
+          orderBy: {
+            exerciseNumber: 'asc'
+          }
         },
       },
     });

@@ -57,6 +57,7 @@ export class TrainsController {
         param.skip = trainPage.size * (page - 1);
         param.take = trainPage.size;
       }
+      param.orderBy = {createdAt : 'asc'}
 
       return await this.trainService.trains(param);
     }
