@@ -59,6 +59,7 @@ fun dosageList(reminds: List<RemindDto>) : MutableList<Dosage> {
     var cnt = 1;
     for(remind in reminds){
         list.add(Dosage("Дозировка $cnt", remind))
+        ++cnt
     }
 
     return list
