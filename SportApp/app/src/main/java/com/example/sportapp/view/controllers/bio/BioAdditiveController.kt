@@ -2,34 +2,37 @@ package com.example.sportapp.view.controllers.bio
 
 import Model.SportAppApi
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import androidx.navigation.NavController
 import com.example.sportapp.models.DTO.bio.*
 import com.example.sportapp.models.DTO.remind.RemindInfo
 import com.example.sportapp.models.DTO.remind.RemindToBioCreation
 import com.example.sportapp.services.NotificationMessagingService
-import java.lang.IllegalArgumentException
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.time.temporal.ChronoUnit
 
 class BioAdditiveController(var api: SportAppApi, var context: Context) {
 
-    private val map: Map<String, String>;
-    var operation: Operation = Operation.CREATE;
+    private val map: Map<String, String>
+    var operation: Operation = Operation.CREATE
     private var currentBioAdditive = BioAdditiveDTO(
         id = -1,
         name = "default",
         description = "default",
         reminds = mutableListOf(),
         bioType = PILL
-    );
+    )
 
-    fun setDefaultBioAdditive(){
+    fun setDefaultBioAdditive() {
         currentBioAdditive = BioAdditiveDTO(
             id = -1,
             name = "default",
             description = "default",
             reminds = mutableListOf(),
             bioType = PILL
-        );
+        )
     }
 
     fun initBioAdditive(info: BioAdditiveInfo) {
@@ -68,11 +71,11 @@ class BioAdditiveController(var api: SportAppApi, var context: Context) {
     }
 
     suspend fun create(bioAdditiveCreation: BioAdditiveCreation): BioAdditiveInfo? {
-        return api.createBioAdditive(bioAdditiveCreation);
+        return api.createBioAdditive(bioAdditiveCreation)
     }
 
     suspend fun update(bioAdditiveUpdation: BioAdditiveUpdation): BioAdditiveInfo? {
-        return api.updateBioAdditive(bioAdditiveUpdation);
+        return api.updateBioAdditive(bioAdditiveUpdation)
     }
 
     suspend fun getMany(): List<BioAdditiveInfo> {
@@ -80,17 +83,17 @@ class BioAdditiveController(var api: SportAppApi, var context: Context) {
     }
 
     suspend fun getOne(id: Int): BioAdditiveInfo? {
-        return api.getBioAdditive(id);
+        return api.getBioAdditive(id)
     }
 
     suspend fun delete(id: Int): BioAdditiveInfo? {
-        return api.deleteBioAdditive(id);
+        return api.deleteBioAdditive(id)
     }
 
     fun typeToEnglish(res: String): String {
         for ((key, value) in map) {
             if (key.equals(res)) {
-                return value;
+                return value
             }
         }
 
@@ -102,10 +105,10 @@ class BioAdditiveController(var api: SportAppApi, var context: Context) {
     }
 
     companion object {
-        public const val POWDER = "Powder"
-        public const val PILL = "Pill"
-        public const val POWDER_RUSSIAN = "Порошки"
-        public const val PILL_RUSSIAN = "Таблетки"
+        const val POWDER = "Powder"
+        const val PILL = "Pill"
+        const val POWDER_RUSSIAN = "Порошки"
+        const val PILL_RUSSIAN = "Таблетки"
     }
 
 
@@ -118,10 +121,10 @@ class BioAdditiveController(var api: SportAppApi, var context: Context) {
 
     fun remindInfoToCreation(reminds: MutableList<RemindDto>): MutableList<RemindToBioCreation> {
 
-        var mutableList: MutableList<RemindToBioCreation> = mutableListOf()
+        val mutableList: MutableList<RemindToBioCreation> = mutableListOf()
 
         for (info in reminds) {
-            var remind = RemindToBioCreation(
+            val remind = RemindToBioCreation(
                 timeStringToInt(info.time),
                 period = 1,
                 info.measure,
@@ -131,11 +134,11 @@ class BioAdditiveController(var api: SportAppApi, var context: Context) {
             mutableList.add(remind)
         }
 
-        return mutableList;
+        return mutableList
     }
 
     fun infoToDto(reminds: MutableList<RemindInfo>): MutableList<RemindDto> {
-        var list = mutableListOf<RemindDto>()
+        val list = mutableListOf<RemindDto>()
 
         for (remind in reminds) {
             list.add(
@@ -151,9 +154,24 @@ class BioAdditiveController(var api: SportAppApi, var context: Context) {
     }
 
     fun intToTimeString(minutes: Int): String {
-        val hours = minutes / 60
-        val remainingMinutes = minutes % 60
+        val currentMutes = toCorrectTime(minutes + UTCTimeOffSet())
+        val hours = currentMutes / 60
+        val remainingMinutes = currentMutes % 60
         return String.format("%02d:%02d", hours, remainingMinutes)
+    }
+
+    fun UTCTimeOffSet(): Int {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val localDateTime = LocalDateTime.now()
+            val utcDateTime = LocalDateTime.now(ZoneOffset.UTC)
+            return ChronoUnit.HOURS.between(utcDateTime, localDateTime).toInt() * 60
+        } else {
+            return 0
+        }
+    }
+
+    private fun toCorrectTime(minutes: Int): Int {
+        return (minutes + 24 * 60) % (24 * 60)
     }
 
     fun timeStringToInt(time: String): Int {
@@ -171,25 +189,26 @@ class BioAdditiveController(var api: SportAppApi, var context: Context) {
             throw IllegalArgumentException("Некорректное время")
         }
 
-        return hours * 60 + minutes
+        val result = hours * 60 + minutes - UTCTimeOffSet() //TODO заглушка
+        return toCorrectTime(result)
     }
 
     suspend fun makeOperation() {
         when (this.operation) {
             Operation.CREATE -> {
-                var bioAdditiveCreation = BioAdditiveCreation(
+                val bioAdditiveCreation = BioAdditiveCreation(
                     currentBioAdditive.name,
                     currentBioAdditive.description,
                     remindInfoToCreation(currentBioAdditive.reminds),
                     currentBioAdditive.bioType
                 )
                 setDefaultBioAdditive()
-                this.create(bioAdditiveCreation);
-            };
+                this.create(bioAdditiveCreation)
+            }
             Operation.DELETE -> {
                 delete(currentBioAdditive.id)
                 setDefaultBioAdditive()
-            };
+            }
             Operation.UPDATE -> {
                 var bioAdditiveUpdation = BioAdditiveUpdation(
                     currentBioAdditive.id,
@@ -200,25 +219,26 @@ class BioAdditiveController(var api: SportAppApi, var context: Context) {
                 )
                 Log.d("DEBUG", bioAdditiveUpdation.toString())
                 setDefaultBioAdditive()
-                this.update(bioAdditiveUpdation);
-            };
+                this.update(bioAdditiveUpdation)
+            }
 
         }
     }
 
-     fun onEditPressed(bio : BioAdditiveInfo, nav : NavController){
-        operation = Operation.UPDATE;
-        initBioAdditive(bio);
+    fun onEditPressed(bio: BioAdditiveInfo, nav: NavController) {
+        operation = Operation.UPDATE
+        initBioAdditive(bio)
         nav.navigate("bioUpdateCreateView")
     }
-    suspend fun onDeletePressed(bio : BioAdditiveInfo) {
-        operation = Operation.DELETE;
-        initBioAdditive(bio);
+
+    suspend fun onDeletePressed(bio: BioAdditiveInfo) {
+        operation = Operation.DELETE
+        initBioAdditive(bio)
         makeOperation()
     }
 
-    fun deleteElementFromList(list : List<BioAdditiveInfo>, bio : BioAdditiveInfo): List<BioAdditiveInfo> {
-        var newList = list.filter { it.id != bio.id}
+    fun deleteElementFromList(list: List<BioAdditiveInfo>, bio: BioAdditiveInfo): List<BioAdditiveInfo> {
+        var newList = list.filter { it.id != bio.id }
         return newList
     }
 

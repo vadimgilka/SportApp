@@ -31,7 +31,7 @@ class NotificationMessagingService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         Log.d(TAG, "Refreshed token: $token")
-        getSharedPreferences("_", MODE_PRIVATE).edit().putString("fb", token).apply();
+        getSharedPreferences("_", MODE_PRIVATE).edit().putString("fb", token).apply()
     }
 
     private fun sendNotification(name: String?, time: String, measure: String?) {
@@ -54,6 +54,7 @@ class NotificationMessagingService : FirebaseMessagingService() {
             .setContentTitle("Время принимать $titleName")
             .setContentText("Время принимать дозировку $measure в $timeFormat")
             .setAutoCancel(true)
+            .setSmallIcon(R.mipmap.ic_launcher)
             .setContentIntent(pendingIntent)
 
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -93,10 +94,10 @@ class NotificationMessagingService : FirebaseMessagingService() {
         fun getToken(context: Context): String {
             context.getSharedPreferences("_", MODE_PRIVATE).getString("fb", "empty")?.let {
                 Log.d(TAG, it)
-                return it;
+                return it
             }
 
-            return "empty_token";
+            return "empty_token"
         }
     }
 
