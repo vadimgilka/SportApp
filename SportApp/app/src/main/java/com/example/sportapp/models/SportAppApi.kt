@@ -167,7 +167,7 @@ class SportAppApi : AbstractApi {
     suspend fun getComplexList(page: Int): List<TrainInfo> {
         var complexList = listOf(
             TrainInfo(
-                1, "", "", 1, "", "", mutableListOf<ExerciseTrainInfo>()
+                -1, "", "", 1, "", "", mutableListOf<ExerciseTrainInfo>()
             )
         )
         return withContext(Dispatchers.IO) {

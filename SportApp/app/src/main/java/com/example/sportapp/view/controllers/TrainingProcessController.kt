@@ -13,10 +13,19 @@ class TrainingProcessController(api: SportAppApi) {
     private var timer: CountDownTimer ?= null
     private var minutes = 1
     private var seconds = 0
+    private var approach = 1
     private var currentExerciseIndex = 0
 
     fun setTrain(train: TrainInfo){
         training = train
+    }
+
+    fun clean(){
+        currentExerciseIndex = 0
+        seconds = 0
+        minutes = 0
+        approach = 1
+        training.exercises[currentExerciseIndex]
     }
 
     fun setRestTime(minutes: Int, seconds: Int){
@@ -27,7 +36,11 @@ class TrainingProcessController(api: SportAppApi) {
 
     fun addApproach(){
         //добавили подход к текущему упражнению
-        this.currentExercise.approach++
+        this.approach++
+    }
+
+    fun isLastExercise(): Boolean {
+        return training.exercises.size == currentExerciseIndex+1
     }
 
     @Composable
@@ -44,10 +57,15 @@ class TrainingProcessController(api: SportAppApi) {
         }.start()
     }
 
+    fun getApproach(): Int {
+        return this.approach
+    }
+
     fun switchToNextExercise(){
         //Тут у нас код для отправки данных о выполненном упражнении (количество подходов например)
         if(training.exercises.size > currentExerciseIndex+1) {
             currentExerciseIndex++
+            approach = 1
             currentExercise = training.exercises[currentExerciseIndex]
         }
     }

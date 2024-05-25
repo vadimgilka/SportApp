@@ -63,10 +63,18 @@ fun complexSelect(
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp)) {
                 if(elementslist[0].isNotEmpty()) {
-                    for (i in 0..<elementslist[0].size) {
-                        item {
-                            complexElementForTrainStart(item = elementslist[0][i], index = i+1, nav, complexListScreenController, trainingProcessController)
-                            Spacer(modifier = Modifier.height(20.dp))
+                    if(elementslist[0][0].id != -1) {
+                        for (i in 0..<elementslist[0].size) {
+                            item {
+                                complexElementForTrainStart(
+                                    item = elementslist[0][i],
+                                    index = i + 1,
+                                    nav,
+                                    complexListScreenController,
+                                    trainingProcessController
+                                )
+                                Spacer(modifier = Modifier.height(20.dp))
+                            }
                         }
                     }
                 }
