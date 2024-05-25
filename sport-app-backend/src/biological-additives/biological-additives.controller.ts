@@ -33,7 +33,7 @@ export class BiologicalAdditivesController {
     @Get()
     async getMany(@User() user : UserDTO){
         const where : Prisma.BiologicalAdditiveWhereInput = {author_id : user.userId};
-        return await this.bioService.additives({where});
+        return await this.bioService.additives({where, orderBy : {createdAt: 'asc'}});
     }
 
     @Put()

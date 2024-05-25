@@ -103,7 +103,7 @@ export class TrainsService {
     return this.prisma.$transaction(async (prisma) => {
       await prisma.exerciseOnTrain.deleteMany({
         where: {
-          trainId: tra.id,
+          trainId: train.id,
         },
       });
 
