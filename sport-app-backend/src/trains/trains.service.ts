@@ -7,7 +7,11 @@ import {
   UseFilters,
 } from '@nestjs/common';
 import { Exercise, ExerciseOnTrain, Prisma, Train } from '@prisma/client';
-import { CreateTrainDto, UpdateTrainDto, ExerciseOnTrainDto } from './trains.dto';
+import {
+  CreateTrainDto,
+  UpdateTrainDto,
+  ExerciseOnTrainDto,
+} from './trains.dto';
 import { MAX_EXERCISE_IN_TRAIN, trainPage } from './constant';
 import { uniq } from 'lodash';
 import { ExercisesService } from 'src/exercises/exercises.service';
@@ -96,16 +100,24 @@ export class TrainsService {
 
     await this.deleteConnections(train.id, data.exercises);
 
-    return this.prisma.train.update({
-      data: updateData,
-      where,
-      include: {
-        exercises: {
-          include: {
-            Exercise: true,
+    return this.prisma.$transaction(async (prisma) => {
+      await prisma.exerciseOnTrain.deleteMany({
+        where: {
+          trainId: train.id,
+        },
+      });
+
+      return this.prisma.train.update({
+        data: updateData,
+        where,
+        include: {
+          exercises: {
+            include: {
+              Exercise: true,
+            },
           },
         },
-      },
+      });
     });
   }
 
@@ -128,7 +140,7 @@ export class TrainsService {
   }
 
   async findById(id: number, user) {
-    return this.train({ id: id, author_id : user.userId });
+    return this.train({ id: id, author_id: user.userId });
   }
 
   async trains(params: {
@@ -157,27 +169,35 @@ export class TrainsService {
     return trains;
   }
 
-
-  async updateExerciseOnTrain(exerciseOnTrainDto: ExerciseOnTrainDto, user : UserDTO){
-
-    const train : Train =  await this.findById(exerciseOnTrainDto.trainId, user);
+  async updateExerciseOnTrain(
+    exerciseOnTrainDto: ExerciseOnTrainDto,
+    user: UserDTO,
+  ) {
+    const train: Train = await this.findById(exerciseOnTrainDto.trainId, user);
 
     if (!train) {
       throw new NotFoundException('train not found');
     }
-    
-    const where : Prisma.ExerciseOnTrainWhereUniqueInput = { unique_trainId_exerciseNumber: {
-      trainId : exerciseOnTrainDto.trainId, 
-      exerciseNumber : exerciseOnTrainDto.exerciseNumber,
-    }};
 
-    const data = await this.prisma.exerciseOnTrain.findUnique({where}) 
+    const where: Prisma.ExerciseOnTrainWhereUniqueInput = {
+      unique_trainId_exerciseNumber: {
+        trainId: exerciseOnTrainDto.trainId,
+        exerciseNumber: exerciseOnTrainDto.exerciseNumber,
+      },
+    };
+
+    const data = await this.prisma.exerciseOnTrain.findUnique({ where });
 
     if (!data) {
-      throw new NotFoundException(`train has not exercise with number ${exerciseOnTrainDto.exerciseNumber}`);
+      throw new NotFoundException(
+        `train has not exercise with number ${exerciseOnTrainDto.exerciseNumber}`,
+      );
     }
 
-    return this.prisma.exerciseOnTrain.update({where, data : exerciseOnTrainDto});
+    return this.prisma.exerciseOnTrain.update({
+      where,
+      data: exerciseOnTrainDto,
+    });
   }
 
   private async checkExercises(exercises: ExerciseTrainDto[]) {
