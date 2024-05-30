@@ -115,6 +115,21 @@ fun bioListView(nav: NavHostController, controller: BioAdditiveController) {
                 }) {
                 Text(text = "Добавить напоминание", fontSize = 15.sp)
             }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Button(modifier = Modifier
+                .fillMaxWidth()
+                .height(50.dp)
+                .padding(horizontal = 60.dp),
+                colors = ButtonColors(blue, white, blue, Color.Transparent),
+                shape = RoundedCornerShape(15.dp), onClick = {
+               //     controller.operation = BioAdditiveController.Operation.CREATE;
+                    nav.navigate("reactionListView")
+                }) {
+                Text(text = "Заметки", fontSize = 15.sp)
+            }
+
             Spacer(modifier = Modifier.height(65.dp))
         }
     }

@@ -351,7 +351,7 @@ class SportAppApi : AbstractApi {
             .create(BodyReactionApi::class.java);
     }
 
-    public suspend fun getBodyReactionList(): List<BodyReactionInfo>? {
+    suspend fun getBodyReactionList(): List<BodyReactionInfo>? {
 
         var bodyReactionList: List<BodyReactionInfo>? = null;
         return withContext(Dispatchers.IO) {
@@ -366,7 +366,7 @@ class SportAppApi : AbstractApi {
         }
     }
 
-    public suspend fun createBodyReaction(bodyReactionCreation: BodyReactionCreation): BodyReactionInfo? {
+    suspend fun createBodyReaction(bodyReactionCreation: BodyReactionCreation): BodyReactionInfo? {
         var bodyReaction: BodyReactionInfo? = null;
         return withContext(Dispatchers.IO) {
             if (testConnection()) {
@@ -380,7 +380,7 @@ class SportAppApi : AbstractApi {
         }
     }
 
-    public suspend fun updateBodyReaction(bodyReactionUpdation: BodyReactionUpdation): BodyReactionInfo? {
+    suspend fun updateBodyReaction(bodyReactionUpdation: BodyReactionUpdation): BodyReactionInfo? {
         var bodyReaction: BodyReactionInfo? = null;
         return withContext(Dispatchers.IO) {
             if (testConnection()) {

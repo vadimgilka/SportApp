@@ -9,11 +9,11 @@ interface BodyReactionApi {
 
     @Headers("Connection: keep-alive")
     @POST("api/bodyreaction")
-    suspend fun create(@Header("Authorization") bearer: String, bodyReactionCreation: BodyReactionCreation) : BodyReactionInfo;
+    suspend fun create(@Header("Authorization") bearer: String, @Body bodyReactionCreation: BodyReactionCreation) : BodyReactionInfo;
 
     @Headers("Connection: keep-alive")
     @PUT("api/bodyreaction")
-    suspend fun update(@Header("Authorization") bearer: String, bodyReactionUpdation: BodyReactionUpdation) : BodyReactionInfo;
+    suspend fun update(@Header("Authorization") bearer: String, @Body bodyReactionUpdation: BodyReactionUpdation) : BodyReactionInfo;
 
     @DELETE("api/bodyreaction/{id}")
     suspend fun delete(@Header("Authorization") bearer: String, @Path("id") id: Int) : BodyReactionInfo;

@@ -69,17 +69,6 @@ fun bioAdd(nav: NavHostController, controller: BioAdditiveController) {
                 }) {
                 Text(text = BioAdditiveController.POWDER_RUSSIAN, fontSize = 15.sp)
             }
-            Spacer(modifier = Modifier.height(15.dp))
-            Button(modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
-                .padding(horizontal = 60.dp),
-                colors = ButtonColors(iconGray, white, iconGray, Color.Transparent),
-                shape = RoundedCornerShape(15.dp), onClick = {
-                    nav.navigate("bioUpdateCreateView")
-                }) {
-                Text(text = "Заметки", fontSize = 15.sp)
-            }
         }
     }
 }

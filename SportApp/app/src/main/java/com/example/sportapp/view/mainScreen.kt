@@ -17,9 +17,12 @@ import com.example.sportapp.view.controllers.ComplexListScreenController
 import com.example.sportapp.view.controllers.TrainingProcessController
 import com.example.sportapp.view.controllers.UpdateExerciseController
 import com.example.sportapp.view.controllers.bio.BioAdditiveController
+import com.example.sportapp.view.controllers.bio.BodyReactionController
 import com.example.sportapp.view.elements.bio.bioAdd
 import com.example.sportapp.view.elements.bio.bioListView
 import com.example.sportapp.view.elements.bio.bioUpdateCreateView
+import com.example.sportapp.view.elements.body_reaction.reactionInfoView
+import com.example.sportapp.view.elements.body_reaction.reactionListView
 import com.example.sportapp.view.elements.catalogue
 import com.example.sportapp.view.elements.complexAdd
 import com.example.sportapp.view.elements.complexCreate
@@ -69,6 +72,7 @@ fun screenGraph(
     val complexCreateController = ComplexCreateController(api)
     val trainingProcessController = TrainingProcessController(api)
     val bioAdditiveController = BioAdditiveController(api, context)
+    val bodyReactionController = BodyReactionController(api)
     NavHost(navController = nav, startDestination = "exercise"){
         composable("exercise"){
             trainStart(nav)
@@ -137,6 +141,12 @@ fun screenGraph(
         }
         composable("bioUpdateCreateView"){
             bioUpdateCreateView(nav, bioAdditiveController)
+        }
+        composable("reactionListView"){
+            reactionListView(nav, bodyReactionController)
+        }
+        composable("reactionInfoView"){
+            reactionInfoView(nav, bodyReactionController)
         }
     }
 }
