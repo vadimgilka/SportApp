@@ -74,9 +74,6 @@ fun registrationScreen(
     var emailInput by remember {
         mutableStateOf("")
     }
-    var showDialog by remember {
-        mutableStateOf(false)
-    }
     var showError by remember {
         mutableStateOf(0f)
     }
@@ -291,7 +288,6 @@ fun registrationScreen(
                     val res = controller.onRegister(loginInput, passwordInput, emailInput)
                     Log.e("tag1", res) //"testuser0", "password1234567"
                     if (res.equals("Authorized")) {
-                        showDialog = true
                         CoroutineScope(Dispatchers.Main).launch {
                             navController.navigate("mainScreen")
                         }

@@ -68,9 +68,6 @@ fun loginScreen(nav: NavHostController,onClick: () -> Unit, api: SportAppApi) {
     var passwordInput by remember {
         mutableStateOf("")
     }
-    var showDialog by remember {
-        mutableStateOf(false)
-    }
     var showError by remember {
         mutableStateOf(0f)
     }
@@ -214,7 +211,6 @@ fun loginScreen(nav: NavHostController,onClick: () -> Unit, api: SportAppApi) {
                     //"testuser0", "password1234567"
                     //"fortesting" "fortesting"
                     if(res.equals("Authorized")) {
-                        showDialog = true
                         CoroutineScope(Dispatchers.Main).launch {
                             nav.navigate("mainScreen")
                         }
@@ -231,14 +227,6 @@ fun loginScreen(nav: NavHostController,onClick: () -> Unit, api: SportAppApi) {
                 nav.navigate("mainScreen")
                  }) {
             Text(text = "Забыли пароль?", fontSize = 20.sp)
-        }
-        if(showDialog == true) {
-            AlertDialog(
-                onDismissRequest = { showDialog = false },
-                title = { Text(text = "you have been authorized!") },
-                confirmButton = { TextButton(onClick = { showDialog = false}) {
-                    Text(text = "Закрыть", color = Color.White)
-                } })
         }
     }
 }
